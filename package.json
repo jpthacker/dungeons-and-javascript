@@ -1,0 +1,23 @@
+{
+  "name": "dnd-simulator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jpthacker/DnD-Simulator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jpthacker/DnD-Simulator/issues"
+  },
+  "homepage": "https://github.com/jpthacker/DnD-Simulator#readme",
+  "devDependencies": {
+    "sass": "^1.52.1"
+  }
+}
