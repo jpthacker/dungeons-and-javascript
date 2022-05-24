@@ -27,8 +27,14 @@
   left: 10%;
 }
 
-.menu__title {
-  padding: 0 10%;
+.menu {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10vh;
+  margin: 25vh 0 15vh 0;
+  &__title {
+    padding: 0 10%;
+  }
 }
 
 .character-creation__message {
@@ -59,4 +65,9 @@
 
 .title--top {
   top: 5vh;
+}
+
+.hidden {
+  display: none;
+  position: fixed;
 }

@@ -12,10 +12,10 @@
   text-align: center;
 }
 
-menu {
+.menu {
   text-align: center;
 }
-menu__title {
+.menu__title {
   font-family: "IM Fell English SC", serif;
   font-size: 1.5em;
 }
@@ -44,6 +44,37 @@ button {
   font-size: 2em;
 }
 
+.ability__container {
+  display: grid;
+  gap: 6vh;
+  grid-auto-columns: 1fr;
+  grid-template: "ability1" "ability2" "ability3" "ability4" "ability5" "ability6";
+}
+
+.ability--one {
+  grid-area: ability1;
+}
+
+.ability--two {
+  grid-area: ability2;
+}
+
+.ability--three {
+  grid-area: ability3;
+}
+
+.ability--four {
+  grid-area: ability4;
+}
+
+.ability--five {
+  grid-area: ability5;
+}
+
+.ability--six {
+  grid-area: ability6;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -70,6 +101,12 @@ button {
   left: 10%;
 }
 
+.menu {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10vh;
+  margin: 25vh 0 15vh 0;
+}
 .menu__title {
   padding: 0 10%;
 }
@@ -104,35 +141,9 @@ button {
   top: 5vh;
 }
 
-.ability__container {
-  display: grid;
-  gap: 6vh;
-  grid-auto-columns: 1fr;
-  grid-template: "ability1" "ability2" "ability3" "ability4" "ability5" "ability6";
-}
-
-.ability--one {
-  grid-area: ability1;
-}
-
-.ability--two {
-  grid-area: ability2;
-}
-
-.ability--three {
-  grid-area: ability3;
-}
-
-.ability--four {
-  grid-area: ability4;
-}
-
-.ability--five {
-  grid-area: ability5;
-}
-
-.ability--six {
-  grid-area: ability6;
+.hidden {
+  display: none;
+  position: fixed;
 }
 
 button {

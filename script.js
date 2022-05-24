@@ -39,7 +39,6 @@ nisi quis corporis sit illum, velit nobis, harum unde dolore at sunt
 possimus.
 `;
   currentCreationStage = "message";
-  dice(6, 4);
 };
 
 //Loads the name entry form
