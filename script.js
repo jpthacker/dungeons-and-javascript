@@ -154,3 +154,77 @@ backBtn.addEventListener("click", (event) => {
       loadSpeciesSelector();
   }
 });
+
+// Handles the name entry form
+let playerName = "";
+nameForm.addEventListener("input", (event) => {
+  playerName = event.target.value;
+  errorMessage.innerHTML = "";
+  errorMessage.classList.add("hidden");
+});
+
+// Handles the class selector
+let playerClass = "";
+classSelector.addEventListener("change", (event) => {
+  event.preventDefault();
+  creationMessage.classList.remove("hidden");
+  creationMessage.style.marginTop = "10vh";
+  switch (event.target.value) {
+    case "cleric":
+      creationMessage.innerHTML = `A priestly champion who wields divine magic in service of a higher power<br/><br/>Primary Ability: Wisdom<br/>Saves: Wisdom & Charisma
+      `;
+      playerClass = "cleric";
+      break;
+    case "fighter":
+      creationMessage.innerHTML = `A master of martial combat, skilled with a variety of weapons and armour<br/><br/>Primary Ability: Strength or Dexterity<br/>Saves: Strength & Constitution
+      `;
+      playerClass = "fighter";
+      break;
+    case "rogue":
+      creationMessage.innerHTML = `A scoundrel who uses stealth and trickery to overcome obstacles and enemies<br/><br/>Primary Ability: Dexterity<br/>Saves: Dexterity & Intelligence
+      `;
+      playerClass = "rogue";
+  }
+  errorMessage.innerHTML = "";
+  errorMessage.classList.add("hidden");
+});
+
+// Handles the species selector
+let playerSpecies = "";
+speciesSelector.addEventListener("change", (event) => {
+  event.preventDefault();
+  creationMessage.classList.remove("hidden");
+  creationMessage.style.marginTop = "10vh";
+  switch (event.target.value) {
+    case "dwarf":
+      creationMessage.innerHTML = `Bold and hardy, dwarves are known as skilled warriors, miners, and workers of stone and metal<br/><br/>Species Trait:<br/>+2 Strength
+      `;
+      playerSpecies = "dwarf";
+      break;
+    case "elf":
+      creationMessage.innerHTML = `Elves are a magical people of otherworldly grace, living in the world but not entirely part of it<br/><br/>Species Trait:<br/>+2 Dexterity
+      `;
+      playerSpecies = "elf";
+      break;
+    case "human":
+      creationMessage.innerHTML = `Whatever drives them, humans are the innovators, the achievers, and the pioneers of the worlds<br/><br/>Species Trait:<br/>+1 to All Ability Scores
+      `;
+      playerSpecies = "human";
+  }
+  // Reminds the player of their class choice
+  switch (playerClass) {
+    case "cleric":
+      creationMessage.innerHTML +=
+        "<br/><br/>Your Class: Cleric (Primary Ability: Wisdom, Saves: Wisdom & Charisma)";
+      break;
+    case "fighter":
+      creationMessage.innerHTML +=
+        "<br/><br/>Your Class: Fighter (Primary Ability: Strength or Dexterity, Saves: Strength & Constitution)";
+      break;
+    case "rogue":
+      creationMessage.innerHTML +=
+        "<br/><br/>Your Class: Rogue (Primary Ability: Dexterity, Saves: Dexterity & Intelligence)";
+  }
+  errorMessage.innerHTML = "";
+  errorMessage.classList.add("hidden");
+});
