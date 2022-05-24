@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Dungeons and Javascript Test</title>
+  </head>
+  <body>
+    <!-- Title -->
+    <header class="title">
+      <h1 class="title__main">Dungeons & Javascript</h1>
+    </header>
+    <main>
+      <!-- Character Creation Menu -->
+      <section class="menu--start">
+        <h3 class="menu__title" id="menu-title">
+          A D&D-Based RPG Dungeon Crawler Demo
+        </h3>
+        <div class="character-creation character-creation--start">
+          <!-- Character name entry form -->
+          <form class="name hidden">
+            <label class="name__label">Name</label>
+            <input class="name__input" />
+          </form>
+          <!-- Character class selector -->
+          <select
+            class="class__selector hidden"
+            placeholder="select to choose your class"
+          >
+            <option class="class__option" value="" disabled selected>
+              Select to choose your class
+            </option>
+            <option class="class__option" value="cleric">Cleric</option>
+            <option class="class__option" value="fighter">Fighter</option>
+            <option class="class__option" value="rogue">Rogue</option>
+          </select>
+          <!-- Character species selector -->
+          <select
+            class="species__selector hidden"
+            placeholder="select to choose your species"
+          >
+            <option class="species__option" value="" disabled selected>
+              Select to choose your species
+            </option>
+            <option class="species__option" value="dwarf">Dwarf</option>
+            <option class="species__option" value="elf">Elf</option>
+            <option class="species__option" value="human">Human</option>
+          </select>
+          <!-- Ability score assignment -->
+          <div class="ability__container hidden">
+            <div class="ability ability--one">
+              <p class="ability__score">--</p>
+              <button class="ability__btn">Roll</button>
+              <select
+                class="ability__selector hidden"
+                placeholder="select to assign ability score"
+              >
+                <option class="ability__option" value="" disabled selected>
+                  Select to assign ability score
+                </option>
+                <option class="ability__option" value="strength">
+                  Strength
+                </option>
+                <option class="ability__option" value="dexterity">
+                  Dexterity
+                </option>
+                <option class="ability__option" value="constitution">
+                  Constitution
+                </option>
+                <option class="ability__option" value="intelligence">
+                  Intelligence
+                </option>
+                <option class="ability__option" value="wisdom">Wisdom</option>
+                <option class="ability__option" value="charisma">
+                  Charisma
+                </option>
+              </select>
+            </div>
+            <div class="ability abaility--two">
+              <p class="ability__score">--</p>
+              <button class="ability__btn">Roll</button>
+              <select
+                class="ability__selector hidden"
+                placeholder="select to assign ability score"
+              >
+                <option class="ability__option" value="" disabled selected>
+                  Select to assign ability score
+                </option>
+                <option class="ability__option" value="strength">
+                  Strength
+                </option>
+                <option class="ability__option" value="dexterity">
+                  Dexterity
+                </option>
+                <option class="ability__option" value="constitution">
+                  Constitution
+                </option>
+                <option class="ability__option" value="intelligence">
+                  Intelligence
+                </option>
+                <option class="ability__option" value="wisdom">Wisdom</option>
+                <option class="ability__option" value="charisma">
+                  Charisma
+                </option>
+              </select>
+            </div>
+            <div class="ability ability--three">
+              <p class="ability__score">--</p>
+              <button class="ability__btn">Roll</button>
+              <select
+                class="ability__selector hidden"
+                placeholder="select to assign ability score"
+              >
+                <option class="ability__option" value="" disabled selected>
+                  Select to assign ability score
+                </option>
+                <option class="ability__option" value="strength">
+                  Strength
+                </option>
+                <option class="ability__option" value="dexterity">
+                  Dexterity
+                </option>
+                <option class="ability__option" value="constitution">
+                  Constitution
+                </option>
+                <option class="ability__option" value="intelligence">
+                  Intelligence
+                </option>
+                <option class="ability__option" value="wisdom">Wisdom</option>
+                <option class="ability__option" value="charisma">
+                  Charisma
+                </option>
+              </select>
+            </div>
+            <div class="ability ability--four">
+              <p class="ability__score">--</p>
+              <button class="ability__btn">Roll</button>
+              <select
+                class="ability__selector hidden"
+                placeholder="select to assign ability score"
+              >
+                <option class="ability__option" value="" disabled selected>
+                  Select to assign ability score
+                </option>
+                <option class="ability__option" value="strength">
+                  Strength
+                </option>
+                <option class="ability__option" value="dexterity">
+                  Dexterity
+                </option>
+                <option class="ability__option" value="constitution">
+                  Constitution
+                </option>
+                <option class="ability__option" value="intelligence">
+                  Intelligence
+                </option>
+                <option class="ability__option" value="wisdom">Wisdom</option>
+                <option class="ability__option" value="charisma">
+                  Charisma
+                </option>
+              </select>
+            </div>
+            <div class="ability ability--five">
+              <p class="ability__score">--</p>
+              <button class="ability__btn">Roll</button>
+              <select
+                class="ability__selector hidden"
+                placeholder="select to assign ability score"
+              >
+                <option class="ability__option" value="" disabled selected>
+                  Select to assign ability score
+                </option>
+                <option class="ability__option" value="strength">
+                  Strength
+                </option>
+                <option class="ability__option" value="dexterity">
+                  Dexterity
+                </option>
+                <option class="ability__option" value="constitution">
+                  Constitution
+                </option>
+                <option class="ability__option" value="intelligence">
+                  Intelligence
+                </option>
+                <option class="ability__option" value="wisdom">Wisdom</option>
+                <option class="ability__option" value="charisma">
+                  Charisma
+                </option>
+              </select>
+            </div>
+            <div class="ability abaility-six">
+              <p class="ability__score">--</p>
+              <button class="ability__btn">Roll</button>
+              <select
+                class="ability__selector hidden"
+                placeholder="select to assign ability score"
+              >
+                <option class="ability__option" value="" disabled selected>
+                  Select to assign ability score
+                </option>
+                <option class="ability__option" value="strength">
+                  Strength
+                </option>
+                <option class="ability__option" value="dexterity">
+                  Dexterity
+                </option>
+                <option class="ability__option" value="constitution">
+                  Constitution
+                </option>
+                <option class="ability__option" value="intelligence">
+                  Intelligence
+                </option>
+                <option class="ability__option" value="wisdom">Wisdom</option>
+                <option class="ability__option" value="charisma">
+                  Charisma
+                </option>
+              </select>
+            </div>
+          </div>
+          <!-- Character creation text/instructions -->
+          <p class="character-creation__message"></p>
+        </div>
+        <!-- Character creation menu buttons -->
+        <button class="btn--creation btn--continue hidden">Continue</button>
+        <button class="btn--back hidden">Go Back</button>
+        <p class="character-creation__error hidden"></p>
+      </section>
+
+      <!-- Start button -->
+      <section class="start">
+        <button class="btn--continue btn--start">Start</button>
+      </section>
+    </main>
+    <script src="script.js" defer></script>
+  </body>
+</html>
