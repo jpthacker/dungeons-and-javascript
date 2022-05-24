@@ -1,3 +1,51 @@
 @import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=IM+Fell+English+SC&family=Libre+Baskerville&family=Roboto:ital,wght@0,300;1,300&display=swap");
+* {
+  font-family: "Roboto", helvetica, sans-serif;
+  color: #1b1b1b;
+}
+
+.title__main {
+  font-family: "Cinzel", serif;
+  font-weight: 600;
+  font-size: 2.5em;
+  color: #bc0f0f;
+  text-align: center;
+}
+
+menu {
+  text-align: center;
+}
+menu__title {
+  font-family: "IM Fell English SC", serif;
+  font-size: 1.5em;
+}
+
+.menu--start {
+  text-align: center;
+}
+
+.character-creation__message {
+  text-align: center;
+}
+
+.character-creation__error {
+  text-align: center;
+}
+
+button {
+  font-weight: 600;
+  font-size: large;
+}
+
+.title__main--top {
+  font-size: 2em;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #dadada;
+}
 
 /*# sourceMappingURL=main.css.map */

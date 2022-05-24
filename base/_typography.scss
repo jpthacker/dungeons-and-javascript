@@ -1,1 +1,44 @@
 @use "../abstracts" as *;
+
+* {
+  font-family: $font-primary;
+  color: $color-black;
+}
+
+.title__main {
+  font-family: $font-secondary;
+  font-weight: 600;
+  font-size: 2.5em;
+  color: rgb(188, 15, 15);
+  text-align: center;
+}
+
+menu {
+  text-align: center;
+
+  &__title {
+    font-family: $font-tertiary;
+    font-size: 1.5em;
+  }
+}
+
+.menu--start {
+  text-align: center;
+}
+
+.character-creation__message {
+  text-align: center;
+}
+
+.character-creation__error {
+  text-align: center;
+}
+
+button {
+  font-weight: 600;
+  font-size: large;
+}
+
+.title__main--top {
+  font-size: 2em;
+}
