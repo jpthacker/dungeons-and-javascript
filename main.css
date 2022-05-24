@@ -26,10 +26,13 @@ menu__title {
 
 .character-creation__message {
   text-align: center;
+  font-size: 1em;
 }
 
 .character-creation__error {
   text-align: center;
+  font-size: 1em;
+  color: #bc0f0f;
 }
 
 button {
@@ -46,6 +49,98 @@ button {
   padding: 0;
   box-sizing: border-box;
   background-color: #dadada;
+}
+
+.title {
+  position: absolute;
+  top: 20vh;
+  right: 0;
+  left: 0;
+}
+.title__main {
+  width: 80vw;
+  margin: 0 auto;
+}
+
+.menu--start {
+  position: absolute;
+  top: 46%;
+  bottom: 50%;
+  right: 10%;
+  left: 10%;
+}
+
+.menu__title {
+  padding: 0 10%;
+}
+
+.character-creation__message {
+  margin: 0 10vw;
+}
+
+.start {
+  position: absolute;
+  bottom: 20vh;
+  right: 0;
+  left: 0;
+}
+
+.character-creation__error {
+  text-align: center;
+  margin: 0 10vw;
+}
+
+.ability {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  row-gap: 5vh;
+}
+.ability__container {
+  margin: 0 20vw;
+}
+
+.title--top {
+  top: 5vh;
+}
+
+.ability__container {
+  display: grid;
+  gap: 6vh;
+  grid-auto-columns: 1fr;
+  grid-template: "ability1" "ability2" "ability3" "ability4" "ability5" "ability6";
+}
+
+.ability--one {
+  grid-area: ability1;
+}
+
+.ability--two {
+  grid-area: ability2;
+}
+
+.ability--three {
+  grid-area: ability3;
+}
+
+.ability--four {
+  grid-area: ability4;
+}
+
+.ability--five {
+  grid-area: ability5;
+}
+
+.ability--six {
+  grid-area: ability6;
+}
+
+button {
+  min-height: 40px;
+  min-width: 150px;
+  display: block;
+  margin: 0 auto;
+  cursor: pointer;
 }
 
 /*# sourceMappingURL=main.css.map */

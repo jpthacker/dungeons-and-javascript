@@ -1,1 +1,38 @@
 @use "../abstracts" as *;
+
+.ability__container {
+  display: grid;
+  gap: 6vh;
+  grid-auto-columns: 1fr;
+  grid-template:
+    "ability1"
+    "ability2"
+    "ability3"
+    "ability4"
+    "ability5"
+    "ability6";
+}
+
+.ability--one {
+  grid-area: ability1;
+}
+
+.ability--two {
+  grid-area: ability2;
+}
+
+.ability--three {
+  grid-area: ability3;
+}
+
+.ability--four {
+  grid-area: ability4;
+}
+
+.ability--five {
+  grid-area: ability5;
+}
+
+.ability--six {
+  grid-area: ability6;
+}

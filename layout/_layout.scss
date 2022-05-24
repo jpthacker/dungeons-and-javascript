@@ -6,3 +6,57 @@
   box-sizing: border-box;
   background-color: $color-grey;
 }
+
+.title {
+  position: absolute;
+  top: 20vh;
+  right: 0;
+  left: 0;
+
+  &__main {
+    width: 80vw;
+    margin: 0 auto;
+  }
+}
+
+.menu--start {
+  position: absolute;
+  top: 46%;
+  bottom: 50%;
+  right: 10%;
+  left: 10%;
+}
+
+.menu__title {
+  padding: 0 10%;
+}
+
+.character-creation__message {
+  margin: 0 10vw;
+}
+
+.start {
+  position: absolute;
+  bottom: 20vh;
+  right: 0;
+  left: 0;
+}
+
+.character-creation__error {
+  text-align: center;
+  margin: 0 10vw;
+}
+
+.ability {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  row-gap: 5vh;
+  &__container {
+    margin: 0 20vw;
+  }
+}
+
+.title--top {
+  top: 5vh;
+}
