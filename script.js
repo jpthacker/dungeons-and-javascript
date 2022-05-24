@@ -125,3 +125,32 @@ continueBtn.forEach((btn) => {
     }
   });
 });
+
+//Handles the back button
+backBtn.addEventListener("click", (event) => {
+  event.preventDefault();
+  switch (currentCreationStage) {
+    case "name":
+      nameForm.classList.add("hidden");
+      errorMessage.innerHTML = "";
+      errorMessage.classList.add("hidden");
+      creationMessage.classList.remove("hidden");
+      creationMessage.style.marginTop = "0";
+      loadCreationMessage();
+      break;
+    case "class":
+      loadNameForm();
+      classSelector.classList.add("hidden");
+      errorMessage.innerHTML = "";
+      errorMessage.classList.add("hidden");
+      break;
+    case "species":
+      speciesSelector.classList.add("hidden");
+      errorMessage.innerHTML = "";
+      errorMessage.classList.add("hidden");
+      loadClassSelector();
+      break;
+    case "abilities":
+      loadSpeciesSelector();
+  }
+});
