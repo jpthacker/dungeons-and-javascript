@@ -1,4 +1,4 @@
-// Start and Character creation menu elements
+// Sharacter creation menu elements
 const start = document.querySelector(".start");
 const menu = document.querySelector(".menu--start");
 const titleContainer = document.querySelector(".title");
@@ -9,8 +9,10 @@ const nameForm = document.querySelector(".name");
 const errorMessage = document.querySelector(".character-creation__error");
 const classSelector = document.querySelector(".class__selector");
 const speciesSelector = document.querySelector(".species__selector");
-const abilities = document.querySelector(".ability__container");
+const abilitiesAll = document.querySelector(".ability__container");
+const ability = document.querySelectorAll(".ability");
 const abilitiesSelector = document.querySelectorAll(".ability__selector");
+const abilityScore = document.querySelectorAll(".ability__score");
 const startBtn = document.querySelector(".btn--start");
 const continueBtn = document.querySelectorAll(".btn--continue");
 const creationBtn = document.querySelector(".btn--creation");
@@ -92,8 +94,8 @@ const loadAbilitiesGenerator = () => {
     creationMessage.innerHTML = "";
     creationMessage.classList.add("hidden");
     document.querySelector(".menu__title").innerText =
-      "Roll For Your Ability Scores";
-    abilities.classList.remove("hidden");
+      "Roll For Your Six Ability Scores";
+    abilitiesAll.classList.remove("hidden");
     errorMessage.innerHTML = "";
     errorMessage.classList.add("hidden");
   } else {
@@ -227,3 +229,61 @@ speciesSelector.addEventListener("change", (event) => {
   errorMessage.innerHTML = "";
   errorMessage.classList.add("hidden");
 });
+
+// Handles DnD standard dice rolls (courtesy of BryanBansbach (https://github.com/BryanBansbach/DiceRoller))
+let rolledDice = [];
+const dice = (diceType, diceNumber) => {
+  rolledDice = [];
+  if (
+    diceType === 4 ||
+    diceType === 6 ||
+    diceType === 8 ||
+    diceType === 10 ||
+    diceType === 12 ||
+    diceType === 20
+  ) {
+    if (typeof diceNumber === "undefined") {
+      finalDice = Math.floor(Math.random() * diceType) + 1;
+      rolledDice.push(finalDice);
+      console.log(rolledDice);
+      return finalDice;
+    } else {
+      let diceC = 0;
+      for (let i = 1; i <= diceNumber; i++) {
+        let diceR = Math.floor(Math.random() * diceType) + 1;
+        rolledDice.push(diceR);
+        console.log(rolledDice);
+        diceC = diceC + diceR;
+      }
+      console.log(diceC);
+      return diceC;
+    }
+  } else {
+    return "You must choose the right type of dice (4, 6, 8, 10, 12, 20)";
+  }
+};
+
+// Handles the ability buttons and generates dice rolls for abilities (removes the lowest number of four d6 dice rolls and totals the rolls)
+let currentAbilityScore;
+let abilityScoreList = [];
+for (let i = 0; i < abilityBtn.length; i++) {
+  abilityBtn[i].addEventListener("click", (event) => {
+    if (abilityScoreList.length < 6) {
+      event.preventDefault();
+      dice(6, 4);
+      abilityRoll = rolledDice.sort().filter((_, i) => i);
+      currentAbilityScore = abilityRoll.reduce((a, b) => a + b);
+      abilityScoreList.push(currentAbilityScore);
+      abilityScore[i].innerHTML = currentAbilityScore;
+      abilityBtn[i].classList.add("hidden");
+      abilitiesSelector[i].classList.remove("hidden");
+      if (i < 5) {
+        ability[i + 1].classList.remove("hidden");
+      }
+      console.log(abilityScoreList);
+    } else {
+      errorMessage.innerHTML = "Press reset to re-roll your scores";
+      errorMessage.classList.remove("hidden");
+    }
+  });
+}
