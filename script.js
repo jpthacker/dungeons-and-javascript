@@ -2,6 +2,7 @@
 const menu = document.querySelector(".menu--start");
 const titleContainer = document.querySelector(".title");
 const titleMain = document.querySelector(".title__main");
+const titleMenu = document.querySelector(".menu__title");
 const createContainer = document.querySelector(".character-creation");
 const creationMessage = document.querySelector(".character-creation__message");
 const nameForm = document.querySelector(".name");
@@ -23,7 +24,7 @@ let currentCreationStage = "start";
 // Loads the character creation message
 const loadCreationMessage = () => {
   titleContainer.classList.add("title--top");
-  titleMain.classList.add("title__main--top");
+  titleMenu.style.marginBottom = "0vh";
   menu.classList.remove("menu--start");
   menu.classList.add("menu");
   document.querySelector(".menu__title").innerText = "Create Your Adventurer";

@@ -108,6 +108,7 @@ button {
 }
 .menu__title {
   padding: 0 10%;
+  margin-bottom: 15vh;
 }
 
 .character-creation__message {
