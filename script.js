@@ -1,5 +1,4 @@
-// Sharacter creation menu elements
-const start = document.querySelector(".start");
+// Character creation menu elements
 const menu = document.querySelector(".menu--start");
 const titleContainer = document.querySelector(".title");
 const titleMain = document.querySelector(".title__main");
@@ -12,11 +11,11 @@ const speciesSelector = document.querySelector(".species__selector");
 const abilitiesAll = document.querySelector(".ability__container");
 const ability = document.querySelectorAll(".ability");
 const abilitiesSelector = document.querySelectorAll(".ability__selector");
+const abilityOptions = document.querySelectorAll(".ability__option");
 const abilityScore = document.querySelectorAll(".ability__score");
-const startBtn = document.querySelector(".btn--start");
-const continueBtn = document.querySelectorAll(".btn--continue");
-const creationBtn = document.querySelector(".btn--creation");
+const continueBtn = document.querySelector(".btn--continue");
 const abilityBtn = document.querySelectorAll(".ability__btn");
+const abilityResetBtn = document.querySelector(".btn--reset");
 const backBtn = document.querySelector(".btn--back");
 
 let currentCreationStage = "start";
@@ -28,10 +27,9 @@ const loadCreationMessage = () => {
   menu.classList.remove("menu--start");
   menu.classList.add("menu");
   document.querySelector(".menu__title").innerText = "Create Your Adventurer";
-  start.innerHTML = "";
   createContainer.classList.remove("character-creation--start");
   backBtn.classList.add("hidden");
-  creationBtn.classList.remove("hidden");
+  continueBtn.innerText = "Continue";
   creationMessage.innerHTML += `
 Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa error
 temporibus sint minima iusto quisquam, eveniet architecto, odio quia quas
@@ -98,6 +96,7 @@ const loadAbilitiesGenerator = () => {
     abilitiesAll.classList.remove("hidden");
     errorMessage.innerHTML = "";
     errorMessage.classList.add("hidden");
+    currentCreationStage = "abilities";
   } else {
     errorMessage.innerHTML = "Please select a species";
     errorMessage.classList.remove("hidden");
@@ -105,26 +104,24 @@ const loadAbilitiesGenerator = () => {
 };
 
 //Handles the character creation menu buttons
-continueBtn.forEach((btn) => {
-  btn.addEventListener("click", (event) => {
-    event.preventDefault();
-    switch (currentCreationStage) {
-      case "start":
-        loadCreationMessage();
-        break;
-      case "message":
-        loadNameForm();
-        break;
-      case "name":
-        loadClassSelector();
-        break;
-      case "class":
-        loadSpeciesSelector();
-        break;
-      case "species":
-        loadAbilitiesGenerator();
-    }
-  });
+continueBtn.addEventListener("click", (event) => {
+  event.preventDefault();
+  switch (currentCreationStage) {
+    case "start":
+      loadCreationMessage();
+      break;
+    case "message":
+      loadNameForm();
+      break;
+    case "name":
+      loadClassSelector();
+      break;
+    case "class":
+      loadSpeciesSelector();
+      break;
+    case "species":
+      loadAbilitiesGenerator();
+  }
 });
 
 //Handles the back button
@@ -137,6 +134,7 @@ backBtn.addEventListener("click", (event) => {
       errorMessage.classList.add("hidden");
       creationMessage.classList.remove("hidden");
       creationMessage.style.marginTop = "0";
+      continueBtn.innerHTML = "Start";
       loadCreationMessage();
       break;
     case "class":
@@ -153,6 +151,8 @@ backBtn.addEventListener("click", (event) => {
       break;
     case "abilities":
       loadSpeciesSelector();
+      abilitiesAll.classList.add("hidden");
+      abilityResetBtn.classList.add("hidden");
   }
 });
 
@@ -287,3 +287,71 @@ for (let i = 0; i < abilityBtn.length; i++) {
     }
   });
 }
+
+// Handles the assignment of ability scores
+let strength;
+let dexterity;
+let constitution;
+let intelligence;
+let wisdom;
+let charisma;
+for (let i = 0; i < abilitiesSelector.length; i++) {
+  abilitiesSelector[i].addEventListener("change", (event) => {
+    let abilityOption = event.target.value;
+    abilityResetBtn.classList.remove("hidden");
+    switch (abilityOption) {
+      case "strength":
+        strength = abilityScoreList[i];
+        console.log(strength);
+        abilitiesSelector.forEach((selector) => {
+          selector[1].disabled = true;
+        });
+        break;
+      case "dexterity":
+        dexterity = abilityScoreList[i];
+        console.log(dexterity);
+        abilitiesSelector.forEach((selector) => {
+          selector[2].disabled = true;
+        });
+        break;
+      case "constitution":
+        constitution = abilityScoreList[i];
+        console.log(constitution);
+        abilitiesSelector.forEach((selector) => {
+          selector[3].disabled = true;
+        });
+        break;
+      case "intelligence":
+        intelligence = abilityScoreList[i];
+        console.log(intelligence);
+        abilitiesSelector.forEach((selector) => {
+          selector[4].disabled = true;
+        });
+        break;
+      case "wisdom":
+        wisdom = abilityScoreList[i];
+        console.log(wisdom);
+        abilitiesSelector.forEach((selector) => {
+          selector[5].disabled = true;
+        });
+        break;
+      case "charisma":
+        charisma = abilityScoreList[i];
+        console.log(charisma);
+        abilitiesSelector.forEach((selector) => {
+          selector[6].disabled = true;
+        });
+    }
+  });
+}
+
+// Resets the ability selectors
+abilityResetBtn.addEventListener("click", (event) => {
+  event.preventDefault();
+  abilityOptions.forEach((option) => {
+    option.disabled = false;
+  });
+  abilitiesSelector.forEach((selector) => {
+    selector[0].selected = true;
+  });
+});

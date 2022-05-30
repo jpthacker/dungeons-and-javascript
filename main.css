@@ -46,7 +46,6 @@ button {
 
 .ability__container {
   display: grid;
-  gap: 6vh;
   grid-auto-columns: 1fr;
   grid-template: "ability1" "ability2" "ability3" "ability4" "ability5" "ability6";
 }
@@ -132,6 +131,7 @@ button {
   flex-direction: column;
   justify-content: space-between;
   row-gap: 5vh;
+  margin-bottom: 6vh;
 }
 .ability__container {
   margin: 0 20vw;
