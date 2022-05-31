@@ -19,6 +19,8 @@ const abilityBtn = document.querySelectorAll(".ability__btn");
 const abilityResetBtn = document.querySelector(".btn--reset");
 const backBtn = document.querySelector(".btn--back");
 
+const player = {};
+
 let currentCreationStage = "start";
 
 // Loads the character creation message
@@ -55,8 +57,8 @@ const loadNameForm = () => {
 
 // Loads the class selector
 const loadClassSelector = () => {
-  console.log(playerName);
-  if (playerName !== "") {
+  console.log(player.playerName);
+  if (player.playerName) {
     nameForm.classList.add("hidden");
     classSelector.classList.remove("hidden");
     document.querySelector(".menu__title").innerText = "Choose Your Class";
@@ -71,8 +73,8 @@ const loadClassSelector = () => {
 
 // Loads the species selector
 const loadSpeciesSelector = () => {
-  if (playerClass !== "") {
-    console.log(playerClass);
+  if (player.playerClass) {
+    console.log(player.playerClass);
     classSelector.classList.add("hidden");
     speciesSelector.classList.remove("hidden");
     creationMessage.innerHTML = "";
@@ -87,8 +89,8 @@ const loadSpeciesSelector = () => {
 
 // Loads the abilities generator
 const loadAbilitiesGenerator = () => {
-  if (playerSpecies !== "") {
-    console.log(playerSpecies);
+  if (player.playerSpecies) {
+    console.log(player.playerSpecies);
     speciesSelector.classList.add("hidden");
     creationMessage.innerHTML = "";
     creationMessage.classList.add("hidden");
@@ -122,6 +124,9 @@ continueBtn.addEventListener("click", (event) => {
       break;
     case "species":
       loadAbilitiesGenerator();
+      break;
+    case "abilities":
+      console.log(player);
   }
 });
 
@@ -158,15 +163,15 @@ backBtn.addEventListener("click", (event) => {
 });
 
 // Handles the name entry form
-let playerName = "";
+const playerName = "playerName";
 nameForm.addEventListener("input", (event) => {
-  playerName = event.target.value;
+  player[playerName] = event.target.value;
   errorMessage.innerHTML = "";
   errorMessage.classList.add("hidden");
 });
 
 // Handles the class selector
-let playerClass = "";
+const playerClass = "playerClass";
 classSelector.addEventListener("change", (event) => {
   event.preventDefault();
   creationMessage.classList.remove("hidden");
@@ -175,24 +180,30 @@ classSelector.addEventListener("change", (event) => {
     case "cleric":
       creationMessage.innerHTML = `A priestly champion who wields divine magic in service of a higher power<br/><br/>Primary Ability: Wisdom<br/>Saves: Wisdom & Charisma
       `;
-      playerClass = "cleric";
+      player[playerClass] = "cleric";
       break;
     case "fighter":
       creationMessage.innerHTML = `A master of martial combat, skilled with a variety of weapons and armour<br/><br/>Primary Ability: Strength or Dexterity<br/>Saves: Strength & Constitution
       `;
-      playerClass = "fighter";
+      player[playerClass] = "fighter";
       break;
     case "rogue":
       creationMessage.innerHTML = `A scoundrel who uses stealth and trickery to overcome obstacles and enemies<br/><br/>Primary Ability: Dexterity<br/>Saves: Dexterity & Intelligence
       `;
-      playerClass = "rogue";
+      player[playerClass] = "rogue";
   }
   errorMessage.innerHTML = "";
   errorMessage.classList.add("hidden");
 });
 
 // Handles the species selector
-let playerSpecies = "";
+const playerStrength = "strength";
+const playerDexterity = "dexterity";
+const playerConstitution = "constitution";
+const playerIntelligence = "intelligence";
+const playerWisdom = "wisdom";
+const playerCharisma = "charisma";
+const playerSpecies = "playerSpecies";
 speciesSelector.addEventListener("change", (event) => {
   event.preventDefault();
   creationMessage.classList.remove("hidden");
@@ -201,17 +212,20 @@ speciesSelector.addEventListener("change", (event) => {
     case "dwarf":
       creationMessage.innerHTML = `Bold and hardy, dwarves are known as skilled warriors, miners, and workers of stone and metal<br/><br/>Species Trait:<br/>+2 Strength
       `;
-      playerSpecies = "dwarf";
+      player[playerSpecies] = "dwarf";
+      player[playerStrength] = 2;
       break;
     case "elf":
       creationMessage.innerHTML = `Elves are a magical people of otherworldly grace, living in the world but not entirely part of it<br/><br/>Species Trait:<br/>+2 Dexterity
       `;
-      playerSpecies = "elf";
+      player[playerSpecies] = "elf";
+      player[playerDexterity] = 2;
       break;
     case "human":
-      creationMessage.innerHTML = `Whatever drives them, humans are the innovators, the achievers, and the pioneers of the worlds<br/><br/>Species Trait:<br/>+1 to All Ability Scores
+      creationMessage.innerHTML = `Whatever drives them, humans are the innovators, the achievers, and the pioneers of the worlds<br/><br/>Species Trait:<br/>+2 Wisdom
       `;
-      playerSpecies = "human";
+      player[playerSpecies] = "human";
+      player[playerWisdom] = 2;
   }
   // Reminds the player of their class choice
   switch (playerClass) {
@@ -221,7 +235,7 @@ speciesSelector.addEventListener("change", (event) => {
       break;
     case "fighter":
       creationMessage.innerHTML +=
-        "<br/><br/>Your Class: Fighter (Primary Ability: Strength or Dexterity, Saves: Strength & Constitution)";
+        "<br/><br/>Your Class: Fighter (Primary Ability: Strength, Saves: Strength & Constitution)";
       break;
     case "rogue":
       creationMessage.innerHTML +=
@@ -290,55 +304,49 @@ for (let i = 0; i < abilityBtn.length; i++) {
 }
 
 // Handles the assignment of ability scores
-let strength;
-let dexterity;
-let constitution;
-let intelligence;
-let wisdom;
-let charisma;
 for (let i = 0; i < abilitiesSelector.length; i++) {
   abilitiesSelector[i].addEventListener("change", (event) => {
     let abilityOption = event.target.value;
     abilityResetBtn.classList.remove("hidden");
     switch (abilityOption) {
       case "strength":
-        strength = abilityScoreList[i];
-        console.log(strength);
+        player[strength] += abilityScoreList[i];
+        console.log(player.playerStrength);
         abilitiesSelector.forEach((selector) => {
           selector[1].disabled = true;
         });
         break;
       case "dexterity":
-        dexterity = abilityScoreList[i];
-        console.log(dexterity);
+        player[playerDexterity] += abilityScoreList[i];
+        console.log(player.dexterity);
         abilitiesSelector.forEach((selector) => {
           selector[2].disabled = true;
         });
         break;
       case "constitution":
-        constitution = abilityScoreList[i];
-        console.log(constitution);
+        player[playerConstitution] += abilityScoreList[i];
+        console.log(player.constitution);
         abilitiesSelector.forEach((selector) => {
           selector[3].disabled = true;
         });
         break;
       case "intelligence":
-        intelligence = abilityScoreList[i];
-        console.log(intelligence);
+        player[playerIntelligence] += abilityScoreList[i];
+        console.log(player.intelligence);
         abilitiesSelector.forEach((selector) => {
           selector[4].disabled = true;
         });
         break;
       case "wisdom":
-        wisdom = abilityScoreList[i];
-        console.log(wisdom);
+        player[playerWisdom] += abilityScoreList[i];
+        console.log(player.wisdom);
         abilitiesSelector.forEach((selector) => {
           selector[5].disabled = true;
         });
         break;
       case "charisma":
-        charisma = abilityScoreList[i];
-        console.log(charisma);
+        player[playerCharisma] += abilityScoreList[i];
+        console.log(player.charisma);
         abilitiesSelector.forEach((selector) => {
           selector[6].disabled = true;
         });
@@ -355,4 +363,5 @@ abilityResetBtn.addEventListener("click", (event) => {
   abilitiesSelector.forEach((selector) => {
     selector[0].selected = true;
   });
+  console.log(player.wisdom);
 });

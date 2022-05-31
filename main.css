@@ -155,4 +155,8 @@ button {
   cursor: pointer;
 }
 
+select {
+  margin: 0 auto;
+}
+
 /*# sourceMappingURL=main.css.map */
