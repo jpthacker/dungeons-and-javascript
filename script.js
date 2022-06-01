@@ -73,8 +73,8 @@ const loadClassSelector = () => {
 
 // Loads the species selector
 const loadSpeciesSelector = () => {
-  if (player.playerClass) {
-    console.log(player.playerClass);
+  if (player.class) {
+    console.log(player.class);
     classSelector.classList.add("hidden");
     speciesSelector.classList.remove("hidden");
     creationMessage.innerHTML = "";
@@ -89,8 +89,8 @@ const loadSpeciesSelector = () => {
 
 // Loads the abilities generator
 const loadAbilitiesGenerator = () => {
-  if (player.playerSpecies) {
-    console.log(player.playerSpecies);
+  if (player.species) {
+    console.log(player.species);
     speciesSelector.classList.add("hidden");
     creationMessage.innerHTML = "";
     creationMessage.classList.add("hidden");
@@ -163,15 +163,13 @@ backBtn.addEventListener("click", (event) => {
 });
 
 // Handles the name entry form
-const playerName = "playerName";
 nameForm.addEventListener("input", (event) => {
-  player[playerName] = event.target.value;
+  player.playerName = event.target.value;
   errorMessage.innerHTML = "";
   errorMessage.classList.add("hidden");
 });
 
 // Handles the class selector
-const playerClass = "playerClass";
 classSelector.addEventListener("change", (event) => {
   event.preventDefault();
   creationMessage.classList.remove("hidden");
@@ -180,30 +178,23 @@ classSelector.addEventListener("change", (event) => {
     case "cleric":
       creationMessage.innerHTML = `A priestly champion who wields divine magic in service of a higher power<br/><br/>Primary Ability: Wisdom<br/>Saves: Wisdom & Charisma
       `;
-      player[playerClass] = "cleric";
+      player.class = "cleric";
       break;
     case "fighter":
       creationMessage.innerHTML = `A master of martial combat, skilled with a variety of weapons and armour<br/><br/>Primary Ability: Strength or Dexterity<br/>Saves: Strength & Constitution
       `;
-      player[playerClass] = "fighter";
+      player.class = "fighter";
       break;
     case "rogue":
       creationMessage.innerHTML = `A scoundrel who uses stealth and trickery to overcome obstacles and enemies<br/><br/>Primary Ability: Dexterity<br/>Saves: Dexterity & Intelligence
       `;
-      player[playerClass] = "rogue";
+      player.class = "rogue";
   }
   errorMessage.innerHTML = "";
   errorMessage.classList.add("hidden");
 });
 
 // Handles the species selector
-const playerStrength = "strength";
-const playerDexterity = "dexterity";
-const playerConstitution = "constitution";
-const playerIntelligence = "intelligence";
-const playerWisdom = "wisdom";
-const playerCharisma = "charisma";
-const playerSpecies = "playerSpecies";
 speciesSelector.addEventListener("change", (event) => {
   event.preventDefault();
   creationMessage.classList.remove("hidden");
@@ -212,23 +203,20 @@ speciesSelector.addEventListener("change", (event) => {
     case "dwarf":
       creationMessage.innerHTML = `Bold and hardy, dwarves are known as skilled warriors, miners, and workers of stone and metal<br/><br/>Species Trait:<br/>+2 Strength
       `;
-      player[playerSpecies] = "dwarf";
-      player[playerStrength] = 2;
+      player.species = "dwarf";
       break;
     case "elf":
       creationMessage.innerHTML = `Elves are a magical people of otherworldly grace, living in the world but not entirely part of it<br/><br/>Species Trait:<br/>+2 Dexterity
       `;
-      player[playerSpecies] = "elf";
-      player[playerDexterity] = 2;
+      player.species = "elf";
       break;
     case "human":
       creationMessage.innerHTML = `Whatever drives them, humans are the innovators, the achievers, and the pioneers of the worlds<br/><br/>Species Trait:<br/>+2 Wisdom
       `;
-      player[playerSpecies] = "human";
-      player[playerWisdom] = 2;
+      player.species = "human";
   }
   // Reminds the player of their class choice
-  switch (playerClass) {
+  switch (player.class) {
     case "cleric":
       creationMessage.innerHTML +=
         "<br/><br/>Your Class: Cleric (Primary Ability: Wisdom, Saves: Wisdom & Charisma)";
@@ -278,9 +266,58 @@ const dice = (diceType, diceNumber) => {
   }
 };
 
+// Function to calculate the modifiers for each ability
+let currentModifier;
+const calculateAbilityModifier = (abilityScore) => {
+  switch (abilityScore) {
+    case 1:
+      currentModifier = -5;
+      break;
+    case 2:
+    case 3:
+      currentModifier = -4;
+      break;
+    case 4:
+    case 5:
+      currentModifier = -3;
+      break;
+    case 6:
+    case 7:
+      currentModifier = -2;
+      break;
+    case 8:
+    case 9:
+      currentModifier = -1;
+      break;
+    case 10:
+    case 11:
+      currentModifier = 0;
+      break;
+    case 12:
+    case 13:
+      currentModifier = 1;
+      break;
+    case 14:
+    case 15:
+      currentModifier = 2;
+      break;
+    case 16:
+    case 17:
+      currentModifier = 3;
+      break;
+    case 18:
+    case 19:
+      currentModifier = 4;
+      break;
+    case 20:
+      currentModifier = 5;
+  }
+};
+
 // Handles the ability buttons and generates dice rolls for abilities (removes the lowest number of four d6 dice rolls and totals the rolls)
 let currentAbilityScore;
 let abilityScoreList = [];
+let abilityModifierList = [];
 for (let i = 0; i < abilityBtn.length; i++) {
   abilityBtn[i].addEventListener("click", (event) => {
     if (abilityScoreList.length < 6) {
@@ -289,6 +326,8 @@ for (let i = 0; i < abilityBtn.length; i++) {
       abilityRoll = rolledDice.sort().filter((_, i) => i);
       currentAbilityScore = abilityRoll.reduce((a, b) => a + b);
       abilityScoreList.push(currentAbilityScore);
+      calculateAbilityModifier(currentAbilityScore, currentModifier);
+      abilityModifierList.push(currentModifier);
       abilityScore[i].innerHTML = currentAbilityScore;
       abilityBtn[i].classList.add("hidden");
       abilitiesSelector[i].classList.remove("hidden");
@@ -296,6 +335,7 @@ for (let i = 0; i < abilityBtn.length; i++) {
         ability[i + 1].classList.remove("hidden");
       }
       console.log(abilityScoreList);
+      console.log(abilityModifierList);
     } else {
       errorMessage.innerHTML = "Press reset to re-roll your scores";
       errorMessage.classList.remove("hidden");
@@ -310,42 +350,66 @@ for (let i = 0; i < abilitiesSelector.length; i++) {
     abilityResetBtn.classList.remove("hidden");
     switch (abilityOption) {
       case "strength":
-        player[strength] += abilityScoreList[i];
-        console.log(player.playerStrength);
+        if (player.species === "dwarf") {
+          player.strength = abilityScoreList[i] + 2;
+          calculateAbilityModifier(player.strength);
+          player.strengthModifier = currentModifier;
+        } else {
+          player.strength = abilityScoreList[i];
+          player.strengthModifier = abilityModifierList[i];
+        }
+        console.log(player.strength);
         abilitiesSelector.forEach((selector) => {
           selector[1].disabled = true;
         });
         break;
       case "dexterity":
-        player[playerDexterity] += abilityScoreList[i];
+        if (player.species === "dwarf") {
+          player.dexterity = abilityScoreList[i] + 2;
+          calculateAbilityModifier(player.dexterity);
+          player.dexterityModifier = currentModifier;
+        } else {
+          player.dexterity = abilityScoreList[i];
+          player.dexterityModifier = abilityModifierList[i];
+        }
         console.log(player.dexterity);
         abilitiesSelector.forEach((selector) => {
           selector[2].disabled = true;
         });
         break;
       case "constitution":
-        player[playerConstitution] += abilityScoreList[i];
+        player.constitution = abilityScoreList[i];
+        player.constitutionModifier = abilityModifierList[i];
         console.log(player.constitution);
         abilitiesSelector.forEach((selector) => {
           selector[3].disabled = true;
         });
         break;
       case "intelligence":
-        player[playerIntelligence] += abilityScoreList[i];
+        player.intelligence = abilityScoreList[i];
+        player.intelligenceModifier = abilityModifierList[i];
         console.log(player.intelligence);
         abilitiesSelector.forEach((selector) => {
           selector[4].disabled = true;
         });
         break;
       case "wisdom":
-        player[playerWisdom] += abilityScoreList[i];
+        if (player.species === "dwarf") {
+          player.wisdom = abilityScoreList[i] + 2;
+          calculateAbilityModifier(player.wisdom);
+          player.wisdomModifier = currentModifier;
+        } else {
+          player.wisdom = abilityScoreList[i];
+          player.wisdomModifier = abilityModifierList[i];
+        }
         console.log(player.wisdom);
         abilitiesSelector.forEach((selector) => {
           selector[5].disabled = true;
         });
         break;
       case "charisma":
-        player[playerCharisma] += abilityScoreList[i];
+        player.charisma = abilityScoreList[i];
+        player.charismaModifier = abilityModifierList[i];
         console.log(player.charisma);
         abilitiesSelector.forEach((selector) => {
           selector[6].disabled = true;
@@ -363,5 +427,5 @@ abilityResetBtn.addEventListener("click", (event) => {
   abilitiesSelector.forEach((selector) => {
     selector[0].selected = true;
   });
-  console.log(player.wisdom);
+  console.log(abilityModifierList);
 });
