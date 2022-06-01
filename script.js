@@ -126,6 +126,9 @@ continueBtn.addEventListener("click", (event) => {
       loadAbilitiesGenerator();
       break;
     case "abilities":
+      player.proficiencyBonus = 2;
+      player.walkingSpeed = 35;
+      player.hitPoints = player.hitDie + player.constitutionModifier;
       console.log(player);
   }
 });
@@ -179,16 +182,19 @@ classSelector.addEventListener("change", (event) => {
       creationMessage.innerHTML = `A priestly champion who wields divine magic in service of a higher power<br/><br/>Primary Ability: Wisdom<br/>Saves: Wisdom & Charisma
       `;
       player.class = "cleric";
+      player.hitDie = 8;
       break;
     case "fighter":
       creationMessage.innerHTML = `A master of martial combat, skilled with a variety of weapons and armour<br/><br/>Primary Ability: Strength or Dexterity<br/>Saves: Strength & Constitution
       `;
       player.class = "fighter";
+      player.hitDie = 10;
       break;
     case "rogue":
       creationMessage.innerHTML = `A scoundrel who uses stealth and trickery to overcome obstacles and enemies<br/><br/>Primary Ability: Dexterity<br/>Saves: Dexterity & Intelligence
       `;
       player.class = "rogue";
+      player.hitDie = 10;
   }
   errorMessage.innerHTML = "";
   errorMessage.classList.add("hidden");
