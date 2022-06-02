@@ -35,3 +35,54 @@
 .ability--six {
   grid-area: ability6;
 }
+
+.stats__container {
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-template:
+    "name-race-class"
+    "hit-points"
+    "movement-initiative-armour"
+    "abilities"
+    "senses"
+    "skills"
+    "actions"
+    "spells"
+    "inventory";
+
+  &__name-race-class {
+    grid-area: name-race-class;
+  }
+
+  &__hit-points {
+    grid-area: hit-points;
+  }
+
+  &__movement-initiative-armour {
+    grid-area: movement-initiative-armour;
+  }
+
+  &__abilities {
+    grid-area: abilities;
+  }
+
+  &__senses {
+    grid-area: senses;
+  }
+
+  &__skills {
+    grid-area: skills;
+  }
+
+  &__actions {
+    grid-area: actions;
+  }
+
+  &__spells {
+    grid-area: spells;
+  }
+
+  &__inventory {
+    grid-area: inventory;
+  }
+}

@@ -65,6 +65,14 @@
   }
 }
 
+[class*="stats"] {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  row-gap: 5vh;
+  padding: 20px;
+}
+
 .title--top {
   top: 5vh;
 }

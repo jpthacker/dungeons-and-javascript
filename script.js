@@ -14,12 +14,39 @@ const ability = document.querySelectorAll(".ability");
 const abilitiesSelector = document.querySelectorAll(".ability__selector");
 const abilityOptions = document.querySelectorAll(".ability__option");
 const abilityScore = document.querySelectorAll(".ability__score");
+const statsContainer = document.querySelector(".stats__container");
+const statsAbilities = document.querySelector(".stats__abilities");
 const continueBtn = document.querySelector(".btn--continue");
 const abilityBtn = document.querySelectorAll(".ability__btn");
 const abilityResetBtn = document.querySelector(".btn--reset");
 const backBtn = document.querySelector(".btn--back");
 
-const player = {};
+const player = {
+  getAbilities(skillsContainer) {
+    skillsContainer.innerHTML = `
+    <ul class="stats__skills-list">
+    <li class="stats__list-item">
+      Strength - ${this.strength} (${this.strengthModifier})
+    </li>
+    <li class="stats__list-item">
+      Dexterity - ${this.dexterity} (${this.dexterityModifier})
+    </li>
+    <li class="stats__list-item">
+      Constitution - ${this.constitution} (${this.constitutionModifier})
+    </li>
+    <li class="stats__list-item">
+      Intelligence - ${this.intelligence} (${this.intelligenceModifier})
+    </li>
+    <li class="stats__list-item">
+      Wisdom - ${this.wisdom} (${this.wisdomModifier})
+    </li>
+    <li class="stats__list-item">
+      Charisma - ${this.charisma} (${this.charismaModifier})
+    </li>
+  </ul>
+    `;
+  },
+};
 
 let currentCreationStage = "start";
 
@@ -106,6 +133,19 @@ const loadAbilitiesGenerator = () => {
   }
 };
 
+// Loads the character stats
+const loadCharacterStats = () => {
+  createContainer.classList.add("hidden");
+  abilityResetBtn.classList.add("hidden");
+  statsContainer.classList.remove("hidden");
+  document.querySelector(".menu__title").innerText = "Your Character Stats";
+  player.proficiencyBonus = 2;
+  player.walkingSpeed = 30;
+  player.hitPoints = player.hitDie + player.constitutionModifier;
+  console.log(player);
+  player.getAbilities(statsAbilities);
+};
+
 //Handles the character creation menu buttons
 continueBtn.addEventListener("click", (event) => {
   event.preventDefault();
@@ -126,10 +166,7 @@ continueBtn.addEventListener("click", (event) => {
       loadAbilitiesGenerator();
       break;
     case "abilities":
-      player.proficiencyBonus = 2;
-      player.walkingSpeed = 35;
-      player.hitPoints = player.hitDie + player.constitutionModifier;
-      console.log(player);
+      loadCharacterStats();
   }
 });
 
@@ -423,6 +460,31 @@ for (let i = 0; i < abilitiesSelector.length; i++) {
     }
   });
 }
+
+// player.getSkills(skillsContainer) {
+//   skillsContainer.innerHTML = `
+//   <ul class="stats__skills-list">
+//   <li class="stats__list-item">
+//     Strength - ${this.strength} (${this.strengthModifier})
+//   </li>
+//   <li class="stats__list-item">
+//     Dexterity - ${this.dexterity} (${this.dexterityModifier})
+//   </li>
+//   <li class="stats__list-item">
+//     Constitution - ${this.constitution} (${this.constitutionModifier})
+//   </li>
+//   <li class="stats__list-item">
+//     Intelligence - ${this.intelligence} (${this.intelligenceModifier})
+//   </li>
+//   <li class="stats__list-item">
+//     Wisdom - ${this.wisdom} (${this.wisdomModifier})
+//   </li>
+//   <li class="stats__list-item">
+//     Charisma - ${this.charisma} (${this.charismaModifier})
+//   </li>
+// </ul>;
+//   `
+// }
 
 // Resets the ability selectors
 abilityResetBtn.addEventListener("click", (event) => {

@@ -74,6 +74,39 @@ button {
   grid-area: ability6;
 }
 
+.stats__container {
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-template: "name-race-class" "hit-points" "movement-initiative-armour" "abilities" "senses" "skills" "actions" "spells" "inventory";
+}
+.stats__container__name-race-class {
+  grid-area: name-race-class;
+}
+.stats__container__hit-points {
+  grid-area: hit-points;
+}
+.stats__container__movement-initiative-armour {
+  grid-area: movement-initiative-armour;
+}
+.stats__container__abilities {
+  grid-area: abilities;
+}
+.stats__container__senses {
+  grid-area: senses;
+}
+.stats__container__skills {
+  grid-area: skills;
+}
+.stats__container__actions {
+  grid-area: actions;
+}
+.stats__container__spells {
+  grid-area: spells;
+}
+.stats__container__inventory {
+  grid-area: inventory;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -136,6 +169,14 @@ button {
 }
 .ability__container {
   margin: 0 20vw;
+}
+
+[class*=stats] {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  row-gap: 5vh;
+  padding: 20px;
 }
 
 .title--top {
