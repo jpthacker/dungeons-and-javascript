@@ -24,6 +24,7 @@ const backBtn = document.querySelector(".btn--back");
 const player = {
   getAbilities(skillsContainer) {
     skillsContainer.innerHTML = `
+    <h4 class="stats__title">ABILITIES</h4>
     <ul class="stats__skills-list">
     <li class="stats__list-item">
       Strength - ${this.strength} (${this.strengthModifier})
@@ -44,7 +45,7 @@ const player = {
       Charisma - ${this.charisma} (${this.charismaModifier})
     </li>
   </ul>
-    `;
+  `;
   },
 };
 
@@ -138,7 +139,7 @@ const loadCharacterStats = () => {
   createContainer.classList.add("hidden");
   abilityResetBtn.classList.add("hidden");
   statsContainer.classList.remove("hidden");
-  document.querySelector(".menu__title").innerText = "Your Character Stats";
+  document.querySelector(".menu__title").innerText = "Your Adventurer's Stats";
   player.proficiencyBonus = 2;
   player.walkingSpeed = 30;
   player.hitPoints = player.hitDie + player.constitutionModifier;
@@ -334,26 +335,26 @@ const calculateAbilityModifier = (abilityScore) => {
       break;
     case 10:
     case 11:
-      currentModifier = 0;
+      currentModifier = +0;
       break;
     case 12:
     case 13:
-      currentModifier = 1;
+      currentModifier = +1;
       break;
     case 14:
     case 15:
-      currentModifier = 2;
+      currentModifier = +2;
       break;
     case 16:
     case 17:
-      currentModifier = 3;
+      currentModifier = +3;
       break;
     case 18:
     case 19:
-      currentModifier = 4;
+      currentModifier = +4;
       break;
     case 20:
-      currentModifier = 5;
+      currentModifier = +5;
   }
 };
 
@@ -388,7 +389,7 @@ for (let i = 0; i < abilityBtn.length; i++) {
 
 // Handles the assignment of ability scores
 for (let i = 0; i < abilitiesSelector.length; i++) {
-  abilitiesSelector[i].addEventListener("change", (event) => {
+  abilitiesSelector[i].addEventListener("blur", (event) => {
     let abilityOption = event.target.value;
     abilityResetBtn.classList.remove("hidden");
     switch (abilityOption) {
@@ -407,7 +408,7 @@ for (let i = 0; i < abilitiesSelector.length; i++) {
         });
         break;
       case "dexterity":
-        if (player.species === "dwarf") {
+        if (player.species === "elf") {
           player.dexterity = abilityScoreList[i] + 2;
           calculateAbilityModifier(player.dexterity);
           player.dexterityModifier = currentModifier;
@@ -437,7 +438,7 @@ for (let i = 0; i < abilitiesSelector.length; i++) {
         });
         break;
       case "wisdom":
-        if (player.species === "dwarf") {
+        if (player.species === "human") {
           player.wisdom = abilityScoreList[i] + 2;
           calculateAbilityModifier(player.wisdom);
           player.wisdomModifier = currentModifier;
@@ -461,31 +462,6 @@ for (let i = 0; i < abilitiesSelector.length; i++) {
   });
 }
 
-// player.getSkills(skillsContainer) {
-//   skillsContainer.innerHTML = `
-//   <ul class="stats__skills-list">
-//   <li class="stats__list-item">
-//     Strength - ${this.strength} (${this.strengthModifier})
-//   </li>
-//   <li class="stats__list-item">
-//     Dexterity - ${this.dexterity} (${this.dexterityModifier})
-//   </li>
-//   <li class="stats__list-item">
-//     Constitution - ${this.constitution} (${this.constitutionModifier})
-//   </li>
-//   <li class="stats__list-item">
-//     Intelligence - ${this.intelligence} (${this.intelligenceModifier})
-//   </li>
-//   <li class="stats__list-item">
-//     Wisdom - ${this.wisdom} (${this.wisdomModifier})
-//   </li>
-//   <li class="stats__list-item">
-//     Charisma - ${this.charisma} (${this.charismaModifier})
-//   </li>
-// </ul>;
-//   `
-// }
-
 // Resets the ability selectors
 abilityResetBtn.addEventListener("click", (event) => {
   event.preventDefault();
@@ -494,6 +470,7 @@ abilityResetBtn.addEventListener("click", (event) => {
   });
   abilitiesSelector.forEach((selector) => {
     selector[0].selected = true;
+    selector[0].disabled = true;
   });
   console.log(abilityModifierList);
 });

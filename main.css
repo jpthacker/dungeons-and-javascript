@@ -44,6 +44,11 @@ button {
   font-size: 2em;
 }
 
+.stats__title {
+  font-family: "Cinzel", serif;
+  font-size: 1em;
+}
+
 .ability__container {
   display: grid;
   grid-auto-columns: 1fr;
@@ -175,7 +180,7 @@ button {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  row-gap: 5vh;
+  row-gap: 2vh;
   padding: 20px;
 }
 
