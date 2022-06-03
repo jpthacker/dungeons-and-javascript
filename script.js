@@ -145,6 +145,10 @@ const loadCharacterStats = () => {
   player.hitPoints = player.hitDie + player.constitutionModifier;
   console.log(player);
   player.getAbilities(statsAbilities);
+  let testOne = parseInt(player.strengthModifier) + player.proficiencyBonus;
+  let testTwo = parseInt(player.wisdomModifier) + player.proficiencyBonus;
+  console.log(testOne);
+  console.log(testTwo);
 };
 
 //Handles the character creation menu buttons
@@ -277,18 +281,12 @@ speciesSelector.addEventListener("change", (event) => {
   errorMessage.classList.add("hidden");
 });
 
-// Handles DnD standard dice rolls (courtesy of BryanBansbach (https://github.com/BryanBansbach/DiceRoller))
+// Handles DnD standard dice rolls (original code courtesy of BryanBansbach (https://github.com/BryanBansbach/DiceRoller) - with subsequent edits)
 let rolledDice = [];
+const standardDice = [4, 6, 8, 10, 12, 20];
 const dice = (diceType, diceNumber) => {
   rolledDice = [];
-  if (
-    diceType === 4 ||
-    diceType === 6 ||
-    diceType === 8 ||
-    diceType === 10 ||
-    diceType === 12 ||
-    diceType === 20
-  ) {
+  if (standardDice.includes(diceType)) {
     if (typeof diceNumber === "undefined") {
       finalDice = Math.floor(Math.random() * diceType) + 1;
       rolledDice.push(finalDice);
@@ -306,56 +304,18 @@ const dice = (diceType, diceNumber) => {
       return diceC;
     }
   } else {
-    return "You must choose the right type of dice (4, 6, 8, 10, 12, 20)";
+    console.log("You must choose the right type of dice (4, 6, 8, 10, 12, 20)");
   }
 };
 
 // Function to calculate the modifiers for each ability
-let currentModifier;
+let currentModifierRaw;
+let currentModifierSign;
 const calculateAbilityModifier = (abilityScore) => {
-  switch (abilityScore) {
-    case 1:
-      currentModifier = -5;
-      break;
-    case 2:
-    case 3:
-      currentModifier = -4;
-      break;
-    case 4:
-    case 5:
-      currentModifier = -3;
-      break;
-    case 6:
-    case 7:
-      currentModifier = -2;
-      break;
-    case 8:
-    case 9:
-      currentModifier = -1;
-      break;
-    case 10:
-    case 11:
-      currentModifier = +0;
-      break;
-    case 12:
-    case 13:
-      currentModifier = +1;
-      break;
-    case 14:
-    case 15:
-      currentModifier = +2;
-      break;
-    case 16:
-    case 17:
-      currentModifier = +3;
-      break;
-    case 18:
-    case 19:
-      currentModifier = +4;
-      break;
-    case 20:
-      currentModifier = +5;
-  }
+  currentModifierRaw = Math.floor((abilityScore - 10) / 2);
+  if (currentModifierRaw >= 0) {
+    currentModifierSign = "+" + currentModifierRaw;
+  } else currentModifierSign = currentModifierRaw;
 };
 
 // Handles the ability buttons and generates dice rolls for abilities (removes the lowest number of four d6 dice rolls and totals the rolls)
@@ -367,11 +327,11 @@ for (let i = 0; i < abilityBtn.length; i++) {
     if (abilityScoreList.length < 6) {
       event.preventDefault();
       dice(6, 4);
-      abilityRoll = rolledDice.sort().filter((_, i) => i);
+      let abilityRoll = rolledDice.sort().filter((_, i) => i);
       currentAbilityScore = abilityRoll.reduce((a, b) => a + b);
       abilityScoreList.push(currentAbilityScore);
-      calculateAbilityModifier(currentAbilityScore, currentModifier);
-      abilityModifierList.push(currentModifier);
+      calculateAbilityModifier(currentAbilityScore);
+      abilityModifierList.push(currentModifierSign);
       abilityScore[i].innerHTML = currentAbilityScore;
       abilityBtn[i].classList.add("hidden");
       abilitiesSelector[i].classList.remove("hidden");
@@ -397,7 +357,7 @@ for (let i = 0; i < abilitiesSelector.length; i++) {
         if (player.species === "dwarf") {
           player.strength = abilityScoreList[i] + 2;
           calculateAbilityModifier(player.strength);
-          player.strengthModifier = currentModifier;
+          player.strengthModifier = currentModifierSign;
         } else {
           player.strength = abilityScoreList[i];
           player.strengthModifier = abilityModifierList[i];
@@ -411,7 +371,7 @@ for (let i = 0; i < abilitiesSelector.length; i++) {
         if (player.species === "elf") {
           player.dexterity = abilityScoreList[i] + 2;
           calculateAbilityModifier(player.dexterity);
-          player.dexterityModifier = currentModifier;
+          player.dexterityModifier = currentModifierSign;
         } else {
           player.dexterity = abilityScoreList[i];
           player.dexterityModifier = abilityModifierList[i];
@@ -441,7 +401,7 @@ for (let i = 0; i < abilitiesSelector.length; i++) {
         if (player.species === "human") {
           player.wisdom = abilityScoreList[i] + 2;
           calculateAbilityModifier(player.wisdom);
-          player.wisdomModifier = currentModifier;
+          player.wisdomModifier = currentModifierSign;
         } else {
           player.wisdom = abilityScoreList[i];
           player.wisdomModifier = abilityModifierList[i];
