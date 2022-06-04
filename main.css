@@ -49,6 +49,10 @@ button {
   font-size: 1em;
 }
 
+.justified {
+  text-align: justify;
+}
+
 .ability__container {
   display: grid;
   grid-auto-columns: 1fr;

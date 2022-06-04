@@ -1,4 +1,4 @@
-// Character creation menu elements
+// Character creation global menu elements
 const menu = document.querySelector(".menu--start");
 const titleContainer = document.querySelector(".title");
 const titleMain = document.querySelector(".title__main");
@@ -21,6 +21,7 @@ const abilityBtn = document.querySelectorAll(".ability__btn");
 const abilityResetBtn = document.querySelector(".btn--reset");
 const backBtn = document.querySelector(".btn--back");
 
+// Player object and functions
 const player = {
   getAbilities(skillsContainer) {
     skillsContainer.innerHTML = `
@@ -77,6 +78,7 @@ const loadNameForm = () => {
   nameForm.classList.remove("hidden");
   creationMessage.innerHTML = "";
   creationMessage.classList.add("hidden");
+  creationMessage.classList.remove("justified");
   document.querySelector(".menu__title").innerText =
     "Enter the Name of Your Adventurer";
   backBtn.classList.remove("hidden");
@@ -132,28 +134,44 @@ const loadAbilitiesGenerator = () => {
     errorMessage.innerHTML = "Please select a species";
     errorMessage.classList.remove("hidden");
   }
+  if (abilityModifierList.length > 0) {
+    abilityResetBtn.classList.remove("hidden");
+  }
 };
 
 // Loads the character stats
 const loadCharacterStats = () => {
-  createContainer.classList.add("hidden");
-  abilityResetBtn.classList.add("hidden");
-  statsContainer.classList.remove("hidden");
-  document.querySelector(".menu__title").innerText = "Your Adventurer's Stats";
-  player.proficiencyBonus = 2;
-  player.walkingSpeed = 30;
-  player.hitPoints = player.hitDie + player.constitutionModifier;
-  console.log(player);
-  player.getAbilities(statsAbilities);
-  let testOne = parseInt(player.strengthModifier) + player.proficiencyBonus;
-  let testTwo = parseInt(player.wisdomModifier) + player.proficiencyBonus;
-  console.log(testOne);
-  console.log(testTwo);
+  let abilitiesReady;
+  abilitiesSelector.forEach((selector) => {
+    if (selector.disabled === true) {
+      abilitiesReady = true;
+    } else {
+      abilitiesReady = false;
+    }
+  });
+  if (abilitiesReady === false) {
+    errorMessage.innerHTML = "Please assign your ability rolls";
+    errorMessage.classList.remove("hidden");
+  } else {
+    createContainer.classList.add("hidden");
+    abilityResetBtn.classList.add("hidden");
+    statsContainer.classList.remove("hidden");
+    document.querySelector(".menu__title").innerText =
+      "Your Adventurer's Stats";
+    player.proficiencyBonus = 2;
+    player.walkingSpeed = 30;
+    player.hitPoints = parseInt(player.constitutionModifier) + player.hitDie;
+    console.log(player);
+    player.getAbilities(statsAbilities);
+    errorMessage.classList.add("hidden");
+    currentCreationStage = "stats";
+  }
 };
 
 //Handles the character creation menu buttons
 continueBtn.addEventListener("click", (event) => {
   event.preventDefault();
+  window.scrollTo(0, 0);
   switch (currentCreationStage) {
     case "start":
       loadCreationMessage();
@@ -178,6 +196,7 @@ continueBtn.addEventListener("click", (event) => {
 //Handles the back button
 backBtn.addEventListener("click", (event) => {
   event.preventDefault();
+  window.scrollTo(0, 0);
   switch (currentCreationStage) {
     case "name":
       nameForm.classList.add("hidden");
@@ -185,6 +204,7 @@ backBtn.addEventListener("click", (event) => {
       errorMessage.classList.add("hidden");
       creationMessage.classList.remove("hidden");
       creationMessage.style.marginTop = "0";
+      creationMessage.classList.remove("justified");
       continueBtn.innerHTML = "Start";
       loadCreationMessage();
       break;
@@ -204,6 +224,13 @@ backBtn.addEventListener("click", (event) => {
       loadSpeciesSelector();
       abilitiesAll.classList.add("hidden");
       abilityResetBtn.classList.add("hidden");
+      break;
+    case "stats":
+      loadAbilitiesGenerator();
+      statsContainer.classList.add("hidden");
+      createContainer.classList.remove("hidden");
+      abilityResetBtn.classList.remove("hidden");
+      errorMessage.classList.remove("hidden");
   }
 });
 
@@ -230,7 +257,7 @@ classSelector.addEventListener("change", (event) => {
       creationMessage.innerHTML = `A master of martial combat, skilled with a variety of weapons and armour<br/><br/>Primary Ability: Strength or Dexterity<br/>Saves: Strength & Constitution
       `;
       player.class = "fighter";
-      player.hitDie = 10;
+      player.hitDie = 12;
       break;
     case "rogue":
       creationMessage.innerHTML = `A scoundrel who uses stealth and trickery to overcome obstacles and enemies<br/><br/>Primary Ability: Dexterity<br/>Saves: Dexterity & Intelligence
@@ -349,11 +376,11 @@ for (let i = 0; i < abilityBtn.length; i++) {
 
 // Handles the assignment of ability scores
 for (let i = 0; i < abilitiesSelector.length; i++) {
-  abilitiesSelector[i].addEventListener("blur", (event) => {
+  abilitiesSelector[i].addEventListener("change", (event) => {
     let abilityOption = event.target.value;
     abilityResetBtn.classList.remove("hidden");
     switch (abilityOption) {
-      case "strength":
+      case "1":
         if (player.species === "dwarf") {
           player.strength = abilityScoreList[i] + 2;
           calculateAbilityModifier(player.strength);
@@ -367,7 +394,7 @@ for (let i = 0; i < abilitiesSelector.length; i++) {
           selector[1].disabled = true;
         });
         break;
-      case "dexterity":
+      case "2":
         if (player.species === "elf") {
           player.dexterity = abilityScoreList[i] + 2;
           calculateAbilityModifier(player.dexterity);
@@ -381,7 +408,7 @@ for (let i = 0; i < abilitiesSelector.length; i++) {
           selector[2].disabled = true;
         });
         break;
-      case "constitution":
+      case "3":
         player.constitution = abilityScoreList[i];
         player.constitutionModifier = abilityModifierList[i];
         console.log(player.constitution);
@@ -389,7 +416,7 @@ for (let i = 0; i < abilitiesSelector.length; i++) {
           selector[3].disabled = true;
         });
         break;
-      case "intelligence":
+      case "4":
         player.intelligence = abilityScoreList[i];
         player.intelligenceModifier = abilityModifierList[i];
         console.log(player.intelligence);
@@ -397,7 +424,7 @@ for (let i = 0; i < abilitiesSelector.length; i++) {
           selector[4].disabled = true;
         });
         break;
-      case "wisdom":
+      case "5":
         if (player.species === "human") {
           player.wisdom = abilityScoreList[i] + 2;
           calculateAbilityModifier(player.wisdom);
@@ -411,7 +438,7 @@ for (let i = 0; i < abilitiesSelector.length; i++) {
           selector[5].disabled = true;
         });
         break;
-      case "charisma":
+      case "6":
         player.charisma = abilityScoreList[i];
         player.charismaModifier = abilityModifierList[i];
         console.log(player.charisma);
@@ -419,6 +446,7 @@ for (let i = 0; i < abilitiesSelector.length; i++) {
           selector[6].disabled = true;
         });
     }
+    abilitiesSelector[i].disabled = true;
   });
 }
 
@@ -431,6 +459,7 @@ abilityResetBtn.addEventListener("click", (event) => {
   abilitiesSelector.forEach((selector) => {
     selector[0].selected = true;
     selector[0].disabled = true;
+    selector.disabled = false;
   });
   console.log(abilityModifierList);
 });
