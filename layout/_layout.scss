@@ -113,6 +113,23 @@
 
   &__initiative {
     justify-content: flex-start;
+    border: 0;
+    padding-top: 0;
+  }
+
+  &__initiative-no {
+    border: solid $color-red 1px;
+    border-radius: 10px;
+    padding: 15px;
+  }
+
+  &__armour-class-text2 {
+    max-width: 60px;
+  }
+
+  &__armour-class {
+    border-radius: 10px 10px 100px 100px;
+    align-items: center;
   }
 }
 

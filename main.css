@@ -227,6 +227,20 @@ h4 {
 }
 .stats__initiative {
   justify-content: flex-start;
+  border: 0;
+  padding-top: 0;
+}
+.stats__initiative-no {
+  border: solid #bc0f0f 1px;
+  border-radius: 10px;
+  padding: 15px;
+}
+.stats__armour-class-text2 {
+  max-width: 60px;
+}
+.stats__armour-class {
+  border-radius: 10px 10px 100px 100px;
+  align-items: center;
 }
 
 .title--top {
