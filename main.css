@@ -44,7 +44,7 @@ button {
   font-size: 2em;
 }
 
-.stats__title {
+h4 {
   font-family: "Cinzel", serif;
   font-size: 1em;
 }
@@ -83,36 +83,40 @@ button {
   grid-area: ability6;
 }
 
-.stats__container {
+.stats {
   display: grid;
   grid-auto-columns: 1fr;
-  grid-template: "name-race-class" "hit-points" "movement-initiative-armour" "abilities" "senses" "skills" "actions" "spells" "inventory";
+  grid-gap: 1vh;
+  grid-template: "name-race-class name-race-class name-race-class" "proficiency hit-points hit-points" "movement-initiative-armour movement-initiative-armour movement-initiative-armour" "abilities abilities abilities" "senses senses senses" "skills skills skills" "actions actions actions" "spells spells spells" "inventory inventory inventory";
 }
-.stats__container__name-race-class {
+.stats__name-race-class {
   grid-area: name-race-class;
 }
-.stats__container__hit-points {
+.stats__proficiency {
+  grid-area: proficiency;
+}
+.stats__hit-points {
   grid-area: hit-points;
 }
-.stats__container__movement-initiative-armour {
+.stats__movement-initiative-armour {
   grid-area: movement-initiative-armour;
 }
-.stats__container__abilities {
+.stats__abilities {
   grid-area: abilities;
 }
-.stats__container__senses {
+.stats__senses {
   grid-area: senses;
 }
-.stats__container__skills {
+.stats__skills {
   grid-area: skills;
 }
-.stats__container__actions {
+.stats__actions {
   grid-area: actions;
 }
-.stats__container__spells {
+.stats__spells {
   grid-area: spells;
 }
-.stats__container__inventory {
+.stats__inventory {
   grid-area: inventory;
 }
 
@@ -180,12 +184,49 @@ button {
   margin: 0 20vw;
 }
 
-[class*=stats] {
+[class*=stats__] {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  row-gap: 2vh;
+  row-gap: 1vh;
+  border: solid #bc0f0f 1px;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+[class*=-text],
+[class*=-no] {
+  padding: 5px;
+  border: 0;
+}
+
+.stats {
   padding: 20px;
+}
+.stats__name-race-class {
+  border: 0;
+}
+.stats__name {
+  padding: 5px;
+  border: 0;
+}
+.stats__species {
+  padding: 5px;
+  border: 0;
+}
+.stats__hit-points-no-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.stats__hit-points-current-no {
+  padding-right: 0;
+}
+.stats__hit-points-max-no {
+  padding-left: 0;
+}
+.stats__initiative {
+  justify-content: flex-start;
 }
 
 .title--top {

@@ -36,22 +36,27 @@
   grid-area: ability6;
 }
 
-.stats__container {
+.stats {
   display: grid;
   grid-auto-columns: 1fr;
+  grid-gap: 1vh;
   grid-template:
-    "name-race-class"
-    "hit-points"
-    "movement-initiative-armour"
-    "abilities"
-    "senses"
-    "skills"
-    "actions"
-    "spells"
-    "inventory";
+    "name-race-class name-race-class name-race-class"
+    "proficiency hit-points hit-points"
+    "movement-initiative-armour movement-initiative-armour movement-initiative-armour"
+    "abilities abilities abilities"
+    "senses senses senses"
+    "skills skills skills"
+    "actions actions actions"
+    "spells spells spells"
+    "inventory inventory inventory";
 
   &__name-race-class {
     grid-area: name-race-class;
+  }
+
+  &__proficiency {
+    grid-area: proficiency;
   }
 
   &__hit-points {

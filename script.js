@@ -1,4 +1,4 @@
-// Character creation global menu elements
+// Global HTML elements
 const menu = document.querySelector(".menu--start");
 const titleContainer = document.querySelector(".title");
 const titleMain = document.querySelector(".title__main");
@@ -14,7 +14,13 @@ const ability = document.querySelectorAll(".ability");
 const abilitiesSelector = document.querySelectorAll(".ability__selector");
 const abilityOptions = document.querySelectorAll(".ability__option");
 const abilityScore = document.querySelectorAll(".ability__score");
-const statsContainer = document.querySelector(".stats__container");
+const statsContainer = document.querySelector(".stats");
+const statsName = document.querySelector(".stats__name-race-class");
+const statsProficiency = document.querySelector(".stats__proficiency");
+const statsHitPoints = document.querySelector(".stats__hit-points");
+const statsWalkingSpeed = document.querySelector(".stats__walking-speed");
+const statsInitiative = document.querySelector(".stats__initiative");
+const statsArmourClass = document.querySelector(".stats__armour-class");
 const statsAbilities = document.querySelector(".stats__abilities");
 const continueBtn = document.querySelector(".btn--continue");
 const abilityBtn = document.querySelectorAll(".ability__btn");
@@ -23,7 +29,53 @@ const backBtn = document.querySelector(".btn--back");
 
 // Player object and functions
 const player = {
-  getAbilities(skillsContainer) {
+  getNameHTML(nameContainer) {
+    nameContainer.innerHTML = `
+    <h4 class="stats__title stats__name">${this.name}</h4>
+    <h5 class="stats__species">${this.species}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;${this.class}</h5>
+    `;
+  },
+  getProficiencyHTML(proficincyContainer) {
+    proficincyContainer.innerHTML = `
+    <h5 class="stats__proficiency-text1">PROFICIENCY</h5>
+    <h4 class="stats__proficiency-no">${this.proficiency}</h4>
+    <h5 class="stats__proficiency-text2">BONUS</h5>
+    `;
+  },
+  getHitPointsHTML(hitPointsContainer) {
+    hitPointsContainer.innerHTML = `
+    <h5 class="stats__hit-points-text1">CURRENT / MAX</h5>
+            <div class="stats__hit-points-no-container">
+              <h4 class="stats__hit-points-current-no">${
+                this.hitPoints - this.damage
+              }&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp</h4>
+              <h4 class="stats__hit-points-max-no">${this.hitPoints}</h4>
+            </div>
+            <h5 class="stats__hit-points-text2">HIT POINTS</h5>
+    `;
+  },
+  getWalkingSpeedHTML(walkingSpeedContainer) {
+    walkingSpeedContainer.innerHTML = `
+    <h5 class="stats__walking-speed-text1">WALKING</h5>
+    <h4 class="stats__walking-speed-no">${this.walkingSpeed}ft.</h4>
+    <h5 class="stats__walking-speed-text2">SPEED</h5>
+    `;
+  },
+  getInitiativeHTML(initiativeContainer) {
+    initiativeContainer.innerHTML = `
+    <h5 class="stats__initiative-text1">INITIATIVE</h5>
+    <h4 class="stats__initiative-no">${this.dexterityModifier}</h4>
+    <h5 class="stats__initiative-text2"></h5>
+    `;
+  },
+  getArmourClassHTML(armourClassContainer) {
+    armourClassContainer.innerHTML = `
+    <h5 class="stats__armour-class-text1">ARMOUR</h5>
+    <h4 class="stats__armour-class-no">${this.armourClass}</h4>
+    <h5 class="stats__armour-class-text2">CLASS</h5>
+    `;
+  },
+  getAbilitiesHTML(skillsContainer) {
     skillsContainer.innerHTML = `
     <h4 class="stats__title">ABILITIES</h4>
     <ul class="stats__skills-list">
@@ -87,8 +139,8 @@ const loadNameForm = () => {
 
 // Loads the class selector
 const loadClassSelector = () => {
-  console.log(player.playerName);
-  if (player.playerName) {
+  console.log(player.name);
+  if (player.name) {
     nameForm.classList.add("hidden");
     classSelector.classList.remove("hidden");
     document.querySelector(".menu__title").innerText = "Choose Your Class";
@@ -156,13 +208,19 @@ const loadCharacterStats = () => {
     createContainer.classList.add("hidden");
     abilityResetBtn.classList.add("hidden");
     statsContainer.classList.remove("hidden");
-    document.querySelector(".menu__title").innerText =
-      "Your Adventurer's Stats";
-    player.proficiencyBonus = 2;
+    document.querySelector(".menu__title").innerText = "Your Adventurer";
+    player.proficiency = "+2";
     player.walkingSpeed = 30;
     player.hitPoints = parseInt(player.constitutionModifier) + player.hitDie;
+    player.damage = 0;
     console.log(player);
-    player.getAbilities(statsAbilities);
+    player.getNameHTML(statsName);
+    player.getProficiencyHTML(statsProficiency);
+    player.getHitPointsHTML(statsHitPoints);
+    player.getWalkingSpeedHTML(statsWalkingSpeed);
+    player.getInitiativeHTML(statsInitiative);
+    player.getArmourClassHTML(statsArmourClass);
+    player.getAbilitiesHTML(statsAbilities);
     errorMessage.classList.add("hidden");
     currentCreationStage = "stats";
   }
@@ -236,7 +294,7 @@ backBtn.addEventListener("click", (event) => {
 
 // Handles the name entry form
 nameForm.addEventListener("input", (event) => {
-  player.playerName = event.target.value;
+  player.name = event.target.value;
   errorMessage.innerHTML = "";
   errorMessage.classList.add("hidden");
 });
@@ -250,19 +308,19 @@ classSelector.addEventListener("change", (event) => {
     case "cleric":
       creationMessage.innerHTML = `A priestly champion who wields divine magic in service of a higher power<br/><br/>Primary Ability: Wisdom<br/>Saves: Wisdom & Charisma
       `;
-      player.class = "cleric";
+      player.class = "Cleric";
       player.hitDie = 8;
       break;
     case "fighter":
       creationMessage.innerHTML = `A master of martial combat, skilled with a variety of weapons and armour<br/><br/>Primary Ability: Strength or Dexterity<br/>Saves: Strength & Constitution
       `;
-      player.class = "fighter";
+      player.class = "Fighter";
       player.hitDie = 12;
       break;
     case "rogue":
       creationMessage.innerHTML = `A scoundrel who uses stealth and trickery to overcome obstacles and enemies<br/><br/>Primary Ability: Dexterity<br/>Saves: Dexterity & Intelligence
       `;
-      player.class = "rogue";
+      player.class = "Rogue";
       player.hitDie = 10;
   }
   errorMessage.innerHTML = "";
@@ -278,17 +336,17 @@ speciesSelector.addEventListener("change", (event) => {
     case "dwarf":
       creationMessage.innerHTML = `Bold and hardy, dwarves are known as skilled warriors, miners, and workers of stone and metal<br/><br/>Species Trait:<br/>+2 Strength
       `;
-      player.species = "dwarf";
+      player.species = "Dwarf";
       break;
     case "elf":
       creationMessage.innerHTML = `Elves are a magical people of otherworldly grace, living in the world but not entirely part of it<br/><br/>Species Trait:<br/>+2 Dexterity
       `;
-      player.species = "elf";
+      player.species = "Elf";
       break;
     case "human":
       creationMessage.innerHTML = `Whatever drives them, humans are the innovators, the achievers, and the pioneers of the worlds<br/><br/>Species Trait:<br/>+2 Wisdom
       `;
-      player.species = "human";
+      player.species = "Human";
   }
   // Reminds the player of their class choice
   switch (player.class) {
@@ -447,6 +505,16 @@ for (let i = 0; i < abilitiesSelector.length; i++) {
         });
     }
     abilitiesSelector[i].disabled = true;
+    switch (player.class) {
+      case "Cleric":
+        player.armourClass = parseInt(player.dexterityModifier) + 10;
+        break;
+      case "Fighter":
+        player.armourClass = 16;
+        break;
+      case "Rogue":
+        player.armourClass = parseInt(player.dexterityModifier) + 11;
+    }
   });
 }
 

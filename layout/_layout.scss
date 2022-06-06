@@ -65,12 +65,55 @@
   }
 }
 
-[class*="stats"] {
+[class*="stats__"] {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  row-gap: 2vh;
+  row-gap: 1vh;
+  border: solid $color-red 1px;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+[class*="-text"],
+[class*="-no"] {
+  padding: 5px;
+  border: 0;
+}
+
+.stats {
   padding: 20px;
+  &__name-race-class {
+    border: 0;
+  }
+
+  &__name {
+    padding: 5px;
+    border: 0;
+  }
+
+  &__species {
+    padding: 5px;
+    border: 0;
+  }
+
+  &__hit-points-no-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  &__hit-points-current-no {
+    padding-right: 0;
+  }
+
+  &__hit-points-max-no {
+    padding-left: 0;
+  }
+
+  &__initiative {
+    justify-content: flex-start;
+  }
 }
 
 .title--top {
