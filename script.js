@@ -75,29 +75,38 @@ const player = {
     <h5 class="stats__armour-class-text2">CLASS</h5>
     `;
   },
-  getAbilitiesHTML(skillsContainer) {
-    skillsContainer.innerHTML = `
-    <h4 class="stats__title">ABILITIES</h4>
-    <ul class="stats__skills-list">
-    <li class="stats__list-item">
-      Strength - ${this.strength} (${this.strengthModifier})
-    </li>
-    <li class="stats__list-item">
-      Dexterity - ${this.dexterity} (${this.dexterityModifier})
-    </li>
-    <li class="stats__list-item">
-      Constitution - ${this.constitution} (${this.constitutionModifier})
-    </li>
-    <li class="stats__list-item">
-      Intelligence - ${this.intelligence} (${this.intelligenceModifier})
-    </li>
-    <li class="stats__list-item">
-      Wisdom - ${this.wisdom} (${this.wisdomModifier})
-    </li>
-    <li class="stats__list-item">
-      Charisma - ${this.charisma} (${this.charismaModifier})
-    </li>
-  </ul>
+  getAbilitiesHTML(abilitiesContainer) {
+    abilitiesContainer.innerHTML = `
+    <div class="stats__ability--strength">
+      <h5 class="stats__ability-text--strength">STRENGTH</h5>
+      <h4 class="stats__ability-modifier--strength">${this.strengthModifier}</h4>
+      <h4 class="stats__ability-no--strength">${this.strength}</h4>
+    </div>
+    <div class="stats__ability--dexterity">
+      <h5 class="stats__ability-text--dexterity">DEXTERITY</h5>
+      <h4 class="stats__ability-modifier--dexterity">${this.dexterityModifier}</h4>
+      <h4 class="stats__ability-no--dexterity">${this.dexterity}</h4>
+    </div>
+    <div class="stats__ability--constitution">
+      <h5 class="stats__ability-text--constitution">CONSTITUTION</h5>
+      <h4 class="stats__ability-modifier--constitution">${this.constitutionModifier}</h4>
+      <h4 class="stats__ability-no--constitution">${this.constitution}</h4>
+    </div>
+    <div class="stats__ability--intelligence">
+      <h5 class="stats__ability-text--intelligence">INTELLIGENCE</h5>
+      <h4 class="stats__ability-modifier--intelligence">${this.intelligenceModifier}</h4>
+      <h4 class="stats__ability-no--intelligence">${this.intelligence}</h4>
+    </div>
+    <div class="stats__ability--wisdom">
+      <h5 class="stats__ability-text--wisdom">WISDOM</h5>
+      <h4 class="stats__ability-modifier--wisdom">${this.wisdomModifier}</h4>
+      <h4 class="stats__ability-no--wisdom">${this.wisdom}</h4>
+    </div>
+    <div class="stats__ability--charisma">
+      <h5 class="stats__ability-text--charisma">CHARISMA</h5>
+      <h4 class="stats__ability-modifier--charisma">${this.charismaModifier}</h4>
+      <h4 class="stats__ability-no--charisma">${this.charisma}</h4>
+    </div>
   `;
   },
 };

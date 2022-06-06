@@ -91,3 +91,38 @@
     grid-area: inventory;
   }
 }
+
+.stats__abilities {
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-gap: 1vh;
+  grid-template:
+    "strength dexterity constitution"
+    "intelligence wisdom charisma";
+}
+
+.stats {
+  &__skills--strength {
+    grid-area: strength;
+  }
+
+  &__skills--dexterity {
+    grid-area: dexterity;
+  }
+
+  &__skills--constitution {
+    grid-area: constitution;
+  }
+
+  &__skills--intelligence {
+    grid-area: intelligence;
+  }
+
+  &__skills--wisdom {
+    grid-area: wisdom;
+  }
+
+  &__skills--charisma {
+    grid-area: charisma;
+  }
+}

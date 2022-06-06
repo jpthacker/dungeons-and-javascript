@@ -46,7 +46,15 @@ button {
 
 h4 {
   font-family: "Cinzel", serif;
-  font-size: 1em;
+  font-size: 1.5em;
+}
+
+h5 {
+  font-weight: 600;
+}
+
+[class*=ability-no] {
+  font-size: 1.25em;
 }
 
 .justified {
@@ -118,6 +126,32 @@ h4 {
 }
 .stats__inventory {
   grid-area: inventory;
+}
+
+.stats__abilities {
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-gap: 1vh;
+  grid-template: "strength dexterity constitution" "intelligence wisdom charisma";
+}
+
+.stats__skills--strength {
+  grid-area: strength;
+}
+.stats__skills--dexterity {
+  grid-area: dexterity;
+}
+.stats__skills--constitution {
+  grid-area: constitution;
+}
+.stats__skills--intelligence {
+  grid-area: intelligence;
+}
+.stats__skills--wisdom {
+  grid-area: wisdom;
+}
+.stats__skills--charisma {
+  grid-area: charisma;
 }
 
 * {
@@ -200,6 +234,23 @@ h4 {
   border: 0;
 }
 
+[class*=__ability--] {
+  align-items: center;
+  padding-bottom: 0;
+  row-gap: 1vh;
+  min-width: 33%;
+}
+
+[class*=ability-no] {
+  border: solid #bc0f0f 1px;
+  border-radius: 50px;
+  min-width: 12vw;
+}
+
+[class*=ability-mod] {
+  min-width: 90%;
+}
+
 .stats {
   padding: 20px;
 }
@@ -241,6 +292,14 @@ h4 {
 .stats__armour-class {
   border-radius: 10px 10px 100px 100px;
   align-items: center;
+}
+.stats__abilities {
+  border: 0;
+  padding: 10px 0 10px 0;
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-gap: 1vh;
+  grid-template: "strength dexterity constitution" "intelligence wisdom charisma";
 }
 
 .title--top {

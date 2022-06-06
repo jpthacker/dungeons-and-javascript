@@ -48,7 +48,15 @@ button {
 
 h4 {
   font-family: $font-secondary;
-  font-size: 1em;
+  font-size: 1.5em;
+}
+
+h5 {
+  font-weight: 600;
+}
+
+[class*="ability-no"] {
+  font-size: 1.25em;
 }
 
 .justified {

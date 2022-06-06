@@ -81,6 +81,23 @@
   border: 0;
 }
 
+[class*="__ability--"] {
+  align-items: center;
+  padding-bottom: 0;
+  row-gap: 1vh;
+  min-width: 33%;
+}
+
+[class*="ability-no"] {
+  border: solid $color-red 1px;
+  border-radius: 50px;
+  min-width: 12vw;
+}
+
+[class*="ability-mod"] {
+  min-width: 90%;
+}
+
 .stats {
   padding: 20px;
   &__name-race-class {
@@ -130,6 +147,17 @@
   &__armour-class {
     border-radius: 10px 10px 100px 100px;
     align-items: center;
+  }
+
+  &__abilities {
+    border: 0;
+    padding: 10px 0 10px 0;
+    display: grid;
+    grid-auto-columns: 1fr;
+    grid-gap: 1vh;
+    grid-template:
+      "strength dexterity constitution"
+      "intelligence wisdom charisma";
   }
 }
 
