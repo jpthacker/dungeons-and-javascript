@@ -22,13 +22,118 @@ const statsWalkingSpeed = document.querySelector(".stats__walking-speed");
 const statsInitiative = document.querySelector(".stats__initiative");
 const statsArmourClass = document.querySelector(".stats__armour-class");
 const statsAbilities = document.querySelector(".stats__abilities");
+const statsSavingThrows = document.querySelector(".stats__saving-throws");
 const continueBtn = document.querySelector(".btn--continue");
 const abilityBtn = document.querySelectorAll(".ability__btn");
 const abilityResetBtn = document.querySelector(".btn--reset");
 const backBtn = document.querySelector(".btn--back");
 
+// Handles DnD standard dice rolls (original code courtesy of BryanBansbach (https://github.com/BryanBansbach/DiceRoller) - with subsequent edits)
+let rolledDice = [];
+const standardDice = [4, 6, 8, 10, 12, 20];
+const dice = (diceType, diceNumber) => {
+  rolledDice = [];
+  if (standardDice.includes(diceType)) {
+    if (typeof diceNumber === "undefined") {
+      finalDice = Math.floor(Math.random() * diceType) + 1;
+      rolledDice.push(finalDice);
+      console.log(rolledDice);
+      return finalDice;
+    } else {
+      let diceC = 0;
+      for (let i = 1; i <= diceNumber; i++) {
+        let diceR = Math.floor(Math.random() * diceType) + 1;
+        rolledDice.push(diceR);
+        console.log(rolledDice);
+        diceC = diceC + diceR;
+      }
+      console.log(diceC);
+      return diceC;
+    }
+  } else {
+    console.log("You must choose the right type of dice (4, 6, 8, 10, 12, 20)");
+  }
+};
+
+const abilityList = [
+  "strength",
+  "dexterity",
+  "constitution",
+  "intelligence",
+  "wisdom",
+  "charisma",
+];
+
 // Player object and functions
 const player = {
+  abilities: {},
+  modifiers: {},
+  savingThrows: {},
+  calculateSavingThrows() {
+    abilityList.forEach((ability) => {
+      switch (ability) {
+        case "strength":
+          if (this.class === "Fighter") {
+            this.savingThrows.strength =
+              parseInt(this.strengthModifier) + parseInt(this.proficiency);
+          } else {
+            this.savingThrows.strength = parseInt(this.strengthModifier);
+          }
+          break;
+        case "dexterity":
+          if (this.class === "Rogue") {
+            this.savingThrows.dexterity =
+              parseInt(this.dexterityModifier) + parseInt(this.proficiency);
+          } else {
+            this.savingThrows.dexterity = parseInt(this.dexterityModifier);
+          }
+          break;
+        case "constitution":
+          if (this.class === "Fighter") {
+            this.savingThrows.constitution =
+              parseInt(this.constitutionModifier) + parseInt(this.proficiency);
+          } else {
+            this.savingThrows.constitution = parseInt(
+              this.constitutionModifier
+            );
+          }
+          break;
+        case "intelligence":
+          if (this.class === "Rogue") {
+            this.savingThrows.intelligence =
+              parseInt(this.intelligenceModifier) + parseInt(this.proficiency);
+          } else {
+            this.savingThrows.intelligence = parseInt(
+              this.intelligenceModifier
+            );
+          }
+          break;
+        case "wisdom":
+          if (this.class === "Cleric") {
+            this.savingThrows.wisdom =
+              parseInt(this.wisdomModifier) + parseInt(this.proficiency);
+          } else {
+            this.savingThrows.wisdom = parseInt(this.wisdomModifier);
+          }
+          break;
+        case "charisma":
+          if (this.class === "Cleric") {
+            this.savingThrows.charisma =
+              parseInt(this.charismaModifier) + parseInt(this.proficiency);
+          } else {
+            this.savingThrows.charisma = parseInt(this.charismaModifier);
+          }
+      }
+    });
+  },
+  formatStats(nestedObject) {
+    Object.entries(nestedObject).forEach(([key, val]) => {
+      console.log(val);
+      if (val >= 0) {
+        nestedObject[key] = "+" + val;
+      }
+    });
+  },
   getNameHTML(nameContainer) {
     nameContainer.innerHTML = `
     <h4 class="stats__title stats__name">${this.name}</h4>
@@ -45,13 +150,13 @@ const player = {
   getHitPointsHTML(hitPointsContainer) {
     hitPointsContainer.innerHTML = `
     <h5 class="stats__hit-points-text1">CURRENT / MAX</h5>
-            <div class="stats__hit-points-no-container">
-              <h4 class="stats__hit-points-current-no">${
-                this.hitPoints - this.damage
-              }&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp</h4>
-              <h4 class="stats__hit-points-max-no">${this.hitPoints}</h4>
-            </div>
-            <h5 class="stats__hit-points-text2">HIT POINTS</h5>
+    <div class="stats__hit-points-no-container">
+      <h4 class="stats__hit-points-current-no">${
+        this.hitPoints - this.damage
+      }&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp</h4>
+      <h4 class="stats__hit-points-max-no">${this.hitPoints}</h4>
+    </div>
+    <h5 class="stats__hit-points-text2">HIT POINTS</h5>
     `;
   },
   getWalkingSpeedHTML(walkingSpeedContainer) {
@@ -108,6 +213,11 @@ const player = {
       <h4 class="stats__ability-no--charisma">${this.charisma}</h4>
     </div>
   `;
+  },
+  getSavingThrowsHTML(savingThrowsContainer) {
+    savingThrowsContainer.innerHTML = `
+    
+    `;
   },
 };
 
@@ -222,6 +332,8 @@ const loadCharacterStats = () => {
     player.walkingSpeed = 30;
     player.hitPoints = parseInt(player.constitutionModifier) + player.hitDie;
     player.damage = 0;
+    player.calculateSavingThrows();
+    player.formatStats(player.savingThrows);
     console.log(player);
     player.getNameHTML(statsName);
     player.getProficiencyHTML(statsProficiency);
@@ -256,6 +368,17 @@ continueBtn.addEventListener("click", (event) => {
       loadAbilitiesGenerator();
       break;
     case "abilities":
+      //Assigns player armour class
+      switch (player.class) {
+        case "Cleric":
+          player.armourClass = parseInt(player.dexterityModifier) + 10;
+          break;
+        case "Fighter":
+          player.armourClass = 16;
+          break;
+        case "Rogue":
+          player.armourClass = parseInt(player.dexterityModifier) + 11;
+      }
       loadCharacterStats();
   }
 });
@@ -375,33 +498,6 @@ speciesSelector.addEventListener("change", (event) => {
   errorMessage.classList.add("hidden");
 });
 
-// Handles DnD standard dice rolls (original code courtesy of BryanBansbach (https://github.com/BryanBansbach/DiceRoller) - with subsequent edits)
-let rolledDice = [];
-const standardDice = [4, 6, 8, 10, 12, 20];
-const dice = (diceType, diceNumber) => {
-  rolledDice = [];
-  if (standardDice.includes(diceType)) {
-    if (typeof diceNumber === "undefined") {
-      finalDice = Math.floor(Math.random() * diceType) + 1;
-      rolledDice.push(finalDice);
-      console.log(rolledDice);
-      return finalDice;
-    } else {
-      let diceC = 0;
-      for (let i = 1; i <= diceNumber; i++) {
-        let diceR = Math.floor(Math.random() * diceType) + 1;
-        rolledDice.push(diceR);
-        console.log(rolledDice);
-        diceC = diceC + diceR;
-      }
-      console.log(diceC);
-      return diceC;
-    }
-  } else {
-    console.log("You must choose the right type of dice (4, 6, 8, 10, 12, 20)");
-  }
-};
-
 // Function to calculate the modifiers for each ability
 let currentModifierRaw;
 let currentModifierSign;
@@ -514,16 +610,6 @@ for (let i = 0; i < abilitiesSelector.length; i++) {
         });
     }
     abilitiesSelector[i].disabled = true;
-    switch (player.class) {
-      case "Cleric":
-        player.armourClass = parseInt(player.dexterityModifier) + 10;
-        break;
-      case "Fighter":
-        player.armourClass = 16;
-        break;
-      case "Rogue":
-        player.armourClass = parseInt(player.dexterityModifier) + 11;
-    }
   });
 }
 

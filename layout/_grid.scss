@@ -42,8 +42,8 @@
   grid-gap: 1vh;
   grid-template:
     "name-race-class name-race-class name-race-class"
-    "proficiency hit-points hit-points"
-    "movement-initiative-armour movement-initiative-armour movement-initiative-armour"
+    "hit-points hit-points armour"
+    "proficiency initiative movement"
     "abilities abilities abilities"
     "senses senses senses"
     "skills skills skills"
@@ -63,8 +63,16 @@
     grid-area: hit-points;
   }
 
-  &__movement-initiative-armour {
-    grid-area: movement-initiative-armour;
+  &__armour-calss {
+    grid-area: armour;
+  }
+
+  &__walking-speed {
+    grid-area: movement;
+  }
+
+  &__initiative {
+    grid-area: initiative;
   }
 
   &__abilities {

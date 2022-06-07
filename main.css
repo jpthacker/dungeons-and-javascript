@@ -54,7 +54,7 @@ h5 {
 }
 
 [class*=ability-no] {
-  font-size: 1.25em;
+  font-size: 1.1em;
 }
 
 .justified {
@@ -95,7 +95,7 @@ h5 {
   display: grid;
   grid-auto-columns: 1fr;
   grid-gap: 1vh;
-  grid-template: "name-race-class name-race-class name-race-class" "proficiency hit-points hit-points" "movement-initiative-armour movement-initiative-armour movement-initiative-armour" "abilities abilities abilities" "senses senses senses" "skills skills skills" "actions actions actions" "spells spells spells" "inventory inventory inventory";
+  grid-template: "name-race-class name-race-class name-race-class" "hit-points hit-points armour" "proficiency initiative movement" "abilities abilities abilities" "senses senses senses" "skills skills skills" "actions actions actions" "spells spells spells" "inventory inventory inventory";
 }
 .stats__name-race-class {
   grid-area: name-race-class;
@@ -106,8 +106,14 @@ h5 {
 .stats__hit-points {
   grid-area: hit-points;
 }
-.stats__movement-initiative-armour {
-  grid-area: movement-initiative-armour;
+.stats__armour-calss {
+  grid-area: armour;
+}
+.stats__walking-speed {
+  grid-area: movement;
+}
+.stats__initiative {
+  grid-area: initiative;
 }
 .stats__abilities {
   grid-area: abilities;
