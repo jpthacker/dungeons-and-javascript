@@ -89,48 +89,20 @@ const player = {
   },
   calculateSavingThrows(modifiers) {
     Object.entries(modifiers).forEach(([key, val]) => {
-      switch (key) {
-        case "strength":
-          if (this.class === "Fighter") {
+      this.savingThrows[key] = val;
+      switch (this.class) {
+        case "Cleric":
+          if (key === "wisdom" || key === "charisma")
             this.savingThrows[key] = val + parseInt(this.proficiency);
-          } else {
-            this.savingThrows[key] = val;
-          }
           break;
-        case "dexterity":
-          if (this.class === "Rogue") {
+        case "Fighter":
+          if (key === "strength" || key === "constitution")
             this.savingThrows[key] = val + parseInt(this.proficiency);
-          } else {
-            this.savingThrows[key] = val;
-          }
           break;
-        case "constitution":
-          if (this.class === "Fighter") {
+        case "Rogue":
+          if (key === "dexterity" || key === "intelligence")
             this.savingThrows[key] = val + parseInt(this.proficiency);
-          } else {
-            this.savingThrows[key] = val;
-          }
           break;
-        case "intelligence":
-          if (this.class === "Rogue") {
-            this.savingThrows[key] = val + parseInt(this.proficiency);
-          } else {
-            this.savingThrows[key] = val;
-          }
-          break;
-        case "wisdom":
-          if (this.class === "Cleric") {
-            this.savingThrows[key] = val + parseInt(this.proficiency);
-          } else {
-            this.savingThrows[key] = val;
-          }
-          break;
-        case "charisma":
-          if (this.class === "Cleric") {
-            this.savingThrows[key] = val + parseInt(this.proficiency);
-          } else {
-            this.savingThrows[key] = val;
-          }
       }
     });
   },
