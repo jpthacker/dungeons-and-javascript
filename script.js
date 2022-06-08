@@ -69,66 +69,85 @@ const player = {
   abilities: {},
   modifiers: {},
   savingThrows: {},
-  calculateSavingThrows() {
-    abilityList.forEach((ability) => {
-      switch (ability) {
+  assignAbilities() {
+    for (let i = 0; i < abilityList.length; i++) {
+      if (
+        (abilityList[i] === "wisdom" && this.class === "Cleric") ||
+        (abilityList[i] === "strength" && this.class === "Fighter") ||
+        (abilityList[i] === "dexterity" && this.class === "Rogue")
+      ) {
+        this.abilities[abilityList[i]] = abilityScoreListOrdered[i] + 2;
+      } else {
+        this.abilities[abilityList[i]] = abilityScoreListOrdered[i];
+      }
+    }
+  },
+  assignAbilityModifiers(abilities) {
+    Object.entries(abilities).forEach(([key, val]) => {
+      this.modifiers[key] = Math.floor((val - 10) / 2);
+    });
+  },
+  calculateSavingThrows(modifiers) {
+    Object.entries(modifiers).forEach(([key, val]) => {
+      switch (key) {
         case "strength":
           if (this.class === "Fighter") {
-            this.savingThrows.strength =
-              parseInt(this.strengthModifier) + parseInt(this.proficiency);
+            this.savingThrows[key] = val + parseInt(this.proficiency);
           } else {
-            this.savingThrows.strength = parseInt(this.strengthModifier);
+            this.savingThrows[key] = val;
           }
           break;
         case "dexterity":
           if (this.class === "Rogue") {
-            this.savingThrows.dexterity =
-              parseInt(this.dexterityModifier) + parseInt(this.proficiency);
+            this.savingThrows[key] = val + parseInt(this.proficiency);
           } else {
-            this.savingThrows.dexterity = parseInt(this.dexterityModifier);
+            this.savingThrows[key] = val;
           }
           break;
         case "constitution":
           if (this.class === "Fighter") {
-            this.savingThrows.constitution =
-              parseInt(this.constitutionModifier) + parseInt(this.proficiency);
+            this.savingThrows[key] = val + parseInt(this.proficiency);
           } else {
-            this.savingThrows.constitution = parseInt(
-              this.constitutionModifier
-            );
+            this.savingThrows[key] = val;
           }
           break;
         case "intelligence":
           if (this.class === "Rogue") {
-            this.savingThrows.intelligence =
-              parseInt(this.intelligenceModifier) + parseInt(this.proficiency);
+            this.savingThrows[key] = val + parseInt(this.proficiency);
           } else {
-            this.savingThrows.intelligence = parseInt(
-              this.intelligenceModifier
-            );
+            this.savingThrows[key] = val;
           }
           break;
         case "wisdom":
           if (this.class === "Cleric") {
-            this.savingThrows.wisdom =
-              parseInt(this.wisdomModifier) + parseInt(this.proficiency);
+            this.savingThrows[key] = val + parseInt(this.proficiency);
           } else {
-            this.savingThrows.wisdom = parseInt(this.wisdomModifier);
+            this.savingThrows[key] = val;
           }
           break;
         case "charisma":
           if (this.class === "Cleric") {
-            this.savingThrows.charisma =
-              parseInt(this.charismaModifier) + parseInt(this.proficiency);
+            this.savingThrows[key] = val + parseInt(this.proficiency);
           } else {
-            this.savingThrows.charisma = parseInt(this.charismaModifier);
+            this.savingThrows[key] = val;
           }
       }
     });
   },
+  calculateArmourClass() {
+    switch (this.class) {
+      case "Cleric":
+        player.armourClass = parseInt(this.modifier.dexterity) + 10;
+        break;
+      case "Fighter":
+        player.armourClass = 16;
+        break;
+      case "Rogue":
+        player.armourClass = parseInt(this.modifier.dexterity) + 11;
+    }
+  },
   formatStats(nestedObject) {
     Object.entries(nestedObject).forEach(([key, val]) => {
-      console.log(val);
       if (val >= 0) {
         nestedObject[key] = "+" + val;
       }
@@ -169,7 +188,7 @@ const player = {
   getInitiativeHTML(initiativeContainer) {
     initiativeContainer.innerHTML = `
     <h5 class="stats__initiative-text1">INITIATIVE</h5>
-    <h4 class="stats__initiative-no">${this.dexterityModifier}</h4>
+    <h4 class="stats__initiative-no">${this.modifiers.dexterity}</h4>
     <h5 class="stats__initiative-text2"></h5>
     `;
   },
@@ -184,33 +203,33 @@ const player = {
     abilitiesContainer.innerHTML = `
     <div class="stats__ability--strength">
       <h5 class="stats__ability-text--strength">STRENGTH</h5>
-      <h4 class="stats__ability-modifier--strength">${this.strengthModifier}</h4>
-      <h4 class="stats__ability-no--strength">${this.strength}</h4>
+      <h4 class="stats__ability-modifier--strength">${this.modifiers.strength}</h4>
+      <h4 class="stats__ability-no--strength">${this.abilities.strength}</h4>
     </div>
     <div class="stats__ability--dexterity">
       <h5 class="stats__ability-text--dexterity">DEXTERITY</h5>
-      <h4 class="stats__ability-modifier--dexterity">${this.dexterityModifier}</h4>
-      <h4 class="stats__ability-no--dexterity">${this.dexterity}</h4>
+      <h4 class="stats__ability-modifier--dexterity">${this.modifiers.dexterity}</h4>
+      <h4 class="stats__ability-no--dexterity">${this.abilities.dexterity}</h4>
     </div>
     <div class="stats__ability--constitution">
       <h5 class="stats__ability-text--constitution">CONSTITUTION</h5>
-      <h4 class="stats__ability-modifier--constitution">${this.constitutionModifier}</h4>
-      <h4 class="stats__ability-no--constitution">${this.constitution}</h4>
+      <h4 class="stats__ability-modifier--constitution">${this.modifiers.constitution}</h4>
+      <h4 class="stats__ability-no--constitution">${this.abilities.constitution}</h4>
     </div>
     <div class="stats__ability--intelligence">
       <h5 class="stats__ability-text--intelligence">INTELLIGENCE</h5>
-      <h4 class="stats__ability-modifier--intelligence">${this.intelligenceModifier}</h4>
-      <h4 class="stats__ability-no--intelligence">${this.intelligence}</h4>
+      <h4 class="stats__ability-modifier--intelligence">${this.modifiers.intelligence}</h4>
+      <h4 class="stats__ability-no--intelligence">${this.abilities.intelligence}</h4>
     </div>
     <div class="stats__ability--wisdom">
       <h5 class="stats__ability-text--wisdom">WISDOM</h5>
-      <h4 class="stats__ability-modifier--wisdom">${this.wisdomModifier}</h4>
-      <h4 class="stats__ability-no--wisdom">${this.wisdom}</h4>
+      <h4 class="stats__ability-modifier--wisdom">${this.modifiers.wisdom}</h4>
+      <h4 class="stats__ability-no--wisdom">${this.abilities.wisdom}</h4>
     </div>
     <div class="stats__ability--charisma">
       <h5 class="stats__ability-text--charisma">CHARISMA</h5>
-      <h4 class="stats__ability-modifier--charisma">${this.charismaModifier}</h4>
-      <h4 class="stats__ability-no--charisma">${this.charisma}</h4>
+      <h4 class="stats__ability-modifier--charisma">${this.modifiers.charisma}</h4>
+      <h4 class="stats__ability-no--charisma">${this.abilities.charisma}</h4>
     </div>
   `;
   },
@@ -305,12 +324,12 @@ const loadAbilitiesGenerator = () => {
     errorMessage.innerHTML = "Please select a species";
     errorMessage.classList.remove("hidden");
   }
-  if (abilityModifierList.length > 0) {
+  if (abilityScoreList.length > 0) {
     abilityResetBtn.classList.remove("hidden");
   }
 };
 
-// Loads the character stats
+// Loads the player character's stats
 const loadCharacterStats = () => {
   let abilitiesReady;
   abilitiesSelector.forEach((selector) => {
@@ -328,12 +347,17 @@ const loadCharacterStats = () => {
     abilityResetBtn.classList.add("hidden");
     statsContainer.classList.remove("hidden");
     document.querySelector(".menu__title").innerText = "Your Adventurer";
+    player.assignAbilities();
+    player.assignAbilityModifiers(player.abilities);
     player.proficiency = "+2";
     player.walkingSpeed = 30;
-    player.hitPoints = parseInt(player.constitutionModifier) + player.hitDie;
+    player.hitPoints = parseInt(player.modifiers.constitution) + player.hitDie;
     player.damage = 0;
-    player.calculateSavingThrows();
+    player.calculateSavingThrows(player.modifiers);
+    player.formatStats(player.abilities);
+    player.formatStats(player.modifiers);
     player.formatStats(player.savingThrows);
+    player.calculateArmourClass();
     console.log(player);
     player.getNameHTML(statsName);
     player.getProficiencyHTML(statsProficiency);
@@ -368,17 +392,6 @@ continueBtn.addEventListener("click", (event) => {
       loadAbilitiesGenerator();
       break;
     case "abilities":
-      //Assigns player armour class
-      switch (player.class) {
-        case "Cleric":
-          player.armourClass = parseInt(player.dexterityModifier) + 10;
-          break;
-        case "Fighter":
-          player.armourClass = 16;
-          break;
-        case "Rogue":
-          player.armourClass = parseInt(player.dexterityModifier) + 11;
-      }
       loadCharacterStats();
   }
 });
@@ -498,20 +511,9 @@ speciesSelector.addEventListener("change", (event) => {
   errorMessage.classList.add("hidden");
 });
 
-// Function to calculate the modifiers for each ability
-let currentModifierRaw;
-let currentModifierSign;
-const calculateAbilityModifier = (abilityScore) => {
-  currentModifierRaw = Math.floor((abilityScore - 10) / 2);
-  if (currentModifierRaw >= 0) {
-    currentModifierSign = "+" + currentModifierRaw;
-  } else currentModifierSign = currentModifierRaw;
-};
-
 // Handles the ability buttons and generates dice rolls for abilities (removes the lowest number of four d6 dice rolls and totals the rolls)
 let currentAbilityScore;
 let abilityScoreList = [];
-let abilityModifierList = [];
 for (let i = 0; i < abilityBtn.length; i++) {
   abilityBtn[i].addEventListener("click", (event) => {
     if (abilityScoreList.length < 6) {
@@ -520,8 +522,6 @@ for (let i = 0; i < abilityBtn.length; i++) {
       let abilityRoll = rolledDice.sort().filter((_, i) => i);
       currentAbilityScore = abilityRoll.reduce((a, b) => a + b);
       abilityScoreList.push(currentAbilityScore);
-      calculateAbilityModifier(currentAbilityScore);
-      abilityModifierList.push(currentModifierSign);
       abilityScore[i].innerHTML = currentAbilityScore;
       abilityBtn[i].classList.add("hidden");
       abilitiesSelector[i].classList.remove("hidden");
@@ -529,7 +529,6 @@ for (let i = 0; i < abilityBtn.length; i++) {
         ability[i + 1].classList.remove("hidden");
       }
       console.log(abilityScoreList);
-      console.log(abilityModifierList);
     } else {
       errorMessage.innerHTML = "Press reset to re-roll your scores";
       errorMessage.classList.remove("hidden");
@@ -537,74 +536,51 @@ for (let i = 0; i < abilityBtn.length; i++) {
   });
 }
 
+// Reorders the ability scores into correct order (after assignment)
+const reorderAbilities = (ability, to) => {
+  abilityScoreListOrdered.splice(to, 1, ability);
+  console.log(abilityScoreListOrdered);
+};
+
 // Handles the assignment of ability scores
+const abilityScoreListOrdered = [0, 0, 0, 0, 0, 0];
 for (let i = 0; i < abilitiesSelector.length; i++) {
   abilitiesSelector[i].addEventListener("change", (event) => {
     let abilityOption = event.target.value;
     abilityResetBtn.classList.remove("hidden");
     switch (abilityOption) {
       case "1":
-        if (player.species === "dwarf") {
-          player.strength = abilityScoreList[i] + 2;
-          calculateAbilityModifier(player.strength);
-          player.strengthModifier = currentModifierSign;
-        } else {
-          player.strength = abilityScoreList[i];
-          player.strengthModifier = abilityModifierList[i];
-        }
-        console.log(player.strength);
+        reorderAbilities(abilityScoreList[i], 0);
         abilitiesSelector.forEach((selector) => {
           selector[1].disabled = true;
         });
         break;
       case "2":
-        if (player.species === "elf") {
-          player.dexterity = abilityScoreList[i] + 2;
-          calculateAbilityModifier(player.dexterity);
-          player.dexterityModifier = currentModifierSign;
-        } else {
-          player.dexterity = abilityScoreList[i];
-          player.dexterityModifier = abilityModifierList[i];
-        }
-        console.log(player.dexterity);
+        reorderAbilities(abilityScoreList[i], 1);
         abilitiesSelector.forEach((selector) => {
           selector[2].disabled = true;
         });
         break;
       case "3":
-        player.constitution = abilityScoreList[i];
-        player.constitutionModifier = abilityModifierList[i];
-        console.log(player.constitution);
+        reorderAbilities(abilityScoreList[i], 2);
         abilitiesSelector.forEach((selector) => {
           selector[3].disabled = true;
         });
         break;
       case "4":
-        player.intelligence = abilityScoreList[i];
-        player.intelligenceModifier = abilityModifierList[i];
-        console.log(player.intelligence);
+        reorderAbilities(abilityScoreList[i], 3);
         abilitiesSelector.forEach((selector) => {
           selector[4].disabled = true;
         });
         break;
       case "5":
-        if (player.species === "human") {
-          player.wisdom = abilityScoreList[i] + 2;
-          calculateAbilityModifier(player.wisdom);
-          player.wisdomModifier = currentModifierSign;
-        } else {
-          player.wisdom = abilityScoreList[i];
-          player.wisdomModifier = abilityModifierList[i];
-        }
-        console.log(player.wisdom);
+        reorderAbilities(abilityScoreList[i], 4);
         abilitiesSelector.forEach((selector) => {
           selector[5].disabled = true;
         });
         break;
       case "6":
-        player.charisma = abilityScoreList[i];
-        player.charismaModifier = abilityModifierList[i];
-        console.log(player.charisma);
+        reorderAbilities(abilityScoreList[i], 5);
         abilitiesSelector.forEach((selector) => {
           selector[6].disabled = true;
         });
@@ -613,7 +589,7 @@ for (let i = 0; i < abilitiesSelector.length; i++) {
   });
 }
 
-// Resets the ability selectors
+// Handles the reset button and resets the ability selectors
 abilityResetBtn.addEventListener("click", (event) => {
   event.preventDefault();
   abilityOptions.forEach((option) => {
@@ -624,5 +600,4 @@ abilityResetBtn.addEventListener("click", (event) => {
     selector[0].disabled = true;
     selector.disabled = false;
   });
-  console.log(abilityModifierList);
 });
