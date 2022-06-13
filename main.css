@@ -57,107 +57,17 @@ h5 {
   font-size: 1.1em;
 }
 
+[class*=saving-throws-mod] {
+  font-size: 1em;
+}
+
+.stats__saving-throws-title,
+.stats__senses-title {
+  font-size: 1em;
+}
+
 .justified {
   text-align: justify;
-}
-
-.ability__container {
-  display: grid;
-  grid-auto-columns: 1fr;
-  grid-template: "ability1" "ability2" "ability3" "ability4" "ability5" "ability6";
-}
-
-.ability--one {
-  grid-area: ability1;
-}
-
-.ability--two {
-  grid-area: ability2;
-}
-
-.ability--three {
-  grid-area: ability3;
-}
-
-.ability--four {
-  grid-area: ability4;
-}
-
-.ability--five {
-  grid-area: ability5;
-}
-
-.ability--six {
-  grid-area: ability6;
-}
-
-.stats {
-  display: grid;
-  grid-auto-columns: 1fr;
-  grid-gap: 1vh;
-  grid-template: "name-race-class name-race-class name-race-class" "hit-points hit-points armour" "proficiency initiative movement" "abilities abilities abilities" "senses senses senses" "skills skills skills" "actions actions actions" "spells spells spells" "inventory inventory inventory";
-}
-.stats__name-race-class {
-  grid-area: name-race-class;
-}
-.stats__proficiency {
-  grid-area: proficiency;
-}
-.stats__hit-points {
-  grid-area: hit-points;
-}
-.stats__armour-calss {
-  grid-area: armour;
-}
-.stats__walking-speed {
-  grid-area: movement;
-}
-.stats__initiative {
-  grid-area: initiative;
-}
-.stats__abilities {
-  grid-area: abilities;
-}
-.stats__senses {
-  grid-area: senses;
-}
-.stats__skills {
-  grid-area: skills;
-}
-.stats__actions {
-  grid-area: actions;
-}
-.stats__spells {
-  grid-area: spells;
-}
-.stats__inventory {
-  grid-area: inventory;
-}
-
-.stats__abilities {
-  display: grid;
-  grid-auto-columns: 1fr;
-  grid-gap: 1vh;
-  grid-template: "strength dexterity constitution" "intelligence wisdom charisma";
-}
-
-.stats__skills--strength {
-  grid-area: strength;
-}
-.stats__skills--dexterity {
-  grid-area: dexterity;
-}
-.stats__skills--constitution {
-  grid-area: constitution;
-}
-.stats__skills--intelligence {
-  grid-area: intelligence;
-}
-.stats__skills--wisdom {
-  grid-area: wisdom;
-}
-.stats__skills--charisma {
-  grid-area: charisma;
 }
 
 * {
@@ -257,6 +167,32 @@ h5 {
   min-width: 90%;
 }
 
+[class*=saving-throws--],
+[class*=senses--] {
+  flex-direction: row;
+  padding: 5px;
+}
+
+[class*=senses--] {
+  justify-content: flex-start;
+}
+
+[class*=saving-throws-text],
+[class*=senses-text] {
+  justify-content: center;
+  padding-left: 15px;
+}
+
+[class*=saving-throws-mod] {
+  padding: 5px;
+  min-width: 32px;
+}
+
+[class*=senses-mod] {
+  padding: 5px;
+  min-width: 46px;
+}
+
 .stats {
   padding: 20px;
 }
@@ -301,15 +237,155 @@ h5 {
 }
 .stats__abilities {
   border: 0;
-  padding: 10px 0 10px 0;
+  padding: 32px 0 16px 0;
+}
+.stats__saving-throws, .stats__senses {
+  border: 0;
+  padding: 16px 0 16px 0;
+}
+.stats__saving-throws-title, .stats__senses-title {
+  border: 0;
+  padding: 0 0 5px 0;
+}
+
+.title--top {
+  top: 5vh;
+}
+
+.hidden {
+  display: none;
+  position: fixed;
+}
+
+.ability__container {
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-template: "ability1" "ability2" "ability3" "ability4" "ability5" "ability6";
+}
+
+.ability--one {
+  grid-area: ability1;
+}
+
+.ability--two {
+  grid-area: ability2;
+}
+
+.ability--three {
+  grid-area: ability3;
+}
+
+.ability--four {
+  grid-area: ability4;
+}
+
+.ability--five {
+  grid-area: ability5;
+}
+
+.ability--six {
+  grid-area: ability6;
+}
+
+.stats {
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-gap: 1vh;
+  grid-template: "name-race-class name-race-class name-race-class" "hit-points hit-points armour" "proficiency initiative movement" "abilities abilities abilities" "saving-throws saving-throws saving-throws" "senses senses senses" "skills skills skills" "actions actions actions" "spells spells spells" "inventory inventory inventory";
+}
+.stats__name-race-class {
+  grid-area: name-race-class;
+}
+.stats__proficiency {
+  grid-area: proficiency;
+}
+.stats__hit-points {
+  grid-area: hit-points;
+}
+.stats__armour-calss {
+  grid-area: armour;
+}
+.stats__walking-speed {
+  grid-area: movement;
+}
+.stats__initiative {
+  grid-area: initiative;
+}
+.stats__abilities {
+  grid-area: abilities;
+}
+.stats__saving-throws {
+  grid-area: saving-throws;
+}
+.stats__senses {
+  grid-area: senses;
+}
+.stats__skills {
+  grid-area: skills;
+}
+.stats__actions {
+  grid-area: actions;
+}
+.stats__spells {
+  grid-area: spells;
+}
+.stats__inventory {
+  grid-area: inventory;
+}
+
+.stats__abilities {
   display: grid;
   grid-auto-columns: 1fr;
   grid-gap: 1vh;
   grid-template: "strength dexterity constitution" "intelligence wisdom charisma";
 }
 
-.title--top {
-  top: 5vh;
+.stats__skills--strength {
+  grid-area: strength;
+}
+.stats__skills--dexterity {
+  grid-area: dexterity;
+}
+.stats__skills--constitution {
+  grid-area: constitution;
+}
+.stats__skills--intelligence {
+  grid-area: intelligence;
+}
+.stats__skills--wisdom {
+  grid-area: wisdom;
+}
+.stats__skills--charisma {
+  grid-area: charisma;
+}
+
+.stats__saving-throws {
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-gap: 1vh;
+  grid-template: "st-title st-title" "st-strength st-dexterity" "st-constitution st-intelligence" "st-wisdom st-charisma";
+}
+
+.stats__saving-throws-title {
+  grid-area: st-title;
+}
+.stats__saving-throws--strength {
+  grid-area: st-strength;
+}
+.stats__saving-throws--dexterity {
+  grid-area: st-dexterity;
+}
+.stats__saving-throws--constitution {
+  grid-area: st-constitution;
+}
+.stats__saving-throws--intelligence {
+  grid-area: st-intelligence;
+}
+.stats__saving-throws--wisdom {
+  grid-area: st-wisdom;
+}
+.stats__saving-throws--charisma {
+  grid-area: st-charisma;
 }
 
 .hidden {

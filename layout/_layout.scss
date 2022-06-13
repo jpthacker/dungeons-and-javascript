@@ -98,6 +98,31 @@
   min-width: 90%;
 }
 
+[class*="saving-throws--"],
+[class*="senses--"] {
+  flex-direction: row;
+  padding: 5px;
+}
+[class*="senses--"] {
+  justify-content: flex-start;
+}
+
+[class*="saving-throws-text"],
+[class*="senses-text"] {
+  justify-content: center;
+  padding-left: 15px;
+}
+
+[class*="saving-throws-mod"] {
+  padding: 5px;
+  min-width: 32px;
+}
+
+[class*="senses-mod"] {
+  padding: 5px;
+  min-width: 46px;
+}
+
 .stats {
   padding: 20px;
   &__name-race-class {
@@ -151,13 +176,18 @@
 
   &__abilities {
     border: 0;
-    padding: 10px 0 10px 0;
-    display: grid;
-    grid-auto-columns: 1fr;
-    grid-gap: 1vh;
-    grid-template:
-      "strength dexterity constitution"
-      "intelligence wisdom charisma";
+    padding: 32px 0 16px 0;
+  }
+
+  &__saving-throws,
+  &__senses {
+    border: 0;
+    padding: 16px 0 16px 0;
+
+    &-title {
+      border: 0;
+      padding: 0 0 5px 0;
+    }
   }
 }
 

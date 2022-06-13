@@ -23,12 +23,14 @@ const statsInitiative = document.querySelector(".stats__initiative");
 const statsArmourClass = document.querySelector(".stats__armour-class");
 const statsAbilities = document.querySelector(".stats__abilities");
 const statsSavingThrows = document.querySelector(".stats__saving-throws");
+const statsSenses = document.querySelector(".stats__senses");
+const statsSkills = document.querySelector(".stats__skills");
 const continueBtn = document.querySelector(".btn--continue");
 const abilityBtn = document.querySelectorAll(".ability__btn");
 const abilityResetBtn = document.querySelector(".btn--reset");
 const backBtn = document.querySelector(".btn--back");
 
-// Handles DnD standard dice rolls (original code courtesy of BryanBansbach (https://github.com/BryanBansbach/DiceRoller) - with subsequent edits)
+// Handles DnD standard dice rolls (original code courtesy of BryanBansbach (https://github.com/BryanBansbach/DiceRoller) - with revisions)
 let rolledDice = [];
 const standardDice = [4, 6, 8, 10, 12, 20];
 const dice = (diceType, diceNumber) => {
@@ -69,6 +71,8 @@ const player = {
   abilities: {},
   modifiers: {},
   savingThrows: {},
+  senses: {},
+  skills: {},
   assignAbilities() {
     for (let i = 0; i < abilityList.length; i++) {
       if (
@@ -106,16 +110,21 @@ const player = {
       }
     });
   },
+  calculateSenses() {
+    this.senses.perception = parseInt(this.modifiers.wisdom) + 10;
+    this.senses.investigation = parseInt(this.modifiers.intelligence) + 10;
+    this.senses.insight = parseInt(this.modifiers.wisdom) + 10;
+  },
   calculateArmourClass() {
     switch (this.class) {
       case "Cleric":
-        player.armourClass = parseInt(this.modifier.dexterity) + 10;
+        player.armourClass = parseInt(this.modifiers.dexterity) + 10;
         break;
       case "Fighter":
         player.armourClass = 16;
         break;
       case "Rogue":
-        player.armourClass = parseInt(this.modifier.dexterity) + 11;
+        player.armourClass = parseInt(this.modifiers.dexterity) + 11;
     }
   },
   formatStats(nestedObject) {
@@ -207,7 +216,40 @@ const player = {
   },
   getSavingThrowsHTML(savingThrowsContainer) {
     savingThrowsContainer.innerHTML = `
-    
+    <h4 class="stats__saving-throws-title">Saving Throws</h4>
+    <div class="stats__saving-throws--strength">
+      <h5 class="stats__saving-throws-text--strength">STRENGTH</h5>
+      <h4 class="stats__saving-throws-modifier--strength">${this.savingThrows.strength}</h4>
+    </div>
+    <div class="stats__saving-throws--dexterity">
+      <h5 class="stats__saving-throws-text--dexterity">DEXTERITY</h5>
+      <h4 class="stats__saving-throws-modifier--dexterity">${this.savingThrows.dexterity}</h4>
+    </div>
+    <div class="stats__saving-throws--constitution">
+      <h5 class="stats__saving-throws-text--constitution">CONSTITUTION</h5>
+      <h4 class="stats__saving-throws-modifier--constitution">${this.savingThrows.constitution}</h4>
+    </div>
+    <div class="stats__saving-throws--intelligence">
+      <h5 class="stats__saving-throws-text--intelligence">INTELLIGENCE</h5>
+      <h4 class="stats__saving-throws-modifier--intelligence">${this.savingThrows.intelligence}</h4>
+    </div>
+    <div class="stats__saving-throws--wisdom">
+      <h5 class="stats__saving-throws-text--wisdom">WISDOM</h5>
+      <h4 class="stats__saving-throws-modifier--wisdom">${this.savingThrows.wisdom}</h4>
+    </div>
+    <div class="stats__saving-throws--charisma">
+      <h5 class="stats__saving-throws-text--charisma">CHARISMA</h5>
+      <h4 class="stats__saving-throws-modifier--charisma">${this.savingThrows.charisma}</h4>
+    </div>
+    `;
+  },
+  getSensesHTML(sensesContainer) {
+    sensesContainer.innerHTML = `
+    <h4 class="stats__senses-title">Senses</h4>
+    <div class="stats__senses--perception">
+      <h4 class="stats__senses-modifier--wisdom">${this.senses.perception}</h4>
+      <h5 class="stats__senses-text--perception">PASSIVE WIS (PERCEPTION)</h5>
+    </div>
     `;
   },
 };
@@ -318,6 +360,7 @@ const loadCharacterStats = () => {
     createContainer.classList.add("hidden");
     abilityResetBtn.classList.add("hidden");
     statsContainer.classList.remove("hidden");
+    errorMessage.classList.add("hidden");
     document.querySelector(".menu__title").innerText = "Your Adventurer";
     player.assignAbilities();
     player.assignAbilityModifiers(player.abilities);
@@ -326,7 +369,7 @@ const loadCharacterStats = () => {
     player.hitPoints = parseInt(player.modifiers.constitution) + player.hitDie;
     player.damage = 0;
     player.calculateSavingThrows(player.modifiers);
-    player.formatStats(player.abilities);
+    player.calculateSenses();
     player.formatStats(player.modifiers);
     player.formatStats(player.savingThrows);
     player.calculateArmourClass();
@@ -338,7 +381,9 @@ const loadCharacterStats = () => {
     player.getInitiativeHTML(statsInitiative);
     player.getArmourClassHTML(statsArmourClass);
     player.getAbilitiesHTML(statsAbilities);
-    errorMessage.classList.add("hidden");
+    player.getSavingThrowsHTML(statsSavingThrows);
+    player.getSensesHTML(statsSenses);
+    player.getSkillsHTML(statsSkills);
     currentCreationStage = "stats";
   }
 };

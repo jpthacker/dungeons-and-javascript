@@ -45,6 +45,7 @@
     "hit-points hit-points armour"
     "proficiency initiative movement"
     "abilities abilities abilities"
+    "saving-throws saving-throws saving-throws"
     "senses senses senses"
     "skills skills skills"
     "actions actions actions"
@@ -77,6 +78,10 @@
 
   &__abilities {
     grid-area: abilities;
+  }
+
+  &__saving-throws {
+    grid-area: saving-throws;
   }
 
   &__senses {
@@ -133,4 +138,49 @@
   &__skills--charisma {
     grid-area: charisma;
   }
+}
+
+.stats__saving-throws {
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-gap: 1vh;
+  grid-template:
+    "st-title st-title"
+    "st-strength st-dexterity"
+    "st-constitution st-intelligence"
+    "st-wisdom st-charisma";
+}
+
+.stats {
+  &__saving-throws-title {
+    grid-area: st-title;
+  }
+  &__saving-throws--strength {
+    grid-area: st-strength;
+  }
+
+  &__saving-throws--dexterity {
+    grid-area: st-dexterity;
+  }
+
+  &__saving-throws--constitution {
+    grid-area: st-constitution;
+  }
+
+  &__saving-throws--intelligence {
+    grid-area: st-intelligence;
+  }
+
+  &__saving-throws--wisdom {
+    grid-area: st-wisdom;
+  }
+
+  &__saving-throws--charisma {
+    grid-area: st-charisma;
+  }
+}
+
+.hidden {
+  display: none;
+  position: fixed;
 }
