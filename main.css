@@ -53,14 +53,12 @@ h5 {
   font-weight: 600;
 }
 
-[class*=ability-no] {
+[class*=ability-no],
+[class*=senses-mod] {
   font-size: 1.1em;
 }
 
-[class*=saving-throws-mod] {
-  font-size: 1em;
-}
-
+[class*=saving-throws-mod],
 .stats__saving-throws-title,
 .stats__senses-title {
   font-size: 1em;

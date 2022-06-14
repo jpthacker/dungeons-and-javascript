@@ -72,7 +72,10 @@ const player = {
   modifiers: {},
   savingThrows: {},
   senses: {},
-  skills: {},
+  // skills: {},
+  inventory: {},
+  attack: 0,
+  damage: 0,
   assignAbilities() {
     for (let i = 0; i < abilityList.length; i++) {
       if (
@@ -115,6 +118,38 @@ const player = {
     this.senses.investigation = parseInt(this.modifiers.intelligence) + 10;
     this.senses.insight = parseInt(this.modifiers.wisdom) + 10;
   },
+  // calculateSkills(modifiers, skills) {
+  //   Object.entries(modifiers).forEach(([key, val]) => {
+  //     switch (key) {
+  //       case "strength":
+  //         skills.athletics = val;
+  //         break;
+  //       case "dexterity":
+  //         skills.acrobatics = val;
+  //         skills.slightOfHand = val;
+  //         skills.stealth = val;
+  //         break;
+  //       case "intelligence":
+  //         skills.arcana = val;
+  //         skills.history = val;
+  //         skills.investigation = val;
+  //         skills.nature = val;
+  //         skills.religion = val;
+  //       case "wisdom":
+  //         skills.animalHandling = val;
+  //         skills.insight = val;
+  //         skills.medicine = val;
+  //         skills.perception = val;
+  //         skills.survivial = val;
+  //         break;
+  //       case "charisma":
+  //         skills.deception = val;
+  //         skills.intimidation = val;
+  //         skills.performance = val;
+  //         skills.persuasion = val;
+  //     }
+  //   });
+  // },
   calculateArmourClass() {
     switch (this.class) {
       case "Cleric":
@@ -134,6 +169,32 @@ const player = {
       }
     });
   },
+  assignInventory(inventory) {
+    inventory.potion = "Health Potion";
+    switch (this.class) {
+      case "Cleric":
+        inventory.weaponMelee = "Mace";
+        inventory.armour = "Shield";
+        inventory.scroll = "Scroll of Knocking";
+        break;
+      case "Fighter":
+        inventory.weaponMelee = "Battle Axe";
+        inventory.weaponRanged = "Throwing Axe";
+        inventory.armour = "Plate Armour";
+        break;
+      case "Rogue":
+        inventory.weaponMelee = "Knife";
+        inventory.weaponRanged = "Crossbow";
+        inventory.tools = "Thieves Tools";
+    }
+  },
+  calculateAttack() {
+    let attackRoll = dice(20);
+    this.attack =
+      attackRoll +
+      parseInt(this.modifiers.strength) +
+      parseInt(this.proficiency);
+  },
   getNameHTML(nameContainer) {
     nameContainer.innerHTML = `
     <h4 class="stats__title stats__name">${this.name}</h4>
@@ -151,10 +212,8 @@ const player = {
     hitPointsContainer.innerHTML = `
     <h5 class="stats__hit-points-text1">CURRENT / MAX</h5>
     <div class="stats__hit-points-no-container">
-      <h4 class="stats__hit-points-current-no">${
-        this.hitPoints - this.damage
-      }&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp</h4>
-      <h4 class="stats__hit-points-max-no">${this.hitPoints}</h4>
+      <h4 class="stats__hit-points-current-no">${this.hitPointsCurrent}&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp</h4>
+      <h4 class="stats__hit-points-max-no">${this.hitPointsMax}</h4>
     </div>
     <h5 class="stats__hit-points-text2">HIT POINTS</h5>
     `;
@@ -247,11 +306,20 @@ const player = {
     sensesContainer.innerHTML = `
     <h4 class="stats__senses-title">Senses</h4>
     <div class="stats__senses--perception">
-      <h4 class="stats__senses-modifier--wisdom">${this.senses.perception}</h4>
+      <h4 class="stats__senses-modifier--perception">${this.senses.perception}</h4>
       <h5 class="stats__senses-text--perception">PASSIVE WIS (PERCEPTION)</h5>
     </div>
     `;
   },
+  // getSkillsHTML(skillsContainer) {
+  //   skillsContainer.innerHTML = `
+  //   <h4 class="stats__skills-title">Skills</h4>
+  //   <div class="stats__skills--athletics">
+  //     <h5 class="stats__saving-throws-text--athletics">Athletics (Dex)</h5>
+  //     <h4 class="stats__saving-throws-modifier--strength">${this.skills.athletics}</h4>
+  //   </div>
+  //   `;
+  // },
 };
 
 let currentCreationStage = "start";
@@ -366,13 +434,18 @@ const loadCharacterStats = () => {
     player.assignAbilityModifiers(player.abilities);
     player.proficiency = "+2";
     player.walkingSpeed = 30;
-    player.hitPoints = parseInt(player.modifiers.constitution) + player.hitDie;
-    player.damage = 0;
+    player.hitPointsMax =
+      parseInt(player.modifiers.constitution) + player.hitDie;
+    player.hitPointsCurrent = player.hitPointsMax;
     player.calculateSavingThrows(player.modifiers);
     player.calculateSenses();
+    player.assignInventory(player.inventory);
+    // player.calculateSkills(player.modifiers, player.skills);
     player.formatStats(player.modifiers);
     player.formatStats(player.savingThrows);
+    // player.formatStats(player.skills);
     player.calculateArmourClass();
+    player.calculateAttack();
     console.log(player);
     player.getNameHTML(statsName);
     player.getProficiencyHTML(statsProficiency);
@@ -383,7 +456,7 @@ const loadCharacterStats = () => {
     player.getAbilitiesHTML(statsAbilities);
     player.getSavingThrowsHTML(statsSavingThrows);
     player.getSensesHTML(statsSenses);
-    player.getSkillsHTML(statsSkills);
+    // player.getSkillsHTML(statsSkills);
     currentCreationStage = "stats";
   }
 };
@@ -420,7 +493,6 @@ backBtn.addEventListener("click", (event) => {
   switch (currentCreationStage) {
     case "name":
       nameForm.classList.add("hidden");
-      errorMessage.innerHTML = "";
       errorMessage.classList.add("hidden");
       creationMessage.classList.remove("hidden");
       creationMessage.style.marginTop = "0";
@@ -431,12 +503,10 @@ backBtn.addEventListener("click", (event) => {
     case "class":
       loadNameForm();
       classSelector.classList.add("hidden");
-      errorMessage.innerHTML = "";
       errorMessage.classList.add("hidden");
       break;
     case "species":
       speciesSelector.classList.add("hidden");
-      errorMessage.innerHTML = "";
       errorMessage.classList.add("hidden");
       loadClassSelector();
       break;
@@ -528,7 +598,7 @@ speciesSelector.addEventListener("change", (event) => {
   errorMessage.classList.add("hidden");
 });
 
-// Handles the ability buttons and generates dice rolls for abilities (removes the lowest number of four d6 dice rolls and totals the rolls)
+// Handles the ability buttons and generates dice rolls for abilities (removes the lowest number of four d6 dice rolls and totals the remaining rolls)
 let currentAbilityScore;
 let abilityScoreList = [];
 for (let i = 0; i < abilityBtn.length; i++) {
