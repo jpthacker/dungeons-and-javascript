@@ -72,8 +72,7 @@ const player = {
   modifiers: {},
   savingThrows: {},
   senses: {},
-  // skills: {},
-  inventory: {},
+  equipment: {},
   attack: 0,
   damage: 0,
   assignAbilities() {
@@ -118,38 +117,6 @@ const player = {
     this.senses.investigation = parseInt(this.modifiers.intelligence) + 10;
     this.senses.insight = parseInt(this.modifiers.wisdom) + 10;
   },
-  // calculateSkills(modifiers, skills) {
-  //   Object.entries(modifiers).forEach(([key, val]) => {
-  //     switch (key) {
-  //       case "strength":
-  //         skills.athletics = val;
-  //         break;
-  //       case "dexterity":
-  //         skills.acrobatics = val;
-  //         skills.slightOfHand = val;
-  //         skills.stealth = val;
-  //         break;
-  //       case "intelligence":
-  //         skills.arcana = val;
-  //         skills.history = val;
-  //         skills.investigation = val;
-  //         skills.nature = val;
-  //         skills.religion = val;
-  //       case "wisdom":
-  //         skills.animalHandling = val;
-  //         skills.insight = val;
-  //         skills.medicine = val;
-  //         skills.perception = val;
-  //         skills.survivial = val;
-  //         break;
-  //       case "charisma":
-  //         skills.deception = val;
-  //         skills.intimidation = val;
-  //         skills.performance = val;
-  //         skills.persuasion = val;
-  //     }
-  //   });
-  // },
   calculateArmourClass() {
     switch (this.class) {
       case "Cleric":
@@ -169,23 +136,22 @@ const player = {
       }
     });
   },
-  assignInventory(inventory) {
-    inventory.potion = "Health Potion";
+  assignEquipment(equipment) {
+    equipment.potion = "Health Potion";
     switch (this.class) {
       case "Cleric":
-        inventory.weaponMelee = "Mace";
-        inventory.armour = "Shield";
-        inventory.scroll = "Scroll of Knocking";
+        equipment.weaponMelee = mace;
+        equipment.armour = "Shield";
         break;
       case "Fighter":
-        inventory.weaponMelee = "Battle Axe";
-        inventory.weaponRanged = "Throwing Axe";
-        inventory.armour = "Plate Armour";
+        equipment.weaponMelee = battleaxe;
+        equipment.weaponRanged = throwingAxe;
+        equipment.armour = "Plate Armour";
         break;
       case "Rogue":
-        inventory.weaponMelee = "Knife";
-        inventory.weaponRanged = "Crossbow";
-        inventory.tools = "Thieves Tools";
+        equipment.weaponMelee = dagger;
+        equipment.weaponRanged = crossbow;
+        equipment.tools = "Thieves Tools";
     }
   },
   calculateAttack() {
@@ -311,16 +277,31 @@ const player = {
     </div>
     `;
   },
-  // getSkillsHTML(skillsContainer) {
-  //   skillsContainer.innerHTML = `
-  //   <h4 class="stats__skills-title">Skills</h4>
-  //   <div class="stats__skills--athletics">
-  //     <h5 class="stats__saving-throws-text--athletics">Athletics (Dex)</h5>
-  //     <h4 class="stats__saving-throws-modifier--strength">${this.skills.athletics}</h4>
-  //   </div>
-  //   `;
-  // },
 };
+
+// Weapon class
+class Weapon {
+  constructor(name, range, modifier, damageDie) {
+    (this.name = name),
+      (this.range = range),
+      (this.modifier = modifier),
+      (this.damageDie = damageDie);
+  }
+  calculateWeaponDamage(user) {
+    return dice(this.damageDie) + parseInt(user.modifiers[this.modifier]);
+  }
+  getWeaponHTML() {}
+}
+
+// Melee weapons
+const battleaxe = new Weapon("BattleAxe", 5, "strength", 8);
+const dagger = new Weapon("Dagger", 5, "dexterity", 4);
+const mace = new Weapon("Mace", 5, "Strength", 6);
+const shortsword = new Weapon("Shortsword", 5, "dexterity", 6);
+
+// Ranged weapons
+const crossbow = new Weapon("Crossbow", 80, "dexterity", 6);
+const throwingAxe = new Weapon("Throwing Axe", 20, "strength", 6);
 
 let currentCreationStage = "start";
 
@@ -439,13 +420,12 @@ const loadCharacterStats = () => {
     player.hitPointsCurrent = player.hitPointsMax;
     player.calculateSavingThrows(player.modifiers);
     player.calculateSenses();
-    player.assignInventory(player.inventory);
-    // player.calculateSkills(player.modifiers, player.skills);
+    player.assignEquipment(player.equipment);
     player.formatStats(player.modifiers);
     player.formatStats(player.savingThrows);
-    // player.formatStats(player.skills);
     player.calculateArmourClass();
     player.calculateAttack();
+    player.damage = player.equipment.weaponMelee.calculateWeaponDamage(player);
     console.log(player);
     player.getNameHTML(statsName);
     player.getProficiencyHTML(statsProficiency);
@@ -456,7 +436,6 @@ const loadCharacterStats = () => {
     player.getAbilitiesHTML(statsAbilities);
     player.getSavingThrowsHTML(statsSavingThrows);
     player.getSensesHTML(statsSenses);
-    // player.getSkillsHTML(statsSkills);
     currentCreationStage = "stats";
   }
 };
