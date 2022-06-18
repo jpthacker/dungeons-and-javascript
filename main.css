@@ -54,14 +54,25 @@ h5 {
 }
 
 [class*=ability-no],
-[class*=senses-mod] {
+[class*=senses-mod],
+[class*=weapon-attack],
+[class*=armour-bonus] {
   font-size: 1.1em;
 }
 
 [class*=saving-throws-mod],
 .stats__saving-throws-title,
-.stats__senses-title {
+.stats__senses-title,
+.stats__equipment-title {
   font-size: 1em;
+}
+
+[class*=-table] > h5 {
+  color: #bc0f0f;
+}
+
+[class*=__equipment-weapon--] > h4 {
+  font-size: 1.3em;
 }
 
 .justified {
@@ -166,9 +177,18 @@ h5 {
 }
 
 [class*=saving-throws--],
-[class*=senses--] {
+[class*=senses--],
+[class*=potion--],
+[class*=armour--],
+[class*=weapon--],
+[class*=-table] {
   flex-direction: row;
+  justify-content: flex-start;
   padding: 5px;
+}
+
+[class*=saving-throws--] {
+  justify-content: space-between;
 }
 
 [class*=senses--] {
@@ -189,6 +209,51 @@ h5 {
 [class*=senses-mod] {
   padding: 5px;
   min-width: 46px;
+}
+
+[class*=__equipment--] {
+  padding: 0 10px;
+}
+
+[class*=__equipment-weapon--] > h5,
+[class*=__equipment-table--weapons] > h5 {
+  margin: 0 6vw 0 0;
+  padding-left: 0;
+  padding-right: 0;
+  max-width: 60px;
+  min-width: 60px;
+}
+
+[class*=__equipment-weapon--] > h4,
+[class*=__equipment-armour--] > h4 {
+  margin: 0 6vw 0 0;
+  min-width: 60px;
+  max-height: 54px;
+  min-height: 54px;
+  padding: 5px;
+  justify-content: center;
+}
+
+[class*=__equipment-armour--] > h5,
+[class*=__equipment-potion--] > h5,
+[class*=__equipment-tools--] > h5,
+[class*=__equipment-table--armour] > h5,
+[class*=__equipment-table--potions] > h5,
+[class*=__equipment-table--tools] > h5 {
+  margin: 0 16vw 0 0;
+  padding-left: 0;
+  padding-right: 0;
+  max-width: 60px;
+  min-width: 60px;
+}
+
+[class*=__equipment-weapon--] > h4 {
+  margin: 0 6vw 0 0;
+  min-width: 60px;
+  max-height: 54px;
+  min-height: 54px;
+  padding: 5px;
+  justify-content: center;
 }
 
 .stats {
@@ -237,13 +302,30 @@ h5 {
   border: 0;
   padding: 32px 0 16px 0;
 }
-.stats__saving-throws, .stats__senses {
-  border: 0;
-  padding: 16px 0 16px 0;
+.stats__saving-throws, .stats__senses, .stats__equipment {
+  padding: 16px 10px 16px 10px;
+  margin-bottom: 16px;
 }
-.stats__saving-throws-title, .stats__senses-title {
+.stats__saving-throws-title, .stats__senses-title, .stats__equipment-title {
   border: 0;
   padding: 0 0 5px 0;
+}
+.stats__equipment h5 {
+  border: 0;
+  justify-content: center;
+}
+.stats__equipment div {
+  border: 0;
+}
+.stats__equipment [class*=__equipment-table--] {
+  border-radius: 0;
+  border-bottom: solid #bc0f0f 1px;
+}
+.stats__equipment [class*=__equipment-table--] h5 {
+  border: 0;
+}
+.stats__equipment > div {
+  border: 0;
 }
 
 .title--top {
@@ -289,7 +371,7 @@ h5 {
   display: grid;
   grid-auto-columns: 1fr;
   grid-gap: 1vh;
-  grid-template: "name-race-class name-race-class name-race-class" "hit-points hit-points armour" "proficiency initiative movement" "abilities abilities abilities" "saving-throws saving-throws saving-throws" "senses senses senses" "skills skills skills" "actions actions actions" "spells spells spells" "inventory inventory inventory";
+  grid-template: "name-race-class name-race-class name-race-class" "hit-points hit-points armour" "proficiency initiative movement" "abilities abilities abilities" "saving-throws saving-throws saving-throws" "senses senses senses" "equipment equipment equipment" "spells spells spells";
 }
 .stats__name-race-class {
   grid-area: name-race-class;
@@ -327,8 +409,8 @@ h5 {
 .stats__spells {
   grid-area: spells;
 }
-.stats__inventory {
-  grid-area: inventory;
+.stats__equipment {
+  grid-area: equipment;
 }
 
 .stats__abilities {

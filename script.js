@@ -24,7 +24,7 @@ const statsArmourClass = document.querySelector(".stats__armour-class");
 const statsAbilities = document.querySelector(".stats__abilities");
 const statsSavingThrows = document.querySelector(".stats__saving-throws");
 const statsSenses = document.querySelector(".stats__senses");
-const statsSkills = document.querySelector(".stats__skills");
+const statsEquipment = document.querySelector(".stats__equipment");
 const continueBtn = document.querySelector(".btn--continue");
 const abilityBtn = document.querySelectorAll(".ability__btn");
 const abilityResetBtn = document.querySelector(".btn--reset");
@@ -72,7 +72,12 @@ const player = {
   modifiers: {},
   savingThrows: {},
   senses: {},
-  equipment: {},
+  equipment: {
+    weapons: {},
+    armour: {},
+    potions: {},
+    tools: {},
+  },
   attack: 0,
   damage: 0,
   assignAbilities() {
@@ -117,18 +122,6 @@ const player = {
     this.senses.investigation = parseInt(this.modifiers.intelligence) + 10;
     this.senses.insight = parseInt(this.modifiers.wisdom) + 10;
   },
-  calculateArmourClass() {
-    switch (this.class) {
-      case "Cleric":
-        player.armourClass = parseInt(this.modifiers.dexterity) + 10;
-        break;
-      case "Fighter":
-        player.armourClass = 16;
-        break;
-      case "Rogue":
-        player.armourClass = parseInt(this.modifiers.dexterity) + 11;
-    }
-  },
   formatStats(nestedObject) {
     Object.entries(nestedObject).forEach(([key, val]) => {
       if (val >= 0) {
@@ -137,21 +130,30 @@ const player = {
     });
   },
   assignEquipment(equipment) {
-    equipment.potion = "Health Potion";
+    equipment.potions.healingPotionStandard = healingPotionStandard;
     switch (this.class) {
       case "Cleric":
-        equipment.weaponMelee = mace;
-        equipment.armour = "Shield";
+        equipment.weapons.mace = mace;
+        equipment.armour.shield = shield;
         break;
       case "Fighter":
-        equipment.weaponMelee = battleaxe;
-        equipment.weaponRanged = throwingAxe;
-        equipment.armour = "Plate Armour";
+        equipment.weapons.battleaxe = battleaxe;
+        equipment.weapons.throwingAxe = throwingAxe;
+        equipment.armour.plateArmour = plateArmour;
         break;
       case "Rogue":
-        equipment.weaponMelee = dagger;
-        equipment.weaponRanged = crossbow;
-        equipment.tools = "Thieves Tools";
+        equipment.weapons.dagger = dagger;
+        equipment.weapons.crossbow = crossbow;
+        equipment.armour.leatherArmour = leatherArmour;
+      // equipment.tools = "Thieves Tools";
+    }
+  },
+  calculateArmourClass() {
+    Object.keys(this.equipment.armour).forEach((key) => {
+      this.equipment.armour[key].getArmourBonus(this);
+    });
+    if (this.equipment.armour.plateArmour) {
+      player.armourClass += parseInt(this.modifiers.dexterity);
     }
   },
   calculateAttack() {
@@ -206,67 +208,27 @@ const player = {
     `;
   },
   getAbilitiesHTML(abilitiesContainer) {
-    abilitiesContainer.innerHTML = `
-    <div class="stats__ability--strength">
-      <h5 class="stats__ability-text--strength">STRENGTH</h5>
-      <h4 class="stats__ability-modifier--strength">${this.modifiers.strength}</h4>
-      <h4 class="stats__ability-no--strength">${this.abilities.strength}</h4>
-    </div>
-    <div class="stats__ability--dexterity">
-      <h5 class="stats__ability-text--dexterity">DEXTERITY</h5>
-      <h4 class="stats__ability-modifier--dexterity">${this.modifiers.dexterity}</h4>
-      <h4 class="stats__ability-no--dexterity">${this.abilities.dexterity}</h4>
-    </div>
-    <div class="stats__ability--constitution">
-      <h5 class="stats__ability-text--constitution">CONSTITUTION</h5>
-      <h4 class="stats__ability-modifier--constitution">${this.modifiers.constitution}</h4>
-      <h4 class="stats__ability-no--constitution">${this.abilities.constitution}</h4>
-    </div>
-    <div class="stats__ability--intelligence">
-      <h5 class="stats__ability-text--intelligence">INTELLIGENCE</h5>
-      <h4 class="stats__ability-modifier--intelligence">${this.modifiers.intelligence}</h4>
-      <h4 class="stats__ability-no--intelligence">${this.abilities.intelligence}</h4>
-    </div>
-    <div class="stats__ability--wisdom">
-      <h5 class="stats__ability-text--wisdom">WISDOM</h5>
-      <h4 class="stats__ability-modifier--wisdom">${this.modifiers.wisdom}</h4>
-      <h4 class="stats__ability-no--wisdom">${this.abilities.wisdom}</h4>
-    </div>
-    <div class="stats__ability--charisma">
-      <h5 class="stats__ability-text--charisma">CHARISMA</h5>
-      <h4 class="stats__ability-modifier--charisma">${this.modifiers.charisma}</h4>
-      <h4 class="stats__ability-no--charisma">${this.abilities.charisma}</h4>
-    </div>
-  `;
+    Object.keys(this.abilities).forEach((key) => {
+      abilitiesContainer.innerHTML += `
+    <div class="stats__ability--${key}">
+      <h5 class="stats__ability-text--${key}">${key}</h5>
+      <h4 class="stats__ability-modifier--${key}">${this.modifiers[key]}</h4>
+      <h4 class="stats__ability-no--${key}">${this.abilities[key]}</h4>
+    </div>`;
+    });
   },
   getSavingThrowsHTML(savingThrowsContainer) {
     savingThrowsContainer.innerHTML = `
-    <h4 class="stats__saving-throws-title">Saving Throws</h4>
-    <div class="stats__saving-throws--strength">
-      <h5 class="stats__saving-throws-text--strength">STRENGTH</h5>
-      <h4 class="stats__saving-throws-modifier--strength">${this.savingThrows.strength}</h4>
-    </div>
-    <div class="stats__saving-throws--dexterity">
-      <h5 class="stats__saving-throws-text--dexterity">DEXTERITY</h5>
-      <h4 class="stats__saving-throws-modifier--dexterity">${this.savingThrows.dexterity}</h4>
-    </div>
-    <div class="stats__saving-throws--constitution">
-      <h5 class="stats__saving-throws-text--constitution">CONSTITUTION</h5>
-      <h4 class="stats__saving-throws-modifier--constitution">${this.savingThrows.constitution}</h4>
-    </div>
-    <div class="stats__saving-throws--intelligence">
-      <h5 class="stats__saving-throws-text--intelligence">INTELLIGENCE</h5>
-      <h4 class="stats__saving-throws-modifier--intelligence">${this.savingThrows.intelligence}</h4>
-    </div>
-    <div class="stats__saving-throws--wisdom">
-      <h5 class="stats__saving-throws-text--wisdom">WISDOM</h5>
-      <h4 class="stats__saving-throws-modifier--wisdom">${this.savingThrows.wisdom}</h4>
-    </div>
-    <div class="stats__saving-throws--charisma">
-      <h5 class="stats__saving-throws-text--charisma">CHARISMA</h5>
-      <h4 class="stats__saving-throws-modifier--charisma">${this.savingThrows.charisma}</h4>
-    </div>
-    `;
+    <h4 class="stats__saving-throws-title">Saving Throws</h4>`;
+    Object.keys(this.savingThrows).forEach((key) => {
+      savingThrowsContainer.innerHTML += `
+      <div class="stats__saving-throws--${key}">
+      <h5 class="stats__saving-throws-text--${key}">${key}</h5>
+      <h4 class="stats__saving-throws-modifier--${key}">
+        ${this.savingThrows[key]}
+      </h4>
+    </div>`;
+    });
   },
   getSensesHTML(sensesContainer) {
     sensesContainer.innerHTML = `
@@ -277,31 +239,176 @@ const player = {
     </div>
     `;
   },
+  getEquipmentHTML(equipmentContainer) {
+    equipmentContainer.innerHTML = `
+    <h4 class="stats__equipment-title">Equipment</h4>
+    <div class="stats__equipment--weapons">
+      <div class="stats__equipment-table--weapons">
+        <h5 class="stats__equipment-table--weapon">weapon</h5>
+        <h5 class="stats__equipment-table--range">range</h5>
+        <h5 class="stats__equipment-table--modifier">modifier</h5>
+        <h5 class="stats__equipment-table--damage">damage</h5>
+      </div>
+    </div>
+    <div class="stats__equipment--armour">
+      <div class="stats__equipment-table--armour">
+        <h5 class="stats__equipment-table--armour">armour</h5>
+        <h5 class="stats__equipment-table--weight">weight</h5>
+        <h5 class="stats__equipment-table--bonus">ac bonus</h5>
+      </div>
+    </div>
+    <div class="stats__equipment--potions">
+      <div class="stats__equipment-table--potions">
+        <h5 class="stats__equipment-table--potion">potion</h5>
+        <h5 class="stats__equipment-table--rarity">rarity</h5>
+        <h5 class="stats__equipment-table--hp-bonus">hp bonus</h5>
+      </div>
+    </div>
+    <div class="stats__equipment--tools hidden"></div>
+    `;
+    const weaponsContainer = document.querySelector(
+      ".stats__equipment--weapons"
+    );
+    console.log(weaponsContainer);
+    const armourContainer = document.querySelector(".stats__equipment--armour");
+    const potionsContainer = document.querySelector(
+      ".stats__equipment--potions"
+    );
+    const toolsContainer = document.querySelector(".stats__equipment--tools");
+    const getItemsHTML = (object, container) => {
+      Object.keys(object).forEach((key) => {
+        container.innerHTML += object[key].getItemHTML(this);
+      });
+    };
+    getItemsHTML(this.equipment.weapons, weaponsContainer);
+    getItemsHTML(this.equipment.armour, armourContainer);
+    getItemsHTML(this.equipment.potions, potionsContainer);
+    getItemsHTML(this.equipment.tools, toolsContainer);
+  },
 };
 
 // Weapon class
 class Weapon {
-  constructor(name, range, modifier, damageDie) {
+  constructor(name, range, modifier, damageDie, html) {
     (this.name = name),
       (this.range = range),
       (this.modifier = modifier),
-      (this.damageDie = damageDie);
+      (this.damageDie = damageDie),
+      (this.html = html);
   }
   calculateWeaponDamage(user) {
     return dice(this.damageDie) + parseInt(user.modifiers[this.modifier]);
   }
-  getWeaponHTML() {}
+  getItemHTML(user) {
+    return `
+    <div class="stats__equipment-weapon--${this.html}">
+    <h5 class="stats__equipment-weapon-name--${this.html}">${this.name}</h5>
+      <h5 class="stats__equipment-weapon-range--${this.html}">${this.range}</h5>
+      <h4 class="stats__equipment-weapon-attack--${this.html}">${
+      "+" +
+      (parseInt(user.modifiers[this.modifier]) + parseInt(user.proficiency))
+    }</h4>
+    <h5 class="stats__equipment-weapon-damage--${this.html}">
+    1d${this.damageDie}${user.modifiers[this.modifier]}
+    </h5>
+    </div>
+    `;
+  }
 }
 
 // Melee weapons
-const battleaxe = new Weapon("BattleAxe", 5, "strength", 8);
-const dagger = new Weapon("Dagger", 5, "dexterity", 4);
-const mace = new Weapon("Mace", 5, "Strength", 6);
-const shortsword = new Weapon("Shortsword", 5, "dexterity", 6);
+const battleaxe = new Weapon("BattleAxe", 5, "strength", 8, "battleaxe");
+const dagger = new Weapon("Dagger", 5, "dexterity", 4, "dagger");
+const mace = new Weapon("Mace", 5, "strength", 6, "mace");
+const shortsword = new Weapon("Shortsword", 5, "dexterity", 6, "shortsword");
 
 // Ranged weapons
-const crossbow = new Weapon("Crossbow", 80, "dexterity", 6);
-const throwingAxe = new Weapon("Throwing Axe", 20, "strength", 6);
+const crossbow = new Weapon("Crossbow", 80, "dexterity", 6, "crossbow");
+const throwingAxe = new Weapon(
+  "Throwing Axe",
+  20,
+  "strength",
+  6,
+  "throwing-axe"
+);
+
+// Armour class
+class Armour {
+  constructor(name, type, bonus, html) {
+    (this.name = name),
+      (this.type = type),
+      (this.bonus = bonus),
+      (this.html = html);
+  }
+  getArmourBonus(user) {
+    user.armourClass = this.bonus;
+  }
+  getItemHTML(user) {
+    return `
+    <div class="stats__equipment-armour--${this.html}">
+    <h5 class="stats__equipment-armour-name--${this.html}">${this.name}</h5>
+    <h5 class="stats__equipment-armour-type--${this.html}">${this.type}</h5>
+    <h4 class="stats__equipment-armour-bonus--${this.html}">
+    +${this.bonus}
+    </h4>
+    </div>
+    `;
+  }
+}
+
+// Armour types
+const leatherArmour = new Armour("Leather Armour", "Light", 11, "leather");
+const plateArmour = new Armour("Plate Armour", "Heavy", 16, "plate");
+const shield = new Armour("Shield", "Medium", 10, "shield");
+
+// Healing potion class
+class HealingPotion {
+  constructor(name, type, healingDieAmount, healingBonus, html) {
+    (this.name = name),
+      (this.type = type),
+      (this.healingDieAmount = healingDieAmount),
+      (this.healingBonus = healingBonus),
+      (this.html = html);
+  }
+  calculateHealing(consumer) {
+    let healing;
+    healing = dice(4, healingDieAmount) + healingBonus;
+    console.log(healing);
+    consumer.hitPointsCurrent = consumer.hitPointsCurrent + healing;
+  }
+  getItemHTML(user) {
+    return `
+    <div class="stats__equipment-potion--${this.html}">
+    <h5 class="stats__equipment-potion-name--${this.html}">${this.name}</h5>
+    <h5 class="stats__equipment-potion-rarity--${this.html}">${this.type}</h5>
+    <h5 class="stats__equipment-potion-hp--${this.html}">${this.healingDieAmount}d4+${this.healingBonus}</h5>
+    </div>
+    `;
+  }
+}
+
+// Healing potions
+const healingPotionStandard = new HealingPotion(
+  "Potion of Healing",
+  "Common",
+  2,
+  2,
+  "standard"
+);
+const healingPotionGreater = new HealingPotion(
+  "Greater Potion of Healing",
+  "Uncommon",
+  4,
+  4,
+  "greater"
+);
+const healingPotionSuperior = new HealingPotion(
+  "Superior Potion of Healing",
+  "Rare",
+  8,
+  8,
+  "superior"
+);
 
 let currentCreationStage = "start";
 
@@ -424,9 +531,9 @@ const loadCharacterStats = () => {
     player.formatStats(player.modifiers);
     player.formatStats(player.savingThrows);
     player.calculateArmourClass();
-    player.calculateAttack();
-    player.damage = player.equipment.weaponMelee.calculateWeaponDamage(player);
     console.log(player);
+    console.log(player.equipment.armour.name);
+    // Make HTML loading more efficient, i.e., use object loops and single function
     player.getNameHTML(statsName);
     player.getProficiencyHTML(statsProficiency);
     player.getHitPointsHTML(statsHitPoints);
@@ -436,6 +543,7 @@ const loadCharacterStats = () => {
     player.getAbilitiesHTML(statsAbilities);
     player.getSavingThrowsHTML(statsSavingThrows);
     player.getSensesHTML(statsSenses);
+    player.getEquipmentHTML(statsEquipment);
     currentCreationStage = "stats";
   }
 };

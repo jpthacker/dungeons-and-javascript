@@ -56,14 +56,25 @@ h5 {
 }
 
 [class*="ability-no"],
-[class*="senses-mod"] {
+[class*="senses-mod"],
+[class*="weapon-attack"],
+[class*="armour-bonus"] {
   font-size: 1.1em;
 }
 
 [class*="saving-throws-mod"],
 .stats__saving-throws-title,
-.stats__senses-title {
+.stats__senses-title,
+.stats__equipment-title {
   font-size: 1em;
+}
+
+[class*="-table"] > h5 {
+  color: $color-red;
+}
+
+[class*="__equipment-weapon--"] > h4 {
+  font-size: 1.3em;
 }
 
 .justified {

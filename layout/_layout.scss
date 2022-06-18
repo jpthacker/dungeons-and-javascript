@@ -99,10 +99,25 @@
 }
 
 [class*="saving-throws--"],
-[class*="senses--"] {
+[class*="senses--"],
+[class*="potion--"],
+[class*="armour--"],
+[class*="weapon--"],
+[class*="-table"] {
   flex-direction: row;
+  justify-content: flex-start;
   padding: 5px;
 }
+
+[class*="saving-throws--"] {
+  justify-content: space-between;
+}
+
+// [class*="table--"] {
+//   padding: 10px;
+//   margin-right: 10px;
+// }
+
 [class*="senses--"] {
   justify-content: flex-start;
 }
@@ -121,6 +136,51 @@
 [class*="senses-mod"] {
   padding: 5px;
   min-width: 46px;
+}
+
+[class*="__equipment--"] {
+  padding: 0 10px;
+}
+
+[class*="__equipment-weapon--"] > h5,
+[class*="__equipment-table--weapons"] > h5 {
+  margin: 0 6vw 0 0;
+  padding-left: 0;
+  padding-right: 0;
+  max-width: 60px;
+  min-width: 60px;
+}
+
+[class*="__equipment-weapon--"] > h4,
+[class*="__equipment-armour--"] > h4 {
+  margin: 0 6vw 0 0;
+  min-width: 60px;
+  max-height: 54px;
+  min-height: 54px;
+  padding: 5px;
+  justify-content: center;
+}
+
+[class*="__equipment-armour--"] > h5,
+[class*="__equipment-potion--"] > h5,
+[class*="__equipment-tools--"] > h5,
+[class*="__equipment-table--armour"] > h5,
+[class*="__equipment-table--potions"] > h5,
+[class*="__equipment-table--tools"] > h5 {
+  margin: 0 16vw 0 0;
+  padding-left: 0;
+  padding-right: 0;
+  max-width: 60px;
+  min-width: 60px;
+}
+
+[class*="__equipment-weapon--"] > h4 {
+  margin: 0 6vw 0 0;
+  min-width: 60px;
+  max-height: 54px;
+  min-height: 54px;
+  padding: 5px;
+  justify-content: center;
 }
 
 .stats {
@@ -180,14 +240,39 @@
   }
 
   &__saving-throws,
-  &__senses {
-    border: 0;
-    padding: 16px 0 16px 0;
+  &__senses,
+  &__equipment {
+    padding: 16px 10px 16px 10px;
+    margin-bottom: 16px;
 
     &-title {
       border: 0;
       padding: 0 0 5px 0;
     }
+  }
+
+  &__equipment {
+    h5 {
+      border: 0;
+      justify-content: center;
+    }
+
+    div {
+      border: 0;
+    }
+
+    [class*="__equipment-table--"] {
+      border-radius: 0;
+      border-bottom: solid $color-red 1px;
+
+      h5 {
+        border: 0;
+      }
+    }
+  }
+
+  &__equipment > div {
+    border: 0;
   }
 }
 

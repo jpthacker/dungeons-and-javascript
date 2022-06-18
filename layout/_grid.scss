@@ -47,10 +47,8 @@
     "abilities abilities abilities"
     "saving-throws saving-throws saving-throws"
     "senses senses senses"
-    "skills skills skills"
-    "actions actions actions"
-    "spells spells spells"
-    "inventory inventory inventory";
+    "equipment equipment equipment"
+    "spells spells spells";
 
   &__name-race-class {
     grid-area: name-race-class;
@@ -100,8 +98,8 @@
     grid-area: spells;
   }
 
-  &__inventory {
-    grid-area: inventory;
+  &__equipment {
+    grid-area: equipment;
   }
 }
 
