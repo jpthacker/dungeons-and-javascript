@@ -100,9 +100,9 @@
 
 [class*="saving-throws--"],
 [class*="senses--"],
-[class*="potion--"],
-[class*="armour--"],
+[class*="item--"],
 [class*="weapon--"],
+[class*="spell--"],
 [class*="-table"] {
   flex-direction: row;
   justify-content: flex-start;
@@ -112,11 +112,6 @@
 [class*="saving-throws--"] {
   justify-content: space-between;
 }
-
-// [class*="table--"] {
-//   padding: 10px;
-//   margin-right: 10px;
-// }
 
 [class*="senses--"] {
   justify-content: flex-start;
@@ -138,62 +133,59 @@
   min-width: 46px;
 }
 
-[class*="__equipment--"] {
+[class*="__equipment--"],
+[class*="__spells"] {
   padding: 0 10px;
 }
 
-[class*="__equipment-weapon--"] > h5,
-[class*="__equipment-table--weapons"] > h5 {
-  margin: 0 6vw 0 0;
-  padding-left: 0;
-  padding-right: 0;
-  max-width: 60px;
-  min-width: 60px;
-}
-
-[class*="__equipment-weapon--"] > h4,
-[class*="__equipment-armour--"] > h4 {
-  margin: 0 6vw 0 0;
-  min-width: 60px;
-  max-height: 54px;
-  min-height: 54px;
-  padding: 5px;
-  justify-content: center;
-}
-
-[class*="__equipment-armour--"] > h5,
-[class*="__equipment-potion--"] > h5,
-[class*="__equipment-tools--"] > h5,
-[class*="__equipment-table--armour"] > h5,
-[class*="__equipment-table--potions"] > h5,
-[class*="__equipment-table--tools"] > h5 {
+[class*="__equipment-text"] {
   margin: 0 16vw 0 0;
   padding-left: 0;
   padding-right: 0;
-  max-width: 60px;
   min-width: 60px;
+  max-width: 60px;
 }
 
-[class*="__equipment-weapon--"] > h4 {
-  margin: 0 6vw 0 0;
-  min-width: 60px;
-  max-height: 54px;
-  min-height: 54px;
-  padding: 5px;
+[class*="__equipment-weapon--"],
+[class*="__spell--"],
+[class*="table--four-items"] {
+  [class*="__equipment-text"],
+  [class*="__spell-text"] {
+    margin: 0 6vw 0 0;
+    padding-left: 0;
+    padding-right: 0;
+    max-width: 60px;
+    min-width: 60px;
+  }
+}
+
+[class*="__equipment-mod"],
+[class*="__spell-mod"] {
+  margin: 1vw 8vw 1vw 2vw;
+  min-width: 44px;
+  max-height: 44px;
+  min-height: 44px;
+  padding: 0px;
   justify-content: center;
+}
+
+[class*="__equipment-item--tools"] > h5 {
+  max-width: 600px;
+  margin-right: 20px;
+}
+
+[class*="equipment-desc"] {
+  margin: 0;
 }
 
 .stats {
   padding: 20px;
+
   &__name-race-class {
     border: 0;
   }
 
-  &__name {
-    padding: 5px;
-    border: 0;
-  }
-
+  &__name,
   &__species {
     padding: 5px;
     border: 0;
@@ -205,12 +197,9 @@
     justify-content: center;
   }
 
-  &__hit-points-current-no {
-    padding-right: 0;
-  }
-
+  &__hit-points-current-no,
   &__hit-points-max-no {
-    padding-left: 0;
+    padding-right: 0;
   }
 
   &__initiative {
@@ -241,9 +230,11 @@
 
   &__saving-throws,
   &__senses,
-  &__equipment {
+  &__equipment,
+  &__spells {
     padding: 16px 10px 16px 10px;
     margin-bottom: 16px;
+    border: 0;
 
     &-title {
       border: 0;
@@ -251,7 +242,15 @@
     }
   }
 
-  &__equipment {
+  &__senses,
+  &__saving-throws {
+    padding: 16px 0 16px 0;
+  }
+
+  &__equipment,
+  &__spells {
+    border: solid $color-red 1px;
+
     h5 {
       border: 0;
       justify-content: center;
@@ -261,7 +260,8 @@
       border: 0;
     }
 
-    [class*="__equipment-table--"] {
+    [class*="__equipment-table"],
+    [class*="__spell-table"] {
       border-radius: 0;
       border-bottom: solid $color-red 1px;
 
@@ -269,10 +269,6 @@
         border: 0;
       }
     }
-  }
-
-  &__equipment > div {
-    border: 0;
   }
 }
 

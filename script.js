@@ -25,6 +25,7 @@ const statsAbilities = document.querySelector(".stats__abilities");
 const statsSavingThrows = document.querySelector(".stats__saving-throws");
 const statsSenses = document.querySelector(".stats__senses");
 const statsEquipment = document.querySelector(".stats__equipment");
+const statsSpells = document.querySelector(".stats__spells");
 const continueBtn = document.querySelector(".btn--continue");
 const abilityBtn = document.querySelectorAll(".ability__btn");
 const abilityResetBtn = document.querySelector(".btn--reset");
@@ -78,6 +79,7 @@ const player = {
     potions: {},
     tools: {},
   },
+  spells: {},
   attack: 0,
   damage: 0,
   assignAbilities() {
@@ -145,14 +147,20 @@ const player = {
         equipment.weapons.dagger = dagger;
         equipment.weapons.crossbow = crossbow;
         equipment.armour.leatherArmour = leatherArmour;
-      // equipment.tools = "Thieves Tools";
+        equipment.tools.thievesTools = thievesTools;
+    }
+  },
+  assignSpells(spells) {
+    if ((this.class = "Cleric")) {
+      spells.knock = knock;
+      spells.sacredFlame = sacredFlame;
     }
   },
   calculateArmourClass() {
     Object.keys(this.equipment.armour).forEach((key) => {
       this.equipment.armour[key].getArmourBonus(this);
     });
-    if (this.equipment.armour.plateArmour) {
+    if (!this.equipment.armour.plateArmour) {
       player.armourClass += parseInt(this.modifiers.dexterity);
     }
   },
@@ -165,7 +173,7 @@ const player = {
   },
   getNameHTML(nameContainer) {
     nameContainer.innerHTML = `
-    <h4 class="stats__title stats__name">${this.name}</h4>
+    <h4 class="stats__name">${this.name}</h4>
     <h5 class="stats__species">${this.species}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;${this.class}</h5>
     `;
   },
@@ -189,8 +197,8 @@ const player = {
   getWalkingSpeedHTML(walkingSpeedContainer) {
     walkingSpeedContainer.innerHTML = `
     <h5 class="stats__walking-speed-text1">WALKING</h5>
-    <h4 class="stats__walking-speed-no">${this.walkingSpeed}ft.</h4>
-    <h5 class="stats__walking-speed-text2">SPEED</h5>
+    <h4 class="stats__walking-speed-no">${this.walkingSpeed}</h4>
+    <h5 class="stats__walking-speed-text2">SPEED (ft.)</h5>
     `;
   },
   getInitiativeHTML(initiativeContainer) {
@@ -243,48 +251,74 @@ const player = {
     equipmentContainer.innerHTML = `
     <h4 class="stats__equipment-title">Equipment</h4>
     <div class="stats__equipment--weapons">
-      <div class="stats__equipment-table--weapons">
-        <h5 class="stats__equipment-table--weapon">weapon</h5>
-        <h5 class="stats__equipment-table--range">range</h5>
-        <h5 class="stats__equipment-table--modifier">modifier</h5>
-        <h5 class="stats__equipment-table--damage">damage</h5>
+      <div class="stats__equipment-table--four-items">
+        <h5 class="stats__equipment-text">weapon</h5>
+        <h5 class="stats__equipment-text">range (ft.)</h5>
+        <h5 class="stats__equipment-text">hit/dc</h5>
+        <h5 class="stats__equipment-text">damage</h5>
       </div>
     </div>
     <div class="stats__equipment--armour">
-      <div class="stats__equipment-table--armour">
-        <h5 class="stats__equipment-table--armour">armour</h5>
-        <h5 class="stats__equipment-table--weight">weight</h5>
-        <h5 class="stats__equipment-table--bonus">ac bonus</h5>
+      <div class="stats__equipment-table">
+        <h5 class="stats__equipment-text">armour</h5>
+        <h5 class="stats__equipment-text">weight</h5>
+        <h5 class="stats__equipment-text">ac bonus</h5>
       </div>
     </div>
     <div class="stats__equipment--potions">
-      <div class="stats__equipment-table--potions">
-        <h5 class="stats__equipment-table--potion">potion</h5>
-        <h5 class="stats__equipment-table--rarity">rarity</h5>
-        <h5 class="stats__equipment-table--hp-bonus">hp bonus</h5>
+      <div class="stats__equipment-table">
+        <h5 class="stats__equipment-text">potion</h5>
+        <h5 class="stats__equipment-text">rarity</h5>
+        <h5 class="stats__equipment-text">hp bonus</h5>
       </div>
     </div>
-    <div class="stats__equipment--tools hidden"></div>
+    <div class="stats__equipment--tools hidden">
+      <div class="stats__equipment-table">
+        <h5 class="stats__equipment-text">tools</h5>
+      </div>
+    </div>
     `;
     const weaponsContainer = document.querySelector(
       ".stats__equipment--weapons"
     );
-    console.log(weaponsContainer);
     const armourContainer = document.querySelector(".stats__equipment--armour");
     const potionsContainer = document.querySelector(
       ".stats__equipment--potions"
     );
     const toolsContainer = document.querySelector(".stats__equipment--tools");
-    const getItemsHTML = (object, container) => {
-      Object.keys(object).forEach((key) => {
-        container.innerHTML += object[key].getItemHTML(this);
-      });
-    };
     getItemsHTML(this.equipment.weapons, weaponsContainer);
     getItemsHTML(this.equipment.armour, armourContainer);
     getItemsHTML(this.equipment.potions, potionsContainer);
     getItemsHTML(this.equipment.tools, toolsContainer);
+    if (this.equipment.tools.thievesTools) {
+      toolsContainer.classList.remove("hidden");
+    }
   },
+  getSpellsHTML(spellsContainer) {
+    spellsContainer.innerHTML = `
+    <h4 class="stats__spells-title">Spells</h4>
+    <div class="stats__spells--list">
+      <div class="stats__spell-table--four-items">
+        <h5 class="stats__spell-text">spell</h5>
+        <h5 class="stats__spell-text">range (ft.)</h5>
+        <h5 class="stats__spell-text">hit/dc</h5>
+        <h5 class="stats__spell-text">effect</h5>
+      </div>
+    </div>
+    `;
+    const spellsListContainer = document.querySelector(".stats__spells--list");
+
+    getItemsHTML(this.spells, spellsListContainer);
+    if ((this.class = "Cleric")) {
+      statsSpells.classList.remove("hidden");
+    }
+  },
+};
+
+const getItemsHTML = (object, container) => {
+  Object.keys(object).forEach((key) => {
+    container.innerHTML += object[key].getItemHTML(player);
+  });
 };
 
 // Weapon class
@@ -302,13 +336,13 @@ class Weapon {
   getItemHTML(user) {
     return `
     <div class="stats__equipment-weapon--${this.html}">
-    <h5 class="stats__equipment-weapon-name--${this.html}">${this.name}</h5>
-      <h5 class="stats__equipment-weapon-range--${this.html}">${this.range}</h5>
-      <h4 class="stats__equipment-weapon-attack--${this.html}">${
+    <h5 class="stats__equipment-text--${this.html}">${this.name}</h5>
+      <h5 class="stats__equipment-text--${this.html}">${this.range}</h5>
+      <h4 class="stats__equipment-modifier--${this.html}">${
       "+" +
       (parseInt(user.modifiers[this.modifier]) + parseInt(user.proficiency))
     }</h4>
-    <h5 class="stats__equipment-weapon-damage--${this.html}">
+    <h5 class="stats__equipment-text--${this.html}">
     1d${this.damageDie}${user.modifiers[this.modifier]}
     </h5>
     </div>
@@ -345,10 +379,10 @@ class Armour {
   }
   getItemHTML(user) {
     return `
-    <div class="stats__equipment-armour--${this.html}">
-    <h5 class="stats__equipment-armour-name--${this.html}">${this.name}</h5>
-    <h5 class="stats__equipment-armour-type--${this.html}">${this.type}</h5>
-    <h4 class="stats__equipment-armour-bonus--${this.html}">
+    <div class="stats__equipment-item--${this.html}">
+    <h5 class="stats__equipment-text--${this.html}">${this.name}</h5>
+    <h5 class="stats__equipment-text--${this.html}">${this.type}</h5>
+    <h4 class="stats__equipment-modifier--${this.html}">
     +${this.bonus}
     </h4>
     </div>
@@ -378,10 +412,10 @@ class HealingPotion {
   }
   getItemHTML(user) {
     return `
-    <div class="stats__equipment-potion--${this.html}">
-    <h5 class="stats__equipment-potion-name--${this.html}">${this.name}</h5>
-    <h5 class="stats__equipment-potion-rarity--${this.html}">${this.type}</h5>
-    <h5 class="stats__equipment-potion-hp--${this.html}">${this.healingDieAmount}d4+${this.healingBonus}</h5>
+    <div class="stats__equipment-item--${this.html}">
+    <h5 class="stats__equipment-text--${this.html}">${this.name}</h5>
+    <h5 class="stats__equipment-text--${this.html}">${this.type}</h5>
+    <h5 class="stats__equipment-text--${this.html}">${this.healingDieAmount}d4+${this.healingBonus}</h5>
     </div>
     `;
   }
@@ -408,6 +442,62 @@ const healingPotionSuperior = new HealingPotion(
   8,
   8,
   "superior"
+);
+
+// Tools class
+class Tool {
+  constructor(name, description, html) {
+    (this.name = name), (this.description = description), (this.html = html);
+  }
+  getItemHTML(user) {
+    return `
+    <div class="stats__equipment-item--${this.html}">
+    <h5 class="stats__equipment-text--${this.html}">${this.name}</h5>
+    <h5 class="stats__equipment-desc--${this.html}">${this.description}</h5>
+    </div>
+    `;
+  }
+}
+
+// Thieves tools
+const thievesTools = new Tool(
+  "Thieves' Tools",
+  "This set of tools includes a set of lock picks, allowing you to attempt to open locks. Your proficiency bonus is added to any ability checks you make to open locks.",
+  "tools"
+);
+
+// Spells class
+class Spell {
+  constructor(name, html, range, modifier, effect) {
+    (this.name = name),
+      (this.html = html),
+      (this.range = range),
+      (this.modifier = modifier),
+      (this.effect = effect);
+  }
+  getItemHTML(user) {
+    return `
+    <div class="stats__spell--${this.html}">
+    <h5 class="stats__spell-text--${this.html}">${this.name}</h5>
+      <h5 class="stats__spell-text--${this.html}">${this.range}</h5>
+      <h4 class="stats__spell-mod--${this.html}">${
+      "+" +
+      (parseInt(user.modifiers[this.modifier]) + parseInt(user.proficiency))
+    }</h4>
+    <h5 class="stats__spell-text--${this.html}">${this.effect}</h5>
+    </div>
+    `;
+  }
+}
+
+// Spells
+const knock = new Spell("Knock", "knock", 5, "wisdom", "Unlocking");
+const sacredFlame = new Spell(
+  "Sacred Flame",
+  "sacred-flame",
+  60,
+  "wisdom",
+  "1d8 Damage"
 );
 
 let currentCreationStage = "start";
@@ -528,6 +618,7 @@ const loadCharacterStats = () => {
     player.calculateSavingThrows(player.modifiers);
     player.calculateSenses();
     player.assignEquipment(player.equipment);
+    player.assignSpells(player.spells);
     player.formatStats(player.modifiers);
     player.formatStats(player.savingThrows);
     player.calculateArmourClass();
@@ -544,6 +635,7 @@ const loadCharacterStats = () => {
     player.getSavingThrowsHTML(statsSavingThrows);
     player.getSensesHTML(statsSenses);
     player.getEquipmentHTML(statsEquipment);
+    player.getSpellsHTML(statsSpells);
     currentCreationStage = "stats";
   }
 };

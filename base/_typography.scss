@@ -65,7 +65,8 @@ h5 {
 [class*="saving-throws-mod"],
 .stats__saving-throws-title,
 .stats__senses-title,
-.stats__equipment-title {
+.stats__equipment-title,
+.stats__spells-title {
   font-size: 1em;
 }
 
@@ -73,8 +74,15 @@ h5 {
   color: $color-red;
 }
 
-[class*="__equipment-weapon--"] > h4 {
-  font-size: 1.3em;
+[class*="equipment-desc"] {
+  font-size: 0.8em;
+  text-align: justify;
+  opacity: 80%;
+}
+
+[class*="__equipment-mod"],
+[class*="__spell-mod"] {
+  font-size: 1em;
 }
 
 .justified {
