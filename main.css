@@ -191,7 +191,7 @@ h5 {
 [class*=spell--],
 [class*=-table] {
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: space-between;
   padding: 5px;
 }
 
@@ -225,7 +225,7 @@ h5 {
 }
 
 [class*=__equipment-text] {
-  margin: 0 16vw 0 0;
+  margin: 0;
   padding-left: 0;
   padding-right: 0;
   min-width: 60px;
@@ -238,7 +238,7 @@ h5 {
 [class*=__spell--] [class*=__spell-text],
 [class*=table--four-items] [class*=__equipment-text],
 [class*=table--four-items] [class*=__spell-text] {
-  margin: 0 6vw 0 0;
+  margin: 0;
   padding-left: 0;
   padding-right: 0;
   max-width: 60px;
@@ -247,8 +247,9 @@ h5 {
 
 [class*=__equipment-mod],
 [class*=__spell-mod] {
-  margin: 1vw 8vw 1vw 2vw;
+  margin: 0 8px 0 8px;
   min-width: 44px;
+  max-width: 44px;
   max-height: 44px;
   min-height: 44px;
   padding: 0px;
