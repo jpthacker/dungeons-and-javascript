@@ -12,6 +12,10 @@
   text-align: center;
 }
 
+.title__main--top {
+  font-size: 1.5;
+}
+
 .menu {
   text-align: center;
 }
@@ -140,6 +144,21 @@ h5 {
   margin: 0 10vw;
 }
 
+.character-creation__btn-ribbon {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  background-color: rgba(1, 1, 1, 0);
+}
+
+.btn-start {
+  bottom: 22vh;
+}
+
 .ability {
   display: flex;
   flex-direction: column;
@@ -258,7 +277,6 @@ h5 {
 
 [class*=__equipment-item--tools] > h5 {
   max-width: 600px;
-  margin-right: 20px;
 }
 
 [class*=equipment-desc] {
@@ -487,8 +505,15 @@ button {
   min-height: 40px;
   min-width: 150px;
   display: block;
-  margin: 0 auto;
+  margin: 0;
   cursor: pointer;
+}
+
+.btn--reset {
+  margin: 0 auto;
+  position: sticky;
+  position: -webkit-sticky;
+  bottom: 40px;
 }
 
 select {

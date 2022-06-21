@@ -27,6 +27,7 @@ const statsSenses = document.querySelector(".stats__senses");
 const statsEquipment = document.querySelector(".stats__equipment");
 const statsSpells = document.querySelector(".stats__spells");
 const continueBtn = document.querySelector(".btn--continue");
+const btnRibbon = document.querySelector(".character-creation__btn-ribbon");
 const abilityBtn = document.querySelectorAll(".ability__btn");
 const abilityResetBtn = document.querySelector(".btn--reset");
 const backBtn = document.querySelector(".btn--back");
@@ -85,9 +86,9 @@ const player = {
   assignAbilities() {
     for (let i = 0; i < abilityList.length; i++) {
       if (
-        (abilityList[i] === "wisdom" && this.class === "Cleric") ||
-        (abilityList[i] === "strength" && this.class === "Fighter") ||
-        (abilityList[i] === "dexterity" && this.class === "Rogue")
+        (abilityList[i] === "wisdom" && this.species === "Human") ||
+        (abilityList[i] === "strength" && this.species === "Dwarf") ||
+        (abilityList[i] === "dexterity" && this.species === "Elf")
       ) {
         this.abilities[abilityList[i]] = abilityScoreListOrdered[i] + 2;
       } else {
@@ -132,6 +133,9 @@ const player = {
     });
   },
   assignEquipment(equipment) {
+    Object.keys(equipment).forEach((key) => {
+      equipment[key] = {};
+    });
     equipment.potions.healingPotionStandard = healingPotionStandard;
     switch (this.class) {
       case "Cleric":
@@ -151,9 +155,13 @@ const player = {
     }
   },
   assignSpells(spells) {
-    if ((this.class = "Cleric")) {
+    if (this.class === "Cleric") {
       spells.knock = knock;
       spells.sacredFlame = sacredFlame;
+    } else {
+      for (let prop in spells) {
+        delete spells[prop];
+      }
     }
   },
   calculateArmourClass() {
@@ -216,6 +224,7 @@ const player = {
     `;
   },
   getAbilitiesHTML(abilitiesContainer) {
+    abilitiesContainer.innerHTML = "";
     Object.keys(this.abilities).forEach((key) => {
       abilitiesContainer.innerHTML += `
     <div class="stats__ability--${key}">
@@ -307,9 +316,9 @@ const player = {
     </div>
     `;
     const spellsListContainer = document.querySelector(".stats__spells--list");
-
+    statsSpells.classList.add("hidden");
     getItemsHTML(this.spells, spellsListContainer);
-    if ((this.class = "Cleric")) {
+    if (this.class === "Cleric") {
       statsSpells.classList.remove("hidden");
     }
   },
@@ -505,6 +514,7 @@ let currentCreationStage = "start";
 // Loads the character creation message
 const loadCreationMessage = () => {
   titleContainer.classList.add("title--top");
+  titleMain.classList.add("title__main--top");
   titleMenu.style.marginBottom = "0vh";
   menu.classList.remove("menu--start");
   menu.classList.add("menu");
@@ -512,6 +522,7 @@ const loadCreationMessage = () => {
   createContainer.classList.remove("character-creation--start");
   backBtn.classList.add("hidden");
   continueBtn.innerText = "Continue";
+  btnRibbon.classList.remove("btn-start");
   creationMessage.innerHTML += `
 Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa error
 temporibus sint minima iusto quisquam, eveniet architecto, odio quia quas

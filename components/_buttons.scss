@@ -4,6 +4,13 @@ button {
   min-height: 40px;
   min-width: 150px;
   display: block;
-  margin: 0 auto;
+  margin: 0;
   cursor: pointer;
+}
+
+.btn--reset {
+  margin: 0 auto;
+  position: sticky;
+  position: -webkit-sticky;
+  bottom: 40px;
 }
