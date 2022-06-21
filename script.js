@@ -516,13 +516,12 @@ const loadCreationMessage = () => {
   titleContainer.classList.add("title--top");
   titleMain.classList.add("title__main--top");
   titleMenu.style.marginBottom = "0vh";
-  menu.classList.remove("menu--start");
+  // menu.classList.remove("menu--start");
   menu.classList.add("menu");
   document.querySelector(".menu__title").innerText = "Create Your Adventurer";
   createContainer.classList.remove("character-creation--start");
   backBtn.classList.add("hidden");
   continueBtn.innerText = "Continue";
-  btnRibbon.classList.remove("btn-start");
   creationMessage.innerHTML += `
 Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa error
 temporibus sint minima iusto quisquam, eveniet architecto, odio quia quas
@@ -648,6 +647,7 @@ const loadCharacterStats = () => {
     player.getEquipmentHTML(statsEquipment);
     player.getSpellsHTML(statsSpells);
     currentCreationStage = "stats";
+    menu.style.rowGap = "5vh";
   }
 };
 
@@ -686,7 +686,7 @@ backBtn.addEventListener("click", (event) => {
       errorMessage.classList.add("hidden");
       creationMessage.classList.remove("hidden");
       creationMessage.style.marginTop = "0";
-      creationMessage.classList.remove("justified");
+      creationMessage.classList.add("justified");
       continueBtn.innerHTML = "Start";
       loadCreationMessage();
       break;

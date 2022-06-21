@@ -1,14 +1,14 @@
 @import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=IM+Fell+English+SC&family=Libre+Baskerville&family=Roboto:ital,wght@0,300;1,300&display=swap");
 * {
   font-family: "Roboto", helvetica, sans-serif;
-  color: #1b1b1b;
+  color: #dadada;
 }
 
 .title__main {
   font-family: "Cinzel", serif;
   font-weight: 600;
   font-size: 2.5em;
-  color: #bc0f0f;
+  color: #c38ffa;
   text-align: center;
 }
 
@@ -64,6 +64,11 @@ h5 {
   font-size: 1.1em;
 }
 
+[class*=__ability-text],
+[class*=__saving-throws-text] {
+  text-transform: uppercase;
+}
+
 [class*=saving-throws-mod],
 .stats__saving-throws-title,
 .stats__senses-title,
@@ -73,7 +78,7 @@ h5 {
 }
 
 [class*=-table] > h5 {
-  color: #bc0f0f;
+  color: #c38ffa;
 }
 
 [class*=equipment-desc] {
@@ -95,7 +100,7 @@ h5 {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  background-color: #dadada;
+  background-color: #1b1b1b;
 }
 
 .title {
@@ -110,53 +115,43 @@ h5 {
 }
 
 .menu--start {
-  position: absolute;
-  top: 46%;
-  bottom: 50%;
-  right: 10%;
-  left: 10%;
+  display: flex;
+  row-gap: 10vh;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin: 45vh 0 10vh 0;
 }
 
 .menu {
-  display: flex;
-  flex-direction: column;
-  row-gap: 10vh;
-  margin: 25vh 0 15vh 0;
+  min-height: 70vh;
+  margin: 24vh 0 0 0;
 }
 .menu__title {
-  padding: 0 10%;
-  margin-bottom: 15vh;
+  margin: 0 12vw;
 }
 
 .character-creation__message {
   margin: 0 10vw;
 }
 
-.start {
-  position: absolute;
-  bottom: 20vh;
-  right: 0;
-  left: 0;
-}
-
 .character-creation__error {
+  position: absolute;
   text-align: center;
   margin: 0 10vw;
 }
 
 .character-creation__btn-ribbon {
-  position: fixed;
-  bottom: 0;
+  position: sticky;
+  position: -webkit-sticky;
+  bottom: 30px;
   left: 0;
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   background-color: rgba(1, 1, 1, 0);
-}
-
-.btn-start {
-  bottom: 22vh;
+  margin-top: auto;
 }
 
 .ability {
@@ -175,7 +170,7 @@ h5 {
   flex-direction: column;
   justify-content: space-between;
   row-gap: 1vh;
-  border: solid #bc0f0f 1px;
+  border: solid #c38ffa 1px;
   border-radius: 10px;
   padding: 10px;
 }
@@ -194,7 +189,7 @@ h5 {
 }
 
 [class*=ability-no] {
-  border: solid #bc0f0f 1px;
+  border: solid #c38ffa 1px;
   border-radius: 50px;
   min-width: 12vw;
 }
@@ -284,7 +279,7 @@ h5 {
 }
 
 .stats {
-  padding: 20px;
+  padding: 0 20px 50px 20px;
 }
 .stats__name-race-class {
   border: 0;
@@ -307,7 +302,7 @@ h5 {
   padding-top: 0;
 }
 .stats__initiative-no {
-  border: solid #bc0f0f 1px;
+  border: solid #c38ffa 1px;
   border-radius: 10px;
   padding: 15px;
 }
@@ -335,7 +330,7 @@ h5 {
   padding: 16px 0 16px 0;
 }
 .stats__equipment, .stats__spells {
-  border: solid #bc0f0f 1px;
+  border: solid #c38ffa 1px;
 }
 .stats__equipment h5, .stats__spells h5 {
   border: 0;
@@ -348,7 +343,7 @@ h5 {
 .stats__equipment [class*=__spell-table], .stats__spells [class*=__equipment-table],
 .stats__spells [class*=__spell-table] {
   border-radius: 0;
-  border-bottom: solid #bc0f0f 1px;
+  border-bottom: solid #c38ffa 1px;
 }
 .stats__equipment [class*=__equipment-table] h5,
 .stats__equipment [class*=__spell-table] h5, .stats__spells [class*=__equipment-table] h5,
@@ -507,13 +502,14 @@ button {
   display: block;
   margin: 0;
   cursor: pointer;
+  border: #dadada 2px solid;
 }
 
 .btn--reset {
   margin: 0 auto;
   position: sticky;
   position: -webkit-sticky;
-  bottom: 40px;
+  bottom: 80px;
 }
 
 select {

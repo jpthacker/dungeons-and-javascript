@@ -66,6 +66,11 @@ h5 {
   font-size: 1.1em;
 }
 
+[class*="__ability-text"],
+[class*="__saving-throws-text"] {
+  text-transform: uppercase;
+}
+
 [class*="saving-throws-mod"],
 .stats__saving-throws-title,
 .stats__senses-title,
