@@ -878,3 +878,89 @@ abilityResetBtn.addEventListener("click", (event) => {
     selector.disabled = false;
   });
 });
+
+//  Monster class
+class Monster {
+  constructor(name, ac, hitDie, speed, proficiency) {
+    (this.name = name),
+      (this.ac = ac),
+      (this.hitDie = hitDie),
+      (this.speed = speed),
+      (this.proficiency = proficiency),
+      (this.abilities = {});
+    this.equipment = {};
+  }
+  getMaxHP(hitDie) {
+    this.maxHP;
+  }
+  getCurrentHP() {}
+}
+
+// Object class
+class Object {
+  constructor(name, hp, ac) {
+    (this.name = name), (this.hp = hp), (this.ac = ac);
+  }
+}
+
+// Objects
+const door = new Object("door", 10, 2);
+
+// Polyfill for Object.entries
+if (!Object.entries) {
+  Object.entries = function (obj) {
+    var ownProps = Object.keys(obj),
+      i = ownProps.length,
+      resArray = new Array(i); // preallocate the Array
+    while (i--) resArray[i] = [ownProps[i], obj[ownProps[i]]];
+
+    return resArray;
+  };
+}
+
+// Polyfill for Object.keys
+if (!Object.keys) {
+  Object.keys = (function () {
+    "use strict";
+    var hasOwnProperty = Object.prototype.hasOwnProperty,
+      hasDontEnumBug = !{ toString: null }.propertyIsEnumerable("toString"),
+      dontEnums = [
+        "toString",
+        "toLocaleString",
+        "valueOf",
+        "hasOwnProperty",
+        "isPrototypeOf",
+        "propertyIsEnumerable",
+        "constructor",
+      ],
+      dontEnumsLength = dontEnums.length;
+
+    return function (obj) {
+      if (
+        typeof obj !== "function" &&
+        (typeof obj !== "object" || obj === null)
+      ) {
+        throw new TypeError("Object.keys called on non-object");
+      }
+
+      var result = [],
+        prop,
+        i;
+
+      for (prop in obj) {
+        if (hasOwnProperty.call(obj, prop)) {
+          result.push(prop);
+        }
+      }
+
+      if (hasDontEnumBug) {
+        for (i = 0; i < dontEnumsLength; i++) {
+          if (hasOwnProperty.call(obj, dontEnums[i])) {
+            result.push(dontEnums[i]);
+          }
+        }
+      }
+      return result;
+    };
+  })();
+}
