@@ -343,6 +343,10 @@ class Weapon {
     return dice(this.damageDie) + parseInt(user.modifiers[this.modifier]);
   }
   getItemHTML(user) {
+    let damageModifier = "";
+    if (user.modifiers[this.modifier] >= 1) {
+      damageModifier = user.modifiers[this.modifier];
+    }
     return `
     <div class="stats__equipment-weapon--${this.html}">
     <h5 class="stats__equipment-text--${this.html}">${this.name}</h5>
@@ -352,7 +356,7 @@ class Weapon {
       (parseInt(user.modifiers[this.modifier]) + parseInt(user.proficiency))
     }</h4>
     <h5 class="stats__equipment-text--${this.html}">
-    1d${this.damageDie}${user.modifiers[this.modifier]}
+    1d${this.damageDie}${damageModifier}
     </h5>
     </div>
     `;
@@ -646,6 +650,12 @@ const loadCharacterStats = () => {
     player.getSensesHTML(statsSenses);
     player.getEquipmentHTML(statsEquipment);
     player.getSpellsHTML(statsSpells);
+    goblin.assignAbilities();
+    goblin.getMaxHP();
+    goblin.assignAbilityModifiers(goblin.abilities);
+    goblin.calculateAttack();
+    console.log(goblin);
+    console.log(goblin.meleeWeapon.calculateWeaponDamage(goblin));
     currentCreationStage = "stats";
     menu.style.rowGap = "5vh";
   }
@@ -881,20 +891,58 @@ abilityResetBtn.addEventListener("click", (event) => {
 
 //  Monster class
 class Monster {
-  constructor(name, ac, hitDie, speed, proficiency) {
+  constructor(
+    name,
+    ac,
+    hitDie,
+    speed,
+    proficiency,
+    abilitiesArray,
+    meleeWeapon,
+    rangedWeapon
+  ) {
     (this.name = name),
       (this.ac = ac),
       (this.hitDie = hitDie),
       (this.speed = speed),
       (this.proficiency = proficiency),
-      (this.abilities = {});
-    this.equipment = {};
+      (this.meleeWeapon = meleeWeapon),
+      this.rangedWeapon - rangedWeapon,
+      (this.abilitiesArray = abilitiesArray);
+    (this.abilities = {}), (this.modifiers = {});
   }
-  getMaxHP(hitDie) {
-    this.maxHP;
+  getMaxHP() {
+    this.maxHP = dice(this.hitDie, 2);
   }
-  getCurrentHP() {}
+  assignAbilities() {
+    for (let i = 0; i < abilityList.length; i++) {
+      this.abilities[abilityList[i]] = this.abilitiesArray[i];
+    }
+  }
+  assignAbilityModifiers(abilities) {
+    Object.entries(abilities).forEach(([key, val]) => {
+      this.modifiers[key] = Math.floor((val - 10) / 2);
+    });
+  }
+  calculateAttack() {
+    let attackRoll = dice(20);
+    this.attack =
+      attackRoll +
+      parseInt(this.modifiers.strength) +
+      parseInt(this.proficiency);
+  }
 }
+
+const goblin = new Monster(
+  "Goblin",
+  15,
+  6,
+  30,
+  2,
+  [8, 14, 10, 10, 8, 8],
+  shortsword,
+  crossbow
+);
 
 // Object class
 class Object {
@@ -904,7 +952,7 @@ class Object {
 }
 
 // Objects
-const door = new Object("door", 10, 2);
+const door = new Object("Door", 10, 2);
 
 // Polyfill for Object.entries
 if (!Object.entries) {
