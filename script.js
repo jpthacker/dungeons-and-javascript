@@ -26,6 +26,7 @@ const statsSavingThrows = document.querySelector(".stats__saving-throws");
 const statsSenses = document.querySelector(".stats__senses");
 const statsEquipment = document.querySelector(".stats__equipment");
 const statsSpells = document.querySelector(".stats__spells");
+const gameMenu = document.querySelector(".game");
 const continueBtn = document.querySelector(".btn--continue");
 const btnRibbon = document.querySelector(".character-creation__btn-ribbon");
 const abilityBtn = document.querySelectorAll(".ability__btn");
@@ -637,7 +638,6 @@ const loadCharacterStats = () => {
     player.formatStats(player.savingThrows);
     player.calculateArmourClass();
     console.log(player);
-    console.log(player.equipment.armour.name);
     // Make HTML loading more efficient, i.e., use object loops and single function
     player.getNameHTML(statsName);
     player.getProficiencyHTML(statsProficiency);
@@ -650,15 +650,15 @@ const loadCharacterStats = () => {
     player.getSensesHTML(statsSenses);
     player.getEquipmentHTML(statsEquipment);
     player.getSpellsHTML(statsSpells);
-    goblin.assignAbilities();
-    goblin.getMaxHP();
-    goblin.assignAbilityModifiers(goblin.abilities);
-    goblin.calculateAttack();
-    console.log(goblin);
-    console.log(goblin.meleeWeapon.calculateWeaponDamage(goblin));
     currentCreationStage = "stats";
     menu.style.rowGap = "5vh";
   }
+};
+
+const loadGame = () => {
+  statsContainer.classList.add("hidden");
+  gameMenu.classList.remove("hidden");
+  currentCreationStage = "game";
 };
 
 //Handles the character creation menu buttons
@@ -683,6 +683,9 @@ continueBtn.addEventListener("click", (event) => {
       break;
     case "abilities":
       loadCharacterStats();
+      break;
+    case "stats":
+      loadGame();
   }
 });
 
@@ -807,6 +810,7 @@ for (let i = 0; i < abilityBtn.length; i++) {
       event.preventDefault();
       dice(6, 4);
       let abilityRoll = rolledDice.sort().filter((_, i) => i);
+      console.log(abilityRoll);
       currentAbilityScore = abilityRoll.reduce((a, b) => a + b);
       abilityScoreList.push(currentAbilityScore);
       abilityScore[i].innerHTML = currentAbilityScore;
@@ -924,6 +928,9 @@ class Monster {
       this.modifiers[key] = Math.floor((val - 10) / 2);
     });
   }
+  calculateSenses() {
+    this.perception = parseInt(this.modifiers.wisdom) + 10;
+  }
   calculateAttack() {
     let attackRoll = dice(20);
     this.attack =
@@ -943,6 +950,13 @@ const goblin = new Monster(
   shortsword,
   crossbow
 );
+
+// goblin.assignAbilities();
+// goblin.getMaxHP();
+// goblin.assignAbilityModifiers(goblin.abilities);
+// goblin.calculateAttack();
+// console.log(goblin);
+// console.log(goblin.meleeWeapon.calculateWeaponDamage(goblin));
 
 // Object class
 class Object {

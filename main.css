@@ -19,7 +19,8 @@
 .menu {
   text-align: center;
 }
-.menu__title {
+
+h3 {
   font-family: "IM Fell English SC", serif;
   font-size: 1.5em;
 }
@@ -351,6 +352,22 @@ h5 {
   border: 0;
 }
 
+.game {
+  position: absolute;
+  top: 40vw;
+  left: 5vw;
+  right: 5vw;
+  margin: 0 auto;
+  min-width: 0vw;
+  display: flex;
+  flex-direction: column;
+  row-gap: 4vh;
+  border: solid 1px #c38ffa;
+  border-radius: 10px;
+  padding: 30px 20px 40px 20px;
+  text-align: center;
+}
+
 .title--top {
   top: 5vh;
 }
@@ -498,9 +515,11 @@ h5 {
 
 button {
   min-height: 40px;
+  max-height: 40px;
   min-width: 150px;
+  max-width: 150px;
   display: block;
-  margin: 0;
+  margin: 0 auto;
   cursor: pointer;
   border: #dadada 2px solid;
 }
