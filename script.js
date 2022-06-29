@@ -980,6 +980,9 @@ if (!Object.entries) {
   };
 }
 
+// Player/monster actions
+// move; attack (melee, ranged); damage (melee, ranged); unlock; heal; percieve; investigate; pursuade;
+
 // Polyfill for Object.keys
 if (!Object.keys) {
   Object.keys = (function () {

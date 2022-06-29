@@ -145,14 +145,17 @@ h5 {
 .character-creation__btn-ribbon {
   position: sticky;
   position: -webkit-sticky;
-  bottom: 30px;
+  bottom: 0;
   left: 0;
   width: 100%;
+  min-height: 20vh;
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
+  align-items: center;
   background-color: rgba(1, 1, 1, 0);
-  margin-top: auto;
+  background-image: linear-gradient(rgba(1, 1, 1, 0), #1b1b1b, #1b1b1b);
+  margin-top: 0;
 }
 
 .ability {
@@ -280,7 +283,7 @@ h5 {
 }
 
 .stats {
-  padding: 0 20px 50px 20px;
+  padding: 0 20px;
 }
 .stats__name-race-class {
   border: 0;
@@ -528,7 +531,7 @@ button {
   margin: 0 auto;
   position: sticky;
   position: -webkit-sticky;
-  bottom: 80px;
+  bottom: 15vh;
 }
 
 select {
