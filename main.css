@@ -93,6 +93,10 @@ h5 {
   font-size: 1em;
 }
 
+.game__btn--stats {
+  font-weight: bold;
+}
+
 .justified {
   text-align: justify;
 }
@@ -371,6 +375,24 @@ h5 {
   text-align: center;
 }
 
+.game__popup {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 15px;
+  border: solid 1px #c38ffa;
+  border-radius: 10px;
+  min-width: 80vw;
+  min-height: 20vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 4vh;
+  background-color: #c38ffa;
+  color: #1b1b1b;
+}
+
 .title--top {
   top: 5vh;
 }
@@ -414,7 +436,7 @@ h5 {
   display: grid;
   grid-auto-columns: 1fr;
   grid-gap: 1vh;
-  grid-template: "name-race-class name-race-class name-race-class" "hit-points hit-points armour" "proficiency initiative movement" "abilities abilities abilities" "saving-throws saving-throws saving-throws" "senses senses senses" "equipment equipment equipment" "spells spells spells";
+  grid-template: "name-race-class name-race-class name-race-class" "hit-points hit-points armour" "proficiency initiative movement" "abilities abilities abilities" "saving-throws saving-throws saving-throws" "senses senses senses" "equipment equipment equipment" "spells spells spells" "game-btn game-btn game-btn";
 }
 .stats__name-race-class {
   grid-area: name-race-class;
@@ -454,6 +476,9 @@ h5 {
 }
 .stats__equipment {
   grid-area: equipment;
+}
+.stats__btn--game {
+  grid-area: game-btn;
 }
 
 .stats__abilities {
@@ -539,12 +564,26 @@ button {
   min-height: 10vh;
 }
 
+.stats__btn--game,
 .game__btn--stats,
 .game__btn--popup {
   min-height: 40px;
   max-height: 40px;
   min-width: 150px;
   max-width: 150px;
+}
+
+.game__btn--stats,
+.stats__btn--game {
+  background-color: #c38ffa;
+  color: #1b1b1b;
+  border: #c38ffa;
+  border-radius: 10px;
+}
+
+.stats__btn--game {
+  align-items: center;
+  margin-bottom: 8vh;
 }
 
 select {

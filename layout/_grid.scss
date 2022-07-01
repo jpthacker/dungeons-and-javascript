@@ -48,7 +48,8 @@
     "saving-throws saving-throws saving-throws"
     "senses senses senses"
     "equipment equipment equipment"
-    "spells spells spells";
+    "spells spells spells"
+    "game-btn game-btn game-btn";
 
   &__name-race-class {
     grid-area: name-race-class;
@@ -100,6 +101,10 @@
 
   &__equipment {
     grid-area: equipment;
+  }
+
+  &__btn--game {
+    grid-area: game-btn;
   }
 }
 

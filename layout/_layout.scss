@@ -296,6 +296,24 @@
   text-align: center;
 }
 
+.game__popup {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 15px;
+  border: solid 1px $color-red;
+  border-radius: 10px;
+  min-width: 80vw;
+  min-height: 20vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 4vh;
+  background-color: $color-red;
+  color: $color-grey;
+}
+
 .title--top {
   top: 5vh;
 }

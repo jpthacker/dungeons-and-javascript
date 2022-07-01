@@ -26,6 +26,7 @@ const statsSavingThrows = document.querySelector(".stats__saving-throws");
 const statsSenses = document.querySelector(".stats__senses");
 const statsEquipment = document.querySelector(".stats__equipment");
 const statsSpells = document.querySelector(".stats__spells");
+const statsBtn = document.querySelector(".stats__btn--game");
 const gameMenu = document.querySelector(".game");
 const continueBtn = document.querySelector(".btn--continue");
 const btnRibbon = document.querySelector(".character-creation__btn-ribbon");
@@ -34,6 +35,11 @@ const abilityResetBtn = document.querySelector(".btn--reset");
 const backBtn = document.querySelector(".btn--back");
 const gameTitle = document.querySelector(".game__title");
 const gameBtns = document.querySelectorAll("[class*='game__btn']");
+const gamePopup = document.querySelector(".game__popup");
+const gamePopupTitle = document.querySelector(".game__popup-title");
+const gamePopupMessage = document.querySelector(".game__popup-message");
+const gamePopupBtn = document.querySelector(".game__btn--popup");
+const gameStatsBtn = document.querySelector(".game__btn--stats");
 
 // Handles DnD standard dice rolls (original code courtesy of BryanBansbach (https://github.com/BryanBansbach/DiceRoller) - with revisions)
 let rolledDice = [];
@@ -81,7 +87,7 @@ const player = {
     weapons: {},
     armour: {},
     potions: {},
-    tools: {},
+    items: {},
   },
   spells: {},
   attack: 0,
@@ -154,7 +160,7 @@ const player = {
         equipment.weapons.meleeWeapon = dagger;
         equipment.weapons.rangedWeapon = crossbow;
         equipment.armour.leatherArmour = leatherArmour;
-        equipment.tools.thievesTools = thievesTools;
+        equipment.items.thievesTools = thievesTools;
     }
   },
   assignSpells(spells) {
@@ -284,9 +290,9 @@ const player = {
         <h5 class="stats__equipment-text">hp bonus</h5>
       </div>
     </div>
-    <div class="stats__equipment--tools hidden">
+    <div class="stats__equipment--items hidden">
       <div class="stats__equipment-table">
-        <h5 class="stats__equipment-text">tools</h5>
+        <h5 class="stats__equipment-text">other</h5>
       </div>
     </div>
     `;
@@ -297,14 +303,11 @@ const player = {
     const potionsContainer = document.querySelector(
       ".stats__equipment--potions"
     );
-    const toolsContainer = document.querySelector(".stats__equipment--tools");
+    const itemsContainer = document.querySelector(".stats__equipment--items");
     getItemsHTML(this.equipment.weapons, weaponsContainer);
     getItemsHTML(this.equipment.armour, armourContainer);
     getItemsHTML(this.equipment.potions, potionsContainer);
-    getItemsHTML(this.equipment.tools, toolsContainer);
-    if (this.equipment.tools.thievesTools) {
-      toolsContainer.classList.remove("hidden");
-    }
+    getItemsHTML(this.equipment.items, itemsContainer);
   },
   getSpellsHTML(spellsContainer) {
     spellsContainer.innerHTML = `
@@ -460,12 +463,14 @@ const healingPotionSuperior = new HealingPotion(
   "superior"
 );
 
-// Tools class
-class Tool {
+// Items class
+class Item {
   constructor(name, description, html) {
     (this.name = name), (this.description = description), (this.html = html);
   }
   getItemHTML(user) {
+    const itemsContainer = document.querySelector(".stats__equipment--items");
+    itemsContainer.classList.remove("hidden");
     return `
     <div class="stats__equipment-item--${this.html}">
     <h5 class="stats__equipment-text--${this.html}">${this.name}</h5>
@@ -475,11 +480,16 @@ class Tool {
   }
 }
 
-// Thieves tools
-const thievesTools = new Tool(
+// Items
+const thievesTools = new Item(
   "Thieves' Tools",
   "This set of tools includes a set of lock picks, allowing you to attempt to open locks. Your proficiency bonus is added to any ability checks you make to open locks.",
   "tools"
+);
+const goldenRing = new Item(
+  "Golden Ring",
+  "A simple golden ring, dulled and lined with dirt.",
+  "ring"
 );
 
 // Spells class
@@ -659,6 +669,7 @@ const loadCharacterStats = () => {
 
 const loadGame = () => {
   statsContainer.classList.add("hidden");
+  btnRibbon.classList.add("hidden");
   gameMenu.classList.remove("hidden");
   gameBtns[0].innerText = "Enter the crypt";
   goblin.assignAbilities();
@@ -974,10 +985,31 @@ const door = new Object("Door", 10, 2);
 // console.log(goblin.meleeWeapon.calculateWeaponDamage(goblin));
 
 let currentGameStage = "game start";
+let currentPopout = "";
 
 const abilitiyCheck = (character, ability) => {
   return dice(20) + parseInt(character.modifiers[ability]);
 };
+
+gamePopupBtn.addEventListener("click", () => {
+  gamePopup.classList.add("hidden");
+  switch (currentPopout) {
+    case "look around":
+      gameBtns[0].classList.add("hidden");
+  }
+});
+
+gameStatsBtn.addEventListener("click", () => {
+  player.getEquipmentHTML(statsEquipment);
+  gameMenu.classList.add("hidden");
+  statsContainer.classList.remove("hidden");
+  statsBtn.classList.remove("hidden");
+});
+
+statsBtn.addEventListener("click", () => {
+  statsContainer.classList.add("hidden");
+  gameMenu.classList.remove("hidden");
+});
 
 const loadQuestStart = () => {
   gameTitle.innerText = "Entering the Crypt";
@@ -1009,9 +1041,19 @@ gameBtns.forEach((btn) => {
             loadQuestStart();
             break;
           case "crypt enter":
+            currentPopout = "look around";
             let perceptionCheck = abilitiyCheck(player, "wisdom");
-            if (perceptionCheck >= 15) {
+            if (perceptionCheck >= 10) {
+              player.equipment.items.ring = goldenRing;
+              gamePopup.classList.remove("hidden");
+              gamePopupTitle.innerText = "Success!";
+              gamePopupMessage.innerText =
+                "Out of the corner of your eye, you notice something glinting on the floor next to the pile of straw. You approach and pick up a simple gold ring, which you place in you pocket.";
             } else {
+              gamePopup.classList.remove("hidden");
+              gamePopupTitle.innerText = "Failure";
+              gamePopupMessage.innerText =
+                "The light is dim in this chamber. You notice nothing of interest beyond what you can already make out.";
             }
         }
         break;
