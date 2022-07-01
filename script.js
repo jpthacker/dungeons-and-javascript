@@ -32,6 +32,8 @@ const btnRibbon = document.querySelector(".character-creation__btn-ribbon");
 const abilityBtn = document.querySelectorAll(".ability__btn");
 const abilityResetBtn = document.querySelector(".btn--reset");
 const backBtn = document.querySelector(".btn--back");
+const gameTitle = document.querySelector(".game__title");
+const gameBtns = document.querySelectorAll("[class*='game__btn']");
 
 // Handles DnD standard dice rolls (original code courtesy of BryanBansbach (https://github.com/BryanBansbach/DiceRoller) - with revisions)
 let rolledDice = [];
@@ -140,17 +142,17 @@ const player = {
     equipment.potions.healingPotionStandard = healingPotionStandard;
     switch (this.class) {
       case "Cleric":
-        equipment.weapons.mace = mace;
+        equipment.weapons.meleeWeapon = mace;
         equipment.armour.shield = shield;
         break;
       case "Fighter":
-        equipment.weapons.battleaxe = battleaxe;
-        equipment.weapons.throwingAxe = throwingAxe;
+        equipment.weapons.meleeWeapon = battleaxe;
+        equipment.weapons.rangedWeapon = throwingAxe;
         equipment.armour.plateArmour = plateArmour;
         break;
       case "Rogue":
-        equipment.weapons.dagger = dagger;
-        equipment.weapons.crossbow = crossbow;
+        equipment.weapons.meleeWeapon = dagger;
+        equipment.weapons.rangedWeapon = crossbow;
         equipment.armour.leatherArmour = leatherArmour;
         equipment.tools.thievesTools = thievesTools;
     }
@@ -658,7 +660,13 @@ const loadCharacterStats = () => {
 const loadGame = () => {
   statsContainer.classList.add("hidden");
   gameMenu.classList.remove("hidden");
-  currentCreationStage = "game";
+  gameBtns[0].innerText = "Enter the crypt";
+  goblin.assignAbilities();
+  goblin.getMaxHP();
+  goblin.assignAbilityModifiers(goblin.abilities);
+  goblin.calculateAttack();
+  console.log(goblin);
+  currentCreationStage = "game start";
 };
 
 //Handles the character creation menu buttons
@@ -951,13 +959,6 @@ const goblin = new Monster(
   crossbow
 );
 
-// goblin.assignAbilities();
-// goblin.getMaxHP();
-// goblin.assignAbilityModifiers(goblin.abilities);
-// goblin.calculateAttack();
-// console.log(goblin);
-// console.log(goblin.meleeWeapon.calculateWeaponDamage(goblin));
-
 // Object class
 class Object {
   constructor(name, hp, ac) {
@@ -967,6 +968,71 @@ class Object {
 
 // Objects
 const door = new Object("Door", 10, 2);
+
+// Player/monster actions
+// move; attack (melee, ranged); damage (melee, ranged); unlock; heal; percieve; investigate; pursuade;
+// console.log(goblin.meleeWeapon.calculateWeaponDamage(goblin));
+
+let currentGameStage = "game start";
+
+const abilitiyCheck = (character, ability) => {
+  return dice(20) + parseInt(character.modifiers[ability]);
+};
+
+const loadQuestStart = () => {
+  gameTitle.innerText = "Entering the Crypt";
+  gameBtns[1].classList.remove("hidden");
+  gameBtns[2].classList.remove("hidden");
+  gameBtns[0].innerText = "Look around";
+  gameBtns[1].innerText = "Investigate the straw";
+  gameBtns[2].innerText = "Approach the door";
+  currentGameStage = "crypt enter";
+};
+
+const loadCryptEnter = () => {};
+
+const loadCryptLook = () => {};
+
+const loadTableInspect = () => {};
+
+const loadDoorApproach = () => {};
+
+const loadDoorAttempt = () => {};
+
+// Game switchboard
+gameBtns.forEach((btn) => {
+  btn.addEventListener("click", (event) => {
+    switch (event.target.id) {
+      case "a":
+        switch (currentGameStage) {
+          case "game start":
+            loadQuestStart();
+            break;
+          case "crypt enter":
+            let perceptionCheck = abilitiyCheck(player, "wisdom");
+            if (perceptionCheck >= 15) {
+            } else {
+            }
+        }
+        break;
+      case "b":
+        switch (currentGameStage) {
+          case "crypt enter":
+        }
+        break;
+      case "c":
+        switch (currentGameStage) {
+          case "crypt enter":
+        }
+        break;
+      case "d":
+        switch (currentGameStage) {
+          case "crypt enter":
+        }
+        break;
+    }
+  });
+});
 
 // Polyfill for Object.entries
 if (!Object.entries) {
@@ -979,9 +1045,6 @@ if (!Object.entries) {
     return resArray;
   };
 }
-
-// Player/monster actions
-// move; attack (melee, ranged); damage (melee, ranged); unlock; heal; percieve; investigate; pursuade;
 
 // Polyfill for Object.keys
 if (!Object.keys) {

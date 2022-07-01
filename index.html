@@ -15,7 +15,7 @@
     <main>
       <!-- Character Creation Menu -->
       <section class="menu--start">
-        <h3 class="menu__title">A D&D-Based RPG Dungeon Crawler Demo</h3>
+        <h3 class="menu__title">A D&D-Inspired Text-Based Adventure</h3>
         <div class="character-creation character-creation--start">
           <!-- Character name entry form -->
           <form class="name hidden">
@@ -220,9 +220,16 @@
           laudantium laborum atque unde voluptates veniam dolorem nobis cum
           ipsam sunt!
         </p>
-        <button class="game__btn--a"></button>
-        <button class="game__btn--b"></button>
-        <button class="game__btn--c"></button>
+        <button class="game__btn--a" id="a"></button>
+        <button class="game__btn--b hidden" id="b"></button>
+        <button class="game__btn--c hidden" id="c"></button>
+        <button class="game__btn--c hidden" id="d"></button>
+        <button class="game__btn--stats">View Stats</button>
+        <div class="game__popup">
+          <h4 class="game__popup-title"></h4>
+          <p class="game__popup-message"></p>
+          <button class="game__btn--popup">OK</button>
+        </div>
       </section>
     </main>
     <!-- Javascript -->

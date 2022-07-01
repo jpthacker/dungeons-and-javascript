@@ -17,3 +17,16 @@ button {
   position: -webkit-sticky;
   bottom: 15vh;
 }
+
+[class*="game__btn"] {
+  min-width: 100%;
+  min-height: 10vh;
+}
+
+.game__btn--stats,
+.game__btn--popup {
+  min-height: 40px;
+  max-height: 40px;
+  min-width: 150px;
+  max-width: 150px;
+}
