@@ -37,6 +37,7 @@ const gameTitle = document.querySelector(".game__title");
 const gameBtns = document.querySelectorAll("[class*='game__btn']");
 const gamePopup = document.querySelector(".game__popup");
 const gamePopupTitle = document.querySelector(".game__popup-title");
+const gamePopupResult = document.querySelector(".game__popup-result");
 const gamePopupMessage = document.querySelector(".game__popup-message");
 const gamePopupBtn = document.querySelector(".game__btn--popup");
 const gameStatsBtn = document.querySelector(".game__btn--stats");
@@ -959,6 +960,7 @@ class Monster {
   }
 }
 
+// Monster(s)
 const goblin = new Monster(
   "Goblin",
   15,
@@ -977,7 +979,7 @@ class Object {
   }
 }
 
-// Objects
+// Object(s)
 const door = new Object("Door", 10, 2);
 
 // Player/monster actions
@@ -987,31 +989,40 @@ const door = new Object("Door", 10, 2);
 let currentGameStage = "game start";
 let currentPopout = "";
 
+// Ability check (to be called when player or monster attempts an action)
 const abilitiyCheck = (character, ability) => {
   return dice(20) + parseInt(character.modifiers[ability]);
 };
 
+// Hides game popup message
 gamePopupBtn.addEventListener("click", () => {
   gamePopup.classList.add("hidden");
   switch (currentPopout) {
-    case "look around":
+    case "crypt look":
       gameBtns[0].classList.add("hidden");
   }
 });
 
+// Shows player stats during game
 gameStatsBtn.addEventListener("click", () => {
+  window.scrollTo(0, 0);
   player.getEquipmentHTML(statsEquipment);
   gameMenu.classList.add("hidden");
   statsContainer.classList.remove("hidden");
   statsBtn.classList.remove("hidden");
 });
 
+// Returns player to game from stats
 statsBtn.addEventListener("click", () => {
+  window.scrollTo(0, 0);
   statsContainer.classList.add("hidden");
   gameMenu.classList.remove("hidden");
 });
 
-const loadQuestStart = () => {
+const loadQuestStart = () => {};
+
+// Loads the crypt enter game stage
+const loadCryptEnter = () => {
   gameTitle.innerText = "Entering the Crypt";
   gameBtns[1].classList.remove("hidden");
   gameBtns[2].classList.remove("hidden");
@@ -1021,11 +1032,45 @@ const loadQuestStart = () => {
   currentGameStage = "crypt enter";
 };
 
-const loadCryptEnter = () => {};
+// Handles the crypt look perception check
+const loadCryptLook = () => {
+  currentPopout = "crypt look";
+  let perceptionCheck = abilitiyCheck(player, "wisdom");
+  gamePopupResult.innerHTML = `Wisdom check (d20 + modifier):<br>${
+    perceptionCheck + parseInt(player.modifiers.wisdom)
+  } (${perceptionCheck} + ${parseInt(player.modifiers.wisdom)})`;
+  if (perceptionCheck >= 10) {
+    player.equipment.items.ring = goldenRing;
+    gamePopup.classList.remove("hidden");
+    gamePopupTitle.innerText = "Success!";
+    gamePopupMessage.innerText =
+      "Out of the corner of your eye, you notice something glinting on the floor next to the pile of straw. You approach and pick up a simple gold ring, which you place in you pocket.";
+  } else {
+    gamePopup.classList.remove("hidden");
+    gamePopupTitle.innerText = "Failure";
+    gamePopupMessage.innerText =
+      "The light is dim in this chamber. You notice nothing of interest beyond what you can already make out.";
+  }
+};
 
-const loadCryptLook = () => {};
-
-const loadTableInspect = () => {};
+// Handles the crypt straw investigation check
+const loadStrawInspect = () => {
+  currentPopout = "straw inspect";
+  let investigationCheck = abilitiyCheck(player, "intelligence");
+  gamePopup.classList.remove("hidden");
+  if (investigationCheck >= 10) {
+    gamePopupTitle.innerText = "Success!";
+    gamePopupMessage.innerText =
+      "Out of the corner of your eye, you notice something";
+  } else if (investigationCheck >= 15) {
+    gamePopupTitle.innerText = "Success!";
+    gamePopupMessage.innerText = "cdsfdsfds";
+  } else {
+    gamePopupTitle.innerText = "Failure";
+    gamePopupMessage.innerText =
+      "The light is dim in this chamber. You notice nothing of interest beyond what you can already make out.";
+  }
+};
 
 const loadDoorApproach = () => {};
 
@@ -1038,28 +1083,17 @@ gameBtns.forEach((btn) => {
       case "a":
         switch (currentGameStage) {
           case "game start":
-            loadQuestStart();
+            loadCryptEnter();
             break;
           case "crypt enter":
-            currentPopout = "look around";
-            let perceptionCheck = abilitiyCheck(player, "wisdom");
-            if (perceptionCheck >= 10) {
-              player.equipment.items.ring = goldenRing;
-              gamePopup.classList.remove("hidden");
-              gamePopupTitle.innerText = "Success!";
-              gamePopupMessage.innerText =
-                "Out of the corner of your eye, you notice something glinting on the floor next to the pile of straw. You approach and pick up a simple gold ring, which you place in you pocket.";
-            } else {
-              gamePopup.classList.remove("hidden");
-              gamePopupTitle.innerText = "Failure";
-              gamePopupMessage.innerText =
-                "The light is dim in this chamber. You notice nothing of interest beyond what you can already make out.";
-            }
+            loadCryptLook();
         }
         break;
       case "b":
         switch (currentGameStage) {
           case "crypt enter":
+            loadStrawInspect();
+            break;
         }
         break;
       case "c":

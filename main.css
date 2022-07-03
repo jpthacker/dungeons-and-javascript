@@ -82,7 +82,8 @@ h5 {
   color: #c38ffa;
 }
 
-[class*=equipment-desc] {
+[class*=equipment-desc],
+.game__popup--result {
   font-size: 0.8em;
   text-align: justify;
   opacity: 80%;
