@@ -16,6 +16,7 @@ button {
   position: sticky;
   position: -webkit-sticky;
   bottom: 15vh;
+  z-index: 1;
 }
 
 [class*="game__btn"] {

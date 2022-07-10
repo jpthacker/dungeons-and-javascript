@@ -27,7 +27,9 @@ const statsSenses = document.querySelector(".stats__senses");
 const statsEquipment = document.querySelector(".stats__equipment");
 const statsSpells = document.querySelector(".stats__spells");
 const statsBtn = document.querySelector(".stats__btn--game");
-const gameMenu = document.querySelector(".game");
+const game = document.querySelector(".game");
+const gameMenu = document.querySelector(".game__menu");
+const footer = document.querySelector(".footer");
 const continueBtn = document.querySelector(".btn--continue");
 const btnRibbon = document.querySelector(".character-creation__btn-ribbon");
 const abilityBtn = document.querySelectorAll(".ability__btn");
@@ -305,10 +307,10 @@ const player = {
       ".stats__equipment--potions"
     );
     const itemsContainer = document.querySelector(".stats__equipment--items");
-    getItemsHTML(this.equipment.weapons, weaponsContainer);
-    getItemsHTML(this.equipment.armour, armourContainer);
-    getItemsHTML(this.equipment.potions, potionsContainer);
-    getItemsHTML(this.equipment.items, itemsContainer);
+    getAllItemsHTML(this.equipment.weapons, weaponsContainer);
+    getAllItemsHTML(this.equipment.armour, armourContainer);
+    getAllItemsHTML(this.equipment.potions, potionsContainer);
+    getAllItemsHTML(this.equipment.items, itemsContainer);
   },
   getSpellsHTML(spellsContainer) {
     spellsContainer.innerHTML = `
@@ -324,14 +326,14 @@ const player = {
     `;
     const spellsListContainer = document.querySelector(".stats__spells--list");
     statsSpells.classList.add("hidden");
-    getItemsHTML(this.spells, spellsListContainer);
+    getAllItemsHTML(this.spells, spellsListContainer);
     if (this.class === "Cleric") {
       statsSpells.classList.remove("hidden");
     }
   },
 };
 
-const getItemsHTML = (object, container) => {
+const getAllItemsHTML = (object, container) => {
   Object.keys(object).forEach((key) => {
     container.innerHTML += object[key].getItemHTML(player);
   });
@@ -502,6 +504,13 @@ class Spell {
       (this.modifier = modifier),
       (this.effect = effect);
   }
+  calculateSpellHit(user) {
+    return (
+      dice(20) +
+      parseInt(user.modifiers[this.modifier]) +
+      parseInt(user.proficiency)
+    );
+  }
   getItemHTML(user) {
     return `
     <div class="stats__spell--${this.html}">
@@ -671,7 +680,8 @@ const loadCharacterStats = () => {
 const loadGame = () => {
   statsContainer.classList.add("hidden");
   btnRibbon.classList.add("hidden");
-  gameMenu.classList.remove("hidden");
+  game.classList.remove("hidden");
+  footer.classList.remove("hidden");
   gameBtns[0].innerText = "Enter the crypt";
   goblin.assignAbilities();
   goblin.getMaxHP();
@@ -980,26 +990,80 @@ class Object {
 }
 
 // Object(s)
-const door = new Object("Door", 10, 2);
+const door = new Object("Door", 12, 2);
 
 // Player/monster actions
 // move; attack (melee, ranged); damage (melee, ranged); unlock; heal; percieve; investigate; pursuade;
 // console.log(goblin.meleeWeapon.calculateWeaponDamage(goblin));
 
 let currentGameStage = "game start";
-let currentPopout = "";
+let currentPopup = "";
+let enemyStatus = "";
 
 // Ability check (to be called when player or monster attempts an action)
 const abilitiyCheck = (character, ability) => {
   return dice(20) + parseInt(character.modifiers[ability]);
 };
 
-// Hides game popup message
+// Displays the result of the ability on popup
+const displayAbilityCheck = (text, check, dice, modifier) => {
+  gamePopupResult.innerHTML = `${text} check (d20+modifier)<br><strong>${check} (${dice}${modifier})</strong>`;
+};
+
+// Displays the attach hit attempt
+const displayAttackHit = (text, check, dice, modifier) => {
+  gamePopupResult.innerHTML = `${text}: to hit (d20+modifier)<br><strong>${check} (${dice}${modifier})</strong>`;
+};
+
+// Displays the result of attack damage
+const displayDamage = (text, attack, diceType, dice, modifier) => {
+  gamePopupResult.innerHTML = `${text} attack (${diceType}+modifier)<br><strong>${attack} (${dice}${modifier})</strong>`;
+};
+
+// Handles popup button
 gamePopupBtn.addEventListener("click", () => {
   gamePopup.classList.add("hidden");
-  switch (currentPopout) {
+  switch (currentPopup) {
     case "crypt look":
       gameBtns[0].classList.add("hidden");
+      break;
+    case "straw inspect":
+      gameBtns[1].classList.add("hidden");
+      break;
+    case "door try":
+      gamePopupResult.classList.remove("hidden");
+      gameBtns[0].classList.add("hidden");
+      gameBtns[2].innerText = "Force the door";
+      gameBtns[2].classList.remove("hidden");
+      break;
+    case "door force success":
+      loadHallway();
+      break;
+    case "door force failure":
+      gameBtns[2].classList.add("hidden");
+      break;
+    case "door inspect":
+      if (player.class === "Cleric" || player.class === "Rogue") {
+        gameBtns[3].classList.remove("hidden");
+      }
+      if (player.class === "Cleric") {
+        gameBtns[3].innerText = "Cast knock";
+      } else {
+        gameBtns[3].innerText = "Pick the lock";
+      }
+      gameBtns[1].classList.add("hidden");
+      gameBtns[0].classList.remove("hidden");
+      gameBtns[0].innerText = "Smash down the door";
+      break;
+    case "unlock failure":
+      gameBtns[3].classList.add("hidden");
+      break;
+    case "unlock success":
+      loadHallway();
+      break;
+    case "door attack success":
+      loadHallway();
+      break;
   }
 });
 
@@ -1019,8 +1083,6 @@ statsBtn.addEventListener("click", () => {
   gameMenu.classList.remove("hidden");
 });
 
-const loadQuestStart = () => {};
-
 // Loads the crypt enter game stage
 const loadCryptEnter = () => {
   gameTitle.innerText = "Entering the Crypt";
@@ -1033,13 +1095,17 @@ const loadCryptEnter = () => {
 };
 
 // Handles the crypt look perception check
-const loadCryptLook = () => {
-  currentPopout = "crypt look";
+let cryptLookDC = 14;
+const handleCryptLook = (DC) => {
+  currentPopup = "crypt look";
   let perceptionCheck = abilitiyCheck(player, "wisdom");
-  gamePopupResult.innerHTML = `Wisdom check (d20 + modifier):<br>${
-    perceptionCheck + parseInt(player.modifiers.wisdom)
-  } (${perceptionCheck} + ${parseInt(player.modifiers.wisdom)})`;
-  if (perceptionCheck >= 10) {
+  displayAbilityCheck(
+    "Wisdom",
+    perceptionCheck,
+    rolledDice,
+    player.modifiers.wisdom
+  );
+  if (perceptionCheck >= DC) {
     player.equipment.items.ring = goldenRing;
     gamePopup.classList.remove("hidden");
     gamePopupTitle.innerText = "Success!";
@@ -1054,17 +1120,26 @@ const loadCryptLook = () => {
 };
 
 // Handles the crypt straw investigation check
-const loadStrawInspect = () => {
-  currentPopout = "straw inspect";
+let strawInspectDC1 = 12;
+let strawInspectDC2 = 16;
+const handleStrawInspect = (DC1, DC2) => {
+  currentPopup = "straw inspect";
   let investigationCheck = abilitiyCheck(player, "intelligence");
+  displayAbilityCheck(
+    "Intelligence",
+    investigationCheck,
+    rolledDice,
+    player.modifiers.intelligence
+  );
   gamePopup.classList.remove("hidden");
-  if (investigationCheck >= 10) {
+  if (investigationCheck >= DC1 && investigationCheck < DC2) {
     gamePopupTitle.innerText = "Success!";
     gamePopupMessage.innerText =
-      "Out of the corner of your eye, you notice something";
-  } else if (investigationCheck >= 15) {
+      "You look over the straw. It's clear that a creature has been sleeping here recently, and you estimate that they were last hear about an hour ago.";
+  } else if (investigationCheck >= DC2) {
     gamePopupTitle.innerText = "Success!";
-    gamePopupMessage.innerText = "cdsfdsfds";
+    gamePopupMessage.innerText =
+      "You look over the straw. You notice a putrid smell, which you recognise. A goblin slept here, no longer than a couple of hours ago.";
   } else {
     gamePopupTitle.innerText = "Failure";
     gamePopupMessage.innerText =
@@ -1072,9 +1147,165 @@ const loadStrawInspect = () => {
   }
 };
 
-const loadDoorApproach = () => {};
+// Loads the door approach text + options
+const loadDoorApproach = () => {
+  gameTitle.innerText = "You approach the door";
+  gameBtns[2].classList.add("hidden");
+  gameBtns[0].classList.remove("hidden");
+  gameBtns[1].classList.remove("hidden");
+  gameBtns[0].innerText = "Try the door";
+  gameBtns[1].innerText = "Investigate the door";
+  currentGameStage = "door approach";
+};
 
-const loadDoorAttempt = () => {};
+// Handles the door attempt
+const loadDoorAttempt = () => {
+  currentPopup = "door try";
+  gamePopupResult.classList.add("hidden");
+  gamePopup.classList.remove("hidden");
+  gamePopupTitle.innerText = "The door is locked";
+  gamePopupMessage.innerText =
+    "Your turn the latch but the door is locked from the other side.";
+};
+
+// Handles door force check
+let doorForceDC = 20;
+const handleDoorForce = (DC) => {
+  let strengthCheck = abilitiyCheck(player, "strength");
+  displayAbilityCheck(
+    "Strength",
+    strengthCheck,
+    rolledDice,
+    player.modifiers.strength
+  );
+  gamePopup.classList.remove("hidden");
+  if (strengthCheck >= DC) {
+    gamePopupTitle.innerText = "Success!";
+    gamePopupMessage.innerText =
+      "You lean back and put all of your strength into a shoulder charge. The door's hinges splinter away from the wall and it falls to the ground with a large crash.";
+    enemyStatus = "alert";
+    currentPopup = "door force success";
+  } else {
+    gamePopupTitle.innerText = "Failure";
+    gamePopupMessage.innerText =
+      "You put all your weight behind the door but it's unless - it won't budge.";
+    currentPopup = "door force failure";
+  }
+};
+
+// Handles the door inspection check
+let doorInspectDC = 10;
+const handleDoorInspect = (DC) => {
+  currentGameStage = "door inspect";
+  currentPopup = "door inspect";
+  let investigationCheck = abilitiyCheck(player, "intelligence");
+  displayAbilityCheck(
+    "Intelligence",
+    investigationCheck,
+    rolledDice,
+    player.modifiers.intelligence
+  );
+  gamePopup.classList.remove("hidden");
+  if (investigationCheck >= DC) {
+    gamePopupTitle.innerText = "Success!";
+    gamePopupMessage.innerText =
+      "You inspect the door more closely. It may be locked, but you notice a weak spot - a crack in one of the central planks. You also discern that the lock might be susceptable to thieves tools or magic.";
+    doorUnlockDC = 8;
+    door.hp = 6;
+  } else {
+    gamePopupTitle.innerText = "Failure";
+    gamePopupMessage.innerText =
+      "The light is dim in this chamber. You see a door, nothing special about it.";
+  }
+};
+
+// Handles the door unlock check
+let doorUnlockDC = 14;
+const handleDoorUnlock = (DC) => {
+  currentPopup = "door unlock";
+  let unlockCheck = "";
+  if (player.class === "Cleric") {
+    unlockCheck = player.spells.knock.calculateSpellHit(player);
+    displayAttackHit(
+      player.spells.knock.name,
+      unlockCheck,
+      rolledDice,
+      `+${parseInt(player.modifiers.wisdom) + parseInt(player.proficiency)}`
+    );
+  } else {
+    unlockCheck =
+      abilitiyCheck(player, "dexterity") + parseInt(player.proficiency);
+    displayAbilityCheck(
+      "Dexterity",
+      unlockCheck,
+      rolledDice,
+      `+${parseInt(player.modifiers.dexterity) + parseInt(player.proficiency)}`
+    );
+  }
+  gamePopup.classList.remove("hidden");
+  if (unlockCheck >= DC) {
+    currentPopup = "unlock success";
+    gamePopupTitle.innerText = "Success!";
+    if (player.class === "Cleric") {
+      gamePopupMessage.innerText =
+        "The spell finds its target. There is a loud knocking sound, before the latch undoes itself and door creaks open.";
+    } else {
+      gamePopupMessage.innerText =
+        "You have to work the lock with a lockpick, but before long you find the final tumbler and the door swings open.";
+    }
+  } else {
+    currentPopup = "unlock failure";
+    gamePopupTitle.innerText = "Failure";
+    gamePopupMessage.innerText =
+      "This lock is to complex to be undone by the tools you possess.";
+  }
+};
+
+// Handles the door attack machanic
+const handleObjectAttack = (object) => {
+  gamePopup.classList.remove("hidden");
+  object.hp =
+    object.hp -
+    player.equipment.weapons.meleeWeapon.calculateWeaponDamage(player);
+  console.log(object);
+  if (object.hp <= 0) {
+    currentPopup = "door attack success";
+    gamePopupTitle.innerText = "Success!";
+    gamePopupMessage.innerText =
+      "Your weapon carves through door and smashes the latch to pieces, with a loud crash. The door swings open.";
+  } else {
+    currentPopup = "door attack fail";
+    gamePopupTitle.innerText = "Failure";
+    gamePopupMessage.innerText =
+      "The door shows signs of damage. But for now, it holds fast.";
+  }
+};
+
+// Loads the hallway stage
+let trapStatus = "enabled";
+const loadHallway = () => {
+  gameTitle.innerText = "through the hallway";
+  gameBtns[0].classList.remove("hidden");
+  gameBtns[1].classList.remove("hidden");
+  gameBtns[0].innerText = "Proceed down the hallway";
+  gameBtns[1].innerText = "Check for traps";
+  gameBtns[2].classList.add("hidden");
+  gameBtns[3].classList.add("hidden");
+  currentGameStage = "hallway";
+};
+
+//Handles the hallway test
+const handleHallwayCheck = () => {
+  if (trapStatus === "enabled") {
+    gamePopupTitle.innerText = "Success!";
+    gamePopupMessage.innerText =
+      "You hear a snap. You look down and see that your foot has triggered a wire. ";
+    trapStatus = "disabled";
+    currentPopup = "trap trigger";
+  } else {
+    // load next stage
+  }
+};
 
 // Game switchboard
 gameBtns.forEach((btn) => {
@@ -1086,27 +1317,47 @@ gameBtns.forEach((btn) => {
             loadCryptEnter();
             break;
           case "crypt enter":
-            loadCryptLook();
+            handleCryptLook(cryptLookDC);
+            break;
+          case "door approach":
+            loadDoorAttempt();
+            break;
+          case "door inspect":
+            handleObjectAttack(door);
+            break;
+          case "hallway":
+            handleTrapTrigger();
         }
         break;
       case "b":
         switch (currentGameStage) {
           case "crypt enter":
-            loadStrawInspect();
+            handleStrawInspect(strawInspectDC1, strawInspectDC2);
+            break;
+          case "door approach":
+            handleDoorInspect(doorInspectDC);
             break;
         }
         break;
       case "c":
         switch (currentGameStage) {
           case "crypt enter":
+            loadDoorApproach();
+            break;
+          case "door approach":
+            handleDoorForce(doorForceDC);
+            break;
+          case "door inspect":
+            handleDoorForce(doorForceDC);
         }
         break;
       case "d":
         switch (currentGameStage) {
-          case "crypt enter":
+          case "door inspect":
+            handleDoorUnlock(doorUnlockDC);
         }
-        break;
     }
+    console.log(currentGameStage);
   });
 });
 
