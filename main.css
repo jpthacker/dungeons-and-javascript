@@ -8,7 +8,7 @@
   font-family: "Cinzel", serif;
   font-weight: 600;
   font-size: 2.5em;
-  color: #c38ffa;
+  color: #b73131;
   text-align: center;
 }
 
@@ -79,7 +79,7 @@ h5 {
 }
 
 [class*=-table] > h5 {
-  color: #c38ffa;
+  color: #b73131;
 }
 
 [class*=equipment-desc],
@@ -122,16 +122,16 @@ h5 {
 
 .menu--start {
   display: flex;
-  row-gap: 10vh;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   margin: 45vh 0 0 0;
-  max-height: 100%;
+  max-height: 55vh;
+  min-height: 55vh;
 }
 
 .menu {
-  min-height: 70vh;
+  min-height: 76vh;
   margin: 24vh 0 0 0;
 }
 .menu__title {
@@ -160,7 +160,7 @@ h5 {
   justify-content: space-evenly;
   align-items: center;
   background-color: rgba(1, 1, 1, 0);
-  background-image: linear-gradient(rgba(1, 1, 1, 0), #1b1b1b, #1b1b1b);
+  background-image: linear-gradient(rgba(1, 1, 1, 0), #b73131);
   margin-top: 0;
 }
 
@@ -172,7 +172,7 @@ h5 {
   margin-bottom: 6vh;
 }
 .ability__container {
-  margin: 0 20vw;
+  margin: 10vh 20vw;
 }
 
 [class*=stats__] {
@@ -180,7 +180,7 @@ h5 {
   flex-direction: column;
   justify-content: space-between;
   row-gap: 1vh;
-  border: solid #c38ffa 1px;
+  border: solid #b73131 1px;
   border-radius: 10px;
   padding: 10px;
 }
@@ -199,7 +199,7 @@ h5 {
 }
 
 [class*=ability-no] {
-  border: solid #c38ffa 1px;
+  border: solid #b73131 1px;
   border-radius: 50px;
   min-width: 12vw;
 }
@@ -312,7 +312,7 @@ h5 {
   padding-top: 0;
 }
 .stats__initiative-no {
-  border: solid #c38ffa 1px;
+  border: solid #b73131 1px;
   border-radius: 10px;
   padding: 15px;
 }
@@ -340,7 +340,7 @@ h5 {
   padding: 16px 0 16px 0;
 }
 .stats__equipment, .stats__spells {
-  border: solid #c38ffa 1px;
+  border: solid #b73131 1px;
 }
 .stats__equipment h5, .stats__spells h5 {
   border: 0;
@@ -353,7 +353,7 @@ h5 {
 .stats__equipment [class*=__spell-table], .stats__spells [class*=__equipment-table],
 .stats__spells [class*=__spell-table] {
   border-radius: 0;
-  border-bottom: solid #c38ffa 1px;
+  border-bottom: solid #b73131 1px;
 }
 .stats__equipment [class*=__equipment-table] h5,
 .stats__equipment [class*=__spell-table] h5, .stats__spells [class*=__equipment-table] h5,
@@ -362,17 +362,16 @@ h5 {
 }
 
 .game {
-  position: absolute;
-  top: 40vw;
-  left: 5vw;
-  right: 5vw;
-  min-width: 0vw;
+  margin: 26vh 5vw 0 5vw;
+  max-height: 55vh;
+  min-height: 55vh;
+  max-width: 90vw;
 }
 .game__menu {
   display: flex;
   flex-direction: column;
   row-gap: 4vh;
-  border: solid 1px #c38ffa;
+  border: solid 1px #b73131;
   border-radius: 10px;
   padding: 30px 20px 40px 20px;
   text-align: center;
@@ -380,16 +379,17 @@ h5 {
 
 .footer {
   min-height: 10vh;
-  min-width: 100vw;
+  min-width: 100%;
+  max-width: 100%;
 }
 
 .game__popup {
   position: fixed;
-  top: 30%;
+  top: 20%;
   left: 50%;
   transform: translateX(-50%);
   padding: 15px;
-  border: solid 1px #c38ffa;
+  border: solid 1px #b73131;
   border-radius: 10px;
   min-width: 80vw;
   min-height: 20vh;
@@ -397,7 +397,7 @@ h5 {
   flex-direction: column;
   align-items: center;
   row-gap: 4vh;
-  background-color: #c38ffa;
+  background-color: #b73131;
   color: #1b1b1b;
 }
 
@@ -584,9 +584,9 @@ button {
 
 .game__btn--stats,
 .stats__btn--game {
-  background-color: #c38ffa;
+  background-color: #b73131;
   color: #1b1b1b;
-  border: #c38ffa;
+  border: #b73131;
   border-radius: 10px;
 }
 

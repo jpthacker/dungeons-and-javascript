@@ -536,6 +536,13 @@ const sacredFlame = new Spell(
   "1d8 Damage"
 );
 
+// Prevents the enter button from refreshing the page
+document.body.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+  }
+});
+
 let currentCreationStage = "start";
 
 // Loads the character creation message
@@ -543,7 +550,6 @@ const loadCreationMessage = () => {
   titleContainer.classList.add("title--top");
   titleMain.classList.add("title__main--top");
   titleMenu.style.marginBottom = "0vh";
-  // menu.classList.remove("menu--start");
   menu.classList.add("menu");
   document.querySelector(".menu__title").innerText = "Create Your Adventurer";
   createContainer.classList.remove("character-creation--start");
@@ -678,6 +684,7 @@ const loadCharacterStats = () => {
 };
 
 const loadGame = () => {
+  menu.classList.add("hidden");
   statsContainer.classList.add("hidden");
   btnRibbon.classList.add("hidden");
   game.classList.remove("hidden");
@@ -1071,6 +1078,7 @@ gamePopupBtn.addEventListener("click", () => {
 gameStatsBtn.addEventListener("click", () => {
   window.scrollTo(0, 0);
   player.getEquipmentHTML(statsEquipment);
+  menu.classList.remove("hidden");
   gameMenu.classList.add("hidden");
   statsContainer.classList.remove("hidden");
   statsBtn.classList.remove("hidden");
@@ -1079,6 +1087,7 @@ gameStatsBtn.addEventListener("click", () => {
 // Returns player to game from stats
 statsBtn.addEventListener("click", () => {
   window.scrollTo(0, 0);
+  menu.classList.add("hidden");
   statsContainer.classList.add("hidden");
   gameMenu.classList.remove("hidden");
 });
