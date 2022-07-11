@@ -1008,13 +1008,23 @@ let currentPopup = "";
 let enemyStatus = "";
 
 // Ability check (to be called when player or monster attempts an action)
-const abilitiyCheck = (character, ability) => {
+const abilityCheck = (character, ability) => {
   return dice(20) + parseInt(character.modifiers[ability]);
+};
+
+// Camculates a character saving throw (to be called when something negative affects a character or monster)
+const savingThrow = (character, ability) => {
+  return dice(20) + parseInt(character.savingThrows[ability]);
 };
 
 // Displays the result of the ability on popup
 const displayAbilityCheck = (text, check, dice, modifier) => {
   gamePopupResult.innerHTML = `${text} check (d20+modifier)<br><strong>${check} (${dice}${modifier})</strong>`;
+};
+
+// Displays the result of a saving throw on game popup
+const displaySavingThrow = (text, check, dice, modifier) => {
+  gamePopupResult.innerHTML = `${text} saving throw (d20+modifier)<br><strong>${check} (${dice}${modifier})</strong>`;
 };
 
 // Displays the attach hit attempt
@@ -1071,12 +1081,22 @@ gamePopupBtn.addEventListener("click", () => {
     case "door attack success":
       loadHallway();
       break;
+    case "hallway proceed":
+      break;
+    case "trap check success":
+      gameBtns[1].classList.add("hidden");
+      gameBtns[2].classList.remove("hidden");
+      gameBtns[2].innerText = "Disable the trap";
+      break;
+    case "trap check failure":
+      gameBtns[1].classList.add("hidden");
   }
 });
 
 // Shows player stats during game
 gameStatsBtn.addEventListener("click", () => {
   window.scrollTo(0, 0);
+  player.getHitPointsHTML(statsHitPoints);
   player.getEquipmentHTML(statsEquipment);
   menu.classList.remove("hidden");
   gameMenu.classList.add("hidden");
@@ -1107,7 +1127,7 @@ const loadCryptEnter = () => {
 let cryptLookDC = 14;
 const handleCryptLook = (DC) => {
   currentPopup = "crypt look";
-  let perceptionCheck = abilitiyCheck(player, "wisdom");
+  let perceptionCheck = abilityCheck(player, "wisdom");
   displayAbilityCheck(
     "Wisdom",
     perceptionCheck,
@@ -1133,7 +1153,7 @@ let strawInspectDC1 = 12;
 let strawInspectDC2 = 16;
 const handleStrawInspect = (DC1, DC2) => {
   currentPopup = "straw inspect";
-  let investigationCheck = abilitiyCheck(player, "intelligence");
+  let investigationCheck = abilityCheck(player, "intelligence");
   displayAbilityCheck(
     "Intelligence",
     investigationCheck,
@@ -1158,7 +1178,7 @@ const handleStrawInspect = (DC1, DC2) => {
 
 // Loads the door approach text + options
 const loadDoorApproach = () => {
-  gameTitle.innerText = "You approach the door";
+  gameTitle.innerText = "You Approach the Door";
   gameBtns[2].classList.add("hidden");
   gameBtns[0].classList.remove("hidden");
   gameBtns[1].classList.remove("hidden");
@@ -1180,7 +1200,7 @@ const loadDoorAttempt = () => {
 // Handles door force check
 let doorForceDC = 20;
 const handleDoorForce = (DC) => {
-  let strengthCheck = abilitiyCheck(player, "strength");
+  let strengthCheck = abilityCheck(player, "strength");
   displayAbilityCheck(
     "Strength",
     strengthCheck,
@@ -1207,7 +1227,7 @@ let doorInspectDC = 10;
 const handleDoorInspect = (DC) => {
   currentGameStage = "door inspect";
   currentPopup = "door inspect";
-  let investigationCheck = abilitiyCheck(player, "intelligence");
+  let investigationCheck = abilityCheck(player, "intelligence");
   displayAbilityCheck(
     "Intelligence",
     investigationCheck,
@@ -1243,7 +1263,7 @@ const handleDoorUnlock = (DC) => {
     );
   } else {
     unlockCheck =
-      abilitiyCheck(player, "dexterity") + parseInt(player.proficiency);
+      abilityCheck(player, "dexterity") + parseInt(player.proficiency);
     displayAbilityCheck(
       "Dexterity",
       unlockCheck,
@@ -1292,28 +1312,127 @@ const handleObjectAttack = (object) => {
 
 // Loads the hallway stage
 let trapStatus = "enabled";
+let trapNoticed = false;
 const loadHallway = () => {
-  gameTitle.innerText = "through the hallway";
+  gameTitle.innerText = "Through the Hallway";
   gameBtns[0].classList.remove("hidden");
   gameBtns[1].classList.remove("hidden");
   gameBtns[0].innerText = "Proceed down the hallway";
-  gameBtns[1].innerText = "Check for traps";
+  if (player.class === "Rogue") {
+    gameBtns[1].innerText = "Check for traps";
+  } else {
+    gameBtns[1].classList.add("hidden");
+  }
   gameBtns[2].classList.add("hidden");
   gameBtns[3].classList.add("hidden");
   currentGameStage = "hallway";
 };
 
-//Handles the hallway test
+// Handles the triggering of the hallway trap
+let trapTriggerDC = 15;
+const handleTrapTrigger = (DC) => {
+  let constitutionSave = savingThrow(player, "constitution");
+  displaySavingThrow(
+    "Constitution",
+    constitutionSave,
+    rolledDice,
+    player.savingThrows.constitution
+  );
+  gamePopupTitle.innerText = "Trap Triggered!";
+  if (trapNoticed === true) {
+    gamePopupMessage.innerHTML =
+      "You fumble with your tools and the trap is triggered.";
+  } else {
+    gamePopupMessage.innerHTML =
+      "You hear a snap. You look down and see that your foot has triggered a wire.";
+  }
+
+  gamePopupMessage.innerHTML +=
+    " A cloud of poisionous gas fills the passageway.";
+  let poisonDamage = dice(4) + 1;
+  if (constitutionSave < DC) {
+    gamePopupMessage.innerHTML += `The poison fills your throat and burns your lungs. You suffer ${poisonDamage} points of poison damage.`;
+  } else {
+    poisonDamage = Math.floor(poisonDamage / 2);
+    gamePopupMessage.innerHTML += `You manage to hold your breath and cover your face just in time. You only suffer ${poisonDamage} points of poison damage.`;
+  }
+  player.hitPointsCurrent = player.hitPointsCurrent - poisonDamage;
+  gamePopup.classList.remove("hidden");
+  trapStatus = "disabled";
+  currentPopup = "trap trigger";
+};
+
+//Handles the hallway trap test
 const handleHallwayCheck = () => {
+  currentPopup = "hallway proceed";
   if (trapStatus === "enabled") {
+    handleTrapTrigger(trapTriggerDC);
+  } else {
+    loadMainChamber();
+  }
+};
+
+// Handles the check for finding the trap
+let trapCheckDC = 14;
+const handleTrapCheck = (DC) => {
+  let trapCheck = abilityCheck(player, "intelligence");
+  console.log(trapCheck);
+  displayAbilityCheck(
+    "Investigation (intelligence)",
+    trapCheck,
+    rolledDice,
+    `+${parseInt(player.modifiers.intelligence) + parseInt(player.proficiency)}`
+  );
+  if (trapCheck > DC) {
+    currentPopup = "trap check success";
+    trapNoticed = true;
     gamePopupTitle.innerText = "Success!";
     gamePopupMessage.innerText =
-      "You hear a snap. You look down and see that your foot has triggered a wire. ";
-    trapStatus = "disabled";
-    currentPopup = "trap trigger";
+      "You take a first step into the passageway, when you notice something touching your ankle. You look down and see that one more step would have triggered a trip wire.";
   } else {
-    // load next stage
+    currentPopup = "trap check failure";
+    gamePopupTitle.innerText = "Failure";
+    gamePopupMessage.innerText =
+      "The light is dim in the passageway. You see nothing of concern.";
   }
+  gamePopup.classList.remove("hidden");
+};
+
+// Handles the trap disable attempt
+let trapDisableDC = 15;
+const handleTrapDisable = (DC) => {
+  currentPopup = "trap disable";
+  let dexterityCheck = "";
+  if (player.class === "Cleric") {
+    dexterityCheck =
+      abilityCheck(player, "dexterity") + parseInt(player.proficiency);
+    displayAbilityCheck(
+      "Dexterity",
+      unlockCheck,
+      rolledDice,
+      `+${parseInt(player.modifiers.dexterity) + parseInt(player.proficiency)}`
+    );
+  }
+  gamePopup.classList.remove("hidden");
+  if (disableCheck >= DC) {
+    gamePopupTitle.innerText = "Success!";
+    gamePopupMessage.innerText =
+      "You find a mechanism on the wall. You bend down and get to work wih your thieves' tools. The mechanism clicks and the wire slackens - the trap is disabled.";
+  } else {
+    handleTrapTrigger(trapTriggerDC);
+  }
+};
+
+// Loads the main chamber
+const loadMainChamber = () => {
+  gameTitle.innerText = "In the Main Chamber";
+  gameBtns[0].classList.remove("hidden");
+  gameBtns[1].classList.remove("hidden");
+  gameBtns[0].innerText = "Look around";
+  gameBtns[1].innerText = "Enter the chamber";
+  gameBtns[2].classList.add("hidden");
+  gameBtns[3].classList.add("hidden");
+  currentGameStage = "main chamber";
 };
 
 // Game switchboard
@@ -1335,7 +1454,7 @@ gameBtns.forEach((btn) => {
             handleObjectAttack(door);
             break;
           case "hallway":
-            handleTrapTrigger();
+            handleHallwayCheck();
         }
         break;
       case "b":
@@ -1346,6 +1465,8 @@ gameBtns.forEach((btn) => {
           case "door approach":
             handleDoorInspect(doorInspectDC);
             break;
+          case "hallway":
+            handleTrapCheck(trapCheckDC);
         }
         break;
       case "c":
@@ -1358,6 +1479,9 @@ gameBtns.forEach((btn) => {
             break;
           case "door inspect":
             handleDoorForce(doorForceDC);
+            break;
+          case "hallway":
+            handleTrapDisable(trapDisableDC);
         }
         break;
       case "d":
