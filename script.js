@@ -71,6 +71,8 @@ const dice = (diceType, diceNumber) => {
   }
 };
 
+// ability list
+
 const abilityList = [
   "strength",
   "dexterity",
@@ -496,10 +498,10 @@ const thievesTools = new Item(
   "This set of tools includes a set of lock picks, allowing you to attempt to open locks. Your proficiency bonus is added to any ability checks you make to open locks.",
   "tools"
 );
-const goldenRing = new Item(
-  "Golden Ring",
-  "A simple golden ring, dulled and lined with dirt.",
-  "ring"
+const brassKey = new Item(
+  "Brass key",
+  "An intricate brass key, dulled and lines with dirt.",
+  "key"
 );
 
 // Spells class
@@ -547,6 +549,8 @@ const sacredFlame = new Spell(
   "1d8 Damage",
   8
 );
+
+// CHARACTER CREATION MECHANICS
 
 // Prevents the enter button from refreshing the page
 document.body.addEventListener("keydown", (event) => {
@@ -678,7 +682,7 @@ const loadCharacterStats = () => {
     player.formatStats(player.savingThrows);
     player.calculateArmourClass();
     console.log(player);
-    // Make HTML loading more efficient, i.e., use object loops and single function
+    // Make HTML loading more efficient, i.e., use object loops and single function??
     player.getNameHTML(statsName);
     player.getProficiencyHTML(statsProficiency);
     player.getHitPointsHTML(statsHitPoints);
@@ -705,6 +709,7 @@ const loadGame = () => {
   goblin.assignAbilities();
   goblin.getMaxHP();
   goblin.assignAbilityModifiers(goblin.abilities);
+  goblin.calculateSenses();
   goblin.calculateAttack();
   console.log(goblin);
   currentCreationStage = "game start";
@@ -942,6 +947,8 @@ abilityResetBtn.addEventListener("click", (event) => {
   });
 });
 
+// MONSTER CLASS AND OBJECTS
+
 //  Monster class
 class Monster {
   constructor(
@@ -978,7 +985,7 @@ class Monster {
     });
   }
   calculateSenses() {
-    this.perception = parseInt(this.modifiers.wisdom) + 10;
+    this.passivePerception = parseInt(this.modifiers.wisdom) + 10;
   }
   calculateAttack() {
     let attackRoll = dice(20);
@@ -1011,9 +1018,7 @@ class Object {
 // Object(s)
 const door = new Object("Door", 12, 2);
 
-// Player/monster actions
-// move; attack (melee, ranged); damage (melee, ranged); unlock; heal; percieve; investigate; pursuade;
-// console.log(goblin.meleeWeapon.calculateWeaponDamage(goblin));
+// GAME MECHANICS
 
 let currentGameStage = "game start";
 let currentPopup = "";
@@ -1071,10 +1076,8 @@ statsBtn.addEventListener("click", () => {
 // Loads the crypt enter game stage
 const loadCryptEnter = () => {
   gameTitle.innerText = "Entering the Crypt";
-  gameBtns[1].classList.remove("hidden");
   gameBtns[2].classList.remove("hidden");
   gameBtns[0].innerText = "Look around";
-  gameBtns[1].innerText = "Investigate the straw";
   gameBtns[2].innerText = "Approach the door";
   currentGameStage = "crypt enter";
 };
@@ -1082,7 +1085,6 @@ const loadCryptEnter = () => {
 // Handles the crypt look perception check
 let cryptLookDC = 14;
 const handleCryptLook = (DC) => {
-  currentPopup = "crypt look";
   let perceptionCheck = abilityCheck(player, "wisdom");
   displayAbilityCheck(
     "Wisdom",
@@ -1091,12 +1093,13 @@ const handleCryptLook = (DC) => {
     player.modifiers.wisdom
   );
   if (perceptionCheck >= DC) {
-    player.equipment.items.ring = goldenRing;
+    currentPopup = "crypt look success";
     gamePopup.classList.remove("hidden");
     gamePopupTitle.innerText = "Success!";
     gamePopupMessage.innerText =
-      "Out of the corner of your eye, you notice something glinting on the floor next to the pile of straw. You approach and pick up a simple gold ring, which you place in you pocket.";
+      "You spot a pile of straw in the corner of the room. Normally you'd ingore such a thing, but you sense it might be worth taking a closer look.";
   } else {
+    currentPopup = "crypt look failure";
     gamePopup.classList.remove("hidden");
     gamePopupTitle.innerText = "Failure";
     gamePopupMessage.innerText =
@@ -1124,7 +1127,8 @@ const handleStrawInspect = (DC1, DC2) => {
   } else if (investigationCheck >= DC2) {
     gamePopupTitle.innerText = "Success!";
     gamePopupMessage.innerText =
-      "You look over the straw. You notice a putrid smell, which you recognise. A goblin slept here, no longer than a couple of hours ago.";
+      "Out of the corner of your eye, you notice something glinting on the floor next to the pile of straw. You approach and pick up a small brass key, which you place in you pocket.";
+    player.equipment.items.key = brassKey;
   } else {
     gamePopupTitle.innerText = "Failure";
     gamePopupMessage.innerText =
@@ -1312,7 +1316,6 @@ const handleTrapTrigger = (DC) => {
     gamePopupMessage.innerHTML =
       "You hear a snap. You look down and see that your foot has triggered a wire.";
   }
-
   gamePopupMessage.innerHTML +=
     " A cloud of poisionous gas fills the passageway.";
   let poisonDamage = dice(4) + 1;
@@ -1339,7 +1342,7 @@ const handleHallwayCheck = () => {
 };
 
 // Handles the check for finding the trap
-let trapCheckDC = 14;
+let trapCheckDC = 2;
 const handleTrapCheck = (DC) => {
   let trapCheck = abilityCheck(player, "intelligence");
   console.log(trapCheck);
@@ -1365,7 +1368,7 @@ const handleTrapCheck = (DC) => {
 };
 
 // Handles the trap disable attempt
-let trapDisableDC = 15;
+let trapDisableDC = 25;
 const handleTrapDisable = (DC) => {
   currentPopup = "trap disable";
   let dexterityCheck =
@@ -1381,6 +1384,7 @@ const handleTrapDisable = (DC) => {
     gamePopupTitle.innerText = "Success!";
     gamePopupMessage.innerText =
       "You find a mechanism on the wall. You bend down and get to work wih your thieves' tools. The mechanism clicks and the wire slackens - the trap is disabled.";
+    trapStatus = "disabled";
   } else {
     handleTrapTrigger(trapTriggerDC);
   }
@@ -1495,7 +1499,7 @@ const loadEnemyAhead = () => {
 
 // Handles the player suprise attack on the enemy
 const handlePlayerSurpriseAttack = () => {
-  handlePlayerRangedAttac(goblin.armourClass);
+  handlePlayerRangedAttack(goblin.armourClass);
   currentPopup = "player surprise";
 };
 
@@ -1562,6 +1566,79 @@ const handlePlayerRangedAttack = (DC) => {
   gamePopup.classList.remove("hidden");
 };
 
+// Handles player stealth check
+const playerStealth = (testText) => {
+  let stealthCheck = abilityCheck(player, "dexterity");
+  displayAbilityCheck(
+    testText,
+    stealthCheck,
+    rolledDice,
+    player.modifiers.dexterity
+  );
+};
+
+// handles the player sneak test against the monster's passive perception
+const playerSneakUp = (DC) => {
+  playerStealth("Dexterity (stealth)");
+  if (stealthCheck >= DC) {
+    currentPopup = "stealth success";
+    gamePopupTitle.innerText = "Success!";
+    gamePopupMessage.innerHTML =
+      "You creep up behind the goblin, quiet as the night. They remain oblivious to your presence and seem to be fixated on the wall.";
+  } else {
+    currentPopup = "stealth failure";
+    gamePopupTitle.innerText = "Failure";
+    gamePopupMessage.innerHTML =
+      "You creep up behind the goblin, quiet as the night. However, you fail to notice a shallow puddle on the floor in the middle of the chamber. The slight splash of your foot alerts the goblin. They turn around and draw their weapon.";
+  }
+  gamePopup.classList.remove("hidden");
+};
+
+// handles the player pickpocket test against the monster's passive perception
+const playerPickpocket = (DC) => {
+  playerStealth("Dexterity (slight-of-hand)");
+  if (stealthCheck >= DC) {
+    currentPopup = "pickpocket success";
+    gamePopupTitle.innerText = "Success!";
+    if (player.equipment.items.key) {
+      gamePopupMessage.innerHTML =
+        "You silently check the goblin's pockets, but find nothing.";
+    }
+    gamePopupMessage.innerHTML =
+      "You silently check the goblin's pockets, and pull out a small brass key, which you take for yourself.";
+  } else {
+    currentPopup = "pickpocket failure";
+    gamePopupTitle.innerText = "Failure";
+    gamePopupMessage.innerHTML =
+      "You reach into the goblin's pockets, trying to be as gentle as you can, but your finger catches on a loose thread. They turn around, alarmed, and draw their weapon.";
+  }
+  gamePopup.classList.remove("hidden");
+};
+
+// Handles charm text against enemy's charisma
+let persuasionDC = 18;
+const playerPersuade = (DC) => {
+  const persuasionCheck = abilityCheck(player, "charisma");
+  displayAbilityCheck(
+    "Charisma (persuasion)",
+    persuasionCheck,
+    rolledDice,
+    player.modifiers.charisma
+  );
+  if (persuasionCheck >= DC) {
+    currentPopup = "persuasion success";
+    gamePopupTitle.innerText = "Success!";
+    gamePopupMessage.innerHTML =
+      "The goblin is alarmed by your attempt to reason with it, and its wits are no match for yours. You convince it to leave the crypt and never come back.";
+  } else {
+    currentPopup = "persuasion failure";
+    gamePopupTitle.innerText = "Failure";
+    gamePopupMessage.innerHTML =
+      "The goblin is alarmed by your attempt to reason with it, but it isn't convinced by your measly words. It readies itself for an attack.";
+  }
+  gamePopup.classList.remove("hidden");
+};
+
 // Game switchboard
 gameBtns.forEach((btn) => {
   btn.addEventListener("click", (event) => {
@@ -1605,7 +1682,7 @@ gameBtns.forEach((btn) => {
             mainChamberEnter();
             break;
           case "enemy ahead":
-          // charm
+            playerPersuade(persuasionDC);
         }
         break;
       case "c":
@@ -1623,13 +1700,16 @@ gameBtns.forEach((btn) => {
             handleTrapDisable(trapDisableDC);
             break;
           case "enemy ahead":
-          // sneak up on enemy
+            playerSneakUp(goblin.passivePerception);
         }
         break;
       case "d":
         switch (currentGameStage) {
           case "door inspect":
             handleDoorUnlock(doorUnlockDC);
+            break;
+          case "enemy ahead":
+            playerPickpocket(goblin.passivePerception);
         }
     }
     console.log(currentGameStage);
@@ -1641,15 +1721,18 @@ gamePopupBtn.addEventListener("click", () => {
   gamePopup.classList.add("hidden");
   gamePopupResult.innerHTML = "";
   switch (currentPopup) {
-    case "crypt look":
+    case "crypt look success":
+      gameBtns[0].classList.add("hidden");
+      gameBtns[1].classList.remove("hidden");
+      gameBtns[1].innerText = "Investigate the straw";
+      break;
+    case "crypt look failure":
     case "chamber perception success unaware":
     case "chamber perception failure":
       gameBtns[0].classList.add("hidden");
       break;
     case "straw inspect":
-    case "trap trigger":
     case "trap check failure":
-    case "trap disable":
       gameBtns[1].classList.add("hidden");
       break;
     case "door try":
@@ -1662,6 +1745,11 @@ gamePopupBtn.addEventListener("click", () => {
       loadHallway();
       break;
     case "door force failure":
+    case "trap disable":
+      gameBtns[2].classList.add("hidden");
+      break;
+    case "trap trigger":
+      gameBtns[1].classList.add("hidden");
       gameBtns[2].classList.add("hidden");
       break;
     case "door inspect":
@@ -1678,6 +1766,7 @@ gamePopupBtn.addEventListener("click", () => {
       gameBtns[0].innerText = "Smash down the door";
       break;
     case "unlock failure":
+    case "pickpocket failure":
       gameBtns[3].classList.add("hidden");
       break;
     case "unlock success":
@@ -1697,9 +1786,22 @@ gamePopupBtn.addEventListener("click", () => {
       loadEnemyReady();
       break;
     case "player surprise":
-    // intitiaive - enter combat
+    case "stealth failure":
+    case "persuasion failure":
+      // load combat
+      break;
+    case "stealth success":
+      gameBtns[2].classList.add("hidden");
+      gameBtns[3].innerText = "Pickpocket the goblin";
+      gameBtns[3].classList.remove("hidden");
+      break;
+    case "persuasion success":
+      // load combat success
+      break;
   }
 });
+
+// POLYFILLS
 
 // Polyfill for Object.entries
 if (!Object.entries) {
