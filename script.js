@@ -1342,7 +1342,7 @@ const handleHallwayCheck = () => {
 };
 
 // Handles the check for finding the trap
-let trapCheckDC = 2;
+let trapCheckDC = 14;
 const handleTrapCheck = (DC) => {
   let trapCheck = abilityCheck(player, "intelligence");
   console.log(trapCheck);
@@ -1368,7 +1368,7 @@ const handleTrapCheck = (DC) => {
 };
 
 // Handles the trap disable attempt
-let trapDisableDC = 25;
+let trapDisableDC = 12;
 const handleTrapDisable = (DC) => {
   currentPopup = "trap disable";
   let dexterityCheck =
@@ -1497,9 +1497,17 @@ const loadEnemyAhead = () => {
   currentGameStage = "enemy ahead";
 };
 
-// Handles the player suprise attack on the enemy
+// Handles the player suprise range and melee attacks on the enemy
 const handlePlayerSurpriseAttack = () => {
-  handlePlayerRangedAttack(goblin.armourClass);
+  if (playerRange === "ranged") {
+    handlePlayerRangedAttack(goblin.armourClass);
+  } else {
+    handlePlayerMeleeAttack(goblin.armourClass);
+  }
+  currentPopup = "player surprise";
+};
+
+const handlePlayerSurpriseMeleeAttack = () => {
   currentPopup = "player surprise";
 };
 
@@ -1533,7 +1541,7 @@ const handlePlayerRangedAttack = (DC) => {
     }
   } else {
     rangedAttack =
-      player.equipment.weapons.reangedWeapon.calculateWeaponHit(player);
+      player.equipment.weapons.rangedWeapon.calculateWeaponHit(player);
     console.log(rangedAttack);
     displayAttackHit(
       "Ranged weapon",
@@ -1560,15 +1568,48 @@ const handlePlayerRangedAttack = (DC) => {
       }
       gamePopupMessage.innerText += ` Your ${projectile} pierces its armour. It takes ${rangeDamage} points of damage.`;
     } else {
-      gamePopupMessage.innerText += ` But the flickering torch distracts you and the ${projectile} sails wide.`;
+      gamePopupMessage.innerText += ` But the low light distracts you and the ${projectile} sails wide.`;
     }
   }
   gamePopup.classList.remove("hidden");
 };
 
+//  Handle player melee attack
+const handlePlayerMeleeAttack = (DC) => {
+  currentPopup = "player melee";
+  gamePopupTitle.innerText = "Melee Attack";
+  gamePopupMessage.innerText = `You attack the enemy with your ${player.equipment.weapons.meleeWeapon.name.toLowerCase()}.`;
+  let meleeAttack =
+    player.equipment.weapons.meleeWeapon.calculateWeaponHit(player);
+  console.log(meleeAttack);
+  displayAttackHit(
+    "Melee weapon",
+    meleeAttack,
+    rolledDice,
+    DC,
+    `+${parseInt(player.modifiers.dexterity) + parseInt(player.proficiency)}`
+  );
+  if (meleeAttack >= DC) {
+    let meleeDamage =
+      player.equipment.weapons.meleeWeapon.calculateWeaponDamage(player);
+    displayDamage(
+      "Melee",
+      meleeDamage,
+      player.equipment.weapons.meleeWeapon.damageDie,
+      rolledDice,
+      player.modifiers[player.equipment.weapons.meleeWeapon.modifier]
+    );
+    gamePopupMessage.innerText += ` Your ${player.equipment.weapons.meleeWeapon.name.toLowerCase()} pierces its armour. It takes ${meleeDamage} points of damage.`;
+  } else {
+    gamePopupMessage.innerText += ` But the low light distracts you and the blow misses.`;
+  }
+  gamePopup.classList.remove("hidden");
+};
+
 // Handles player stealth check
+let stealthCheck;
 const playerStealth = (testText) => {
-  let stealthCheck = abilityCheck(player, "dexterity");
+  stealthCheck = abilityCheck(player, "dexterity");
   displayAbilityCheck(
     testText,
     stealthCheck,
@@ -1576,6 +1617,9 @@ const playerStealth = (testText) => {
     player.modifiers.dexterity
   );
 };
+
+// Player distance from enemy
+let playerRange = "range";
 
 // handles the player sneak test against the monster's passive perception
 const playerSneakUp = (DC) => {
@@ -1585,6 +1629,7 @@ const playerSneakUp = (DC) => {
     gamePopupTitle.innerText = "Success!";
     gamePopupMessage.innerHTML =
       "You creep up behind the goblin, quiet as the night. They remain oblivious to your presence and seem to be fixated on the wall.";
+    playerRange = "melee";
   } else {
     currentPopup = "stealth failure";
     gamePopupTitle.innerText = "Failure";
@@ -1615,8 +1660,8 @@ const playerPickpocket = (DC) => {
   gamePopup.classList.remove("hidden");
 };
 
-// Handles charm text against enemy's charisma
-let persuasionDC = 18;
+// Handles Palyer pursuasion attempt
+let persuasionDC = 19;
 const playerPersuade = (DC) => {
   const persuasionCheck = abilityCheck(player, "charisma");
   displayAbilityCheck(
@@ -1637,6 +1682,56 @@ const playerPersuade = (DC) => {
       "The goblin is alarmed by your attempt to reason with it, but it isn't convinced by your measly words. It readies itself for an attack.";
   }
   gamePopup.classList.remove("hidden");
+};
+
+// Handles the roll for intiative (i.e., begins combat)
+let orderOfCombat;
+const rollInitiative = () => {
+  const enemyInitiative = abilityCheck(goblin, "dexterity");
+  const playerInitiative = abilityCheck(player, "dexterity");
+  displayAbilityCheck(
+    "Dexterity (initiative)",
+    playerInitiative,
+    rolledDice,
+    player.modifiers.dexterity
+  );
+  if (playerInitiative > enemyInitiative) {
+    orderOfCombat = "player";
+  } else if (playerInitiative < enemyInitiative) {
+    orderOfCombat = "enemy";
+  } else {
+    handleHigherDexterity(player, goblin);
+  }
+  if (orderOfCombat === "player") {
+    gamePopupTitle.innerText = "Success!";
+    gamePopupMessage.innerText = "You go first.";
+    currentPopup = "player first";
+  } else {
+    gamePopupTitle.innerText = "Failure";
+    gamePopupMessage.innerText = "The enemy goes first.";
+    currentPopup = "enemy first";
+  }
+};
+
+// handles dexterity comparison between player and enemy (on same intiative roll)
+const handleHigherDexterity = () => {
+  if (player.abilities.dexterity >= goblin.abilities.dexterity) {
+    orderOfCombat = "player";
+  } else {
+    orderOfCombat = "enemy";
+  }
+};
+
+const loadplayerTurn = () => {
+  gameTitle.innerText = "Combat: Your Turn";
+  gameBtns[0].classList.remove("hidden");
+  gameBtns[1].classList.remove("hidden");
+  gameBtns[2].classList.remove("hidden");
+  gameBtns[0].innerText = "Attack";
+  gameBtns[1].innerText = "Move";
+  gameBtns[2].innerText = "Sneak up behind it";
+  gameBtns[3].classList.add("hidden");
+  currentGameStage = "combat";
 };
 
 // Game switchboard
@@ -1665,6 +1760,9 @@ gameBtns.forEach((btn) => {
             break;
           case "enemy ahead":
             handlePlayerSurpriseAttack();
+            break;
+          case "combat":
+          // attach mechanism
         }
         break;
       case "b":
@@ -1766,7 +1864,7 @@ gamePopupBtn.addEventListener("click", () => {
       gameBtns[0].innerText = "Smash down the door";
       break;
     case "unlock failure":
-    case "pickpocket failure":
+    case "pickpocket success":
       gameBtns[3].classList.add("hidden");
       break;
     case "unlock success":
@@ -1785,8 +1883,10 @@ gamePopupBtn.addEventListener("click", () => {
     case "chamber perception success aware":
       loadEnemyReady();
       break;
+    case "enemy surprise":
     case "player surprise":
     case "stealth failure":
+    case "pickpocket failure":
     case "persuasion failure":
       // load combat
       break;
@@ -1798,6 +1898,8 @@ gamePopupBtn.addEventListener("click", () => {
     case "persuasion success":
       // load combat success
       break;
+    case "player first":
+      loadPlayerTurn();
   }
 });
 
