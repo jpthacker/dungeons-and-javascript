@@ -440,6 +440,9 @@ class HealingPotion {
     healing = dice(4, healingDieAmount) + healingBonus;
     console.log(healing);
     consumer.hitPointsCurrent = consumer.hitPointsCurrent + healing;
+    if (consumer.hitPointsCurrent > consumer.hitPointsMax) {
+      consumer.hitPointsCurrent = consumer.hitPointsMax;
+    }
   }
   getItemHTML(user) {
     return `
@@ -1430,7 +1433,7 @@ const handleMainChamberLook = (DC) => {
       currentPopup = "chamber perception success unaware";
       gamePopupTitle.innerText = "Success!";
       gamePopupMessage.innerText =
-        "You glance around the room, eagle-eyed. You notice a figure holding a torch in front of the far wall. You'll need to enter the chamber to take a closer look.";
+        "You glance around the room, eagle-eyed. You notice a figure holding a torch in front of a chest in the far corner. You'll need to enter the chamber to take a closer look.";
     }
   } else {
     currentPopup = "chamber perception failure";
@@ -1726,12 +1729,49 @@ const loadplayerTurn = () => {
   gameTitle.innerText = "Combat: Your Turn";
   gameBtns[0].classList.remove("hidden");
   gameBtns[1].classList.remove("hidden");
-  gameBtns[2].classList.remove("hidden");
+  if (player.equipment.potions.healingPotionStandard) {
+    gameBtns[2].classList.remove("hidden");
+  } else {
+    gameBtns[2].classList.add("hidden");
+  }
   gameBtns[0].innerText = "Attack";
   gameBtns[1].innerText = "Move";
-  gameBtns[2].innerText = "Sneak up behind it";
+  gameBtns[2].innerText = "Drink health potion";
   gameBtns[3].classList.add("hidden");
   currentGameStage = "combat";
+  currentPopup = "player turn";
+};
+
+// Handles player attach options
+const handlePlayerAttack = (range, enemy) => {
+  if (range === "melee") {
+    handlePlayerMeleeAttack(enemy.armourClass);
+  } else {
+    handlePlayerRangedAttack(enemy.armourClass);
+  }
+};
+
+// Loads the movement options during combat
+const loadMovementOption = (range) => {
+  if (range === "melee") {
+    gamePopupTitle.innerText = "You Move Back";
+    gamePopupMessage.innerHTML =
+      "You dodge an incoming blow, and take some backwards steps, readying yourself to attack from range.";
+    playerRange = "range";
+  } else {
+    gamePopupTitle.innerText = "You Move Forward";
+    gamePopupMessage.innerHTML = `You draw and raise your ${player.equipment.weapons.meleeWeapon.name.toLowerCase()}, charging up to the Goblin`;
+    playerRange = "melee";
+  }
+  gamePopupResult.classList.add("hidden");
+};
+
+// Handles health potion use
+const handleHealthPotion = (potion) => {
+  const potionHealing = potion.calculateHealing(player);
+  gamePopupTitle.innerText = "Time to Heal";
+  gamePopupResult.innerHTML += `${potion.name} (${potion.healingDieAmount}d4+${potion.healingBonus})`;
+  gamePopupMessage.innerHTML = `Avoiding any incoming attacks, you reach into your pocket and quickly unstopper a healing potion. Your health is restored by ${potionHealing} hit points.`;
 };
 
 // Game switchboard
@@ -1762,7 +1802,7 @@ gameBtns.forEach((btn) => {
             handlePlayerSurpriseAttack();
             break;
           case "combat":
-          // attach mechanism
+            handlePlayerAttack(playerRange, goblin);
         }
         break;
       case "b":
@@ -1781,6 +1821,9 @@ gameBtns.forEach((btn) => {
             break;
           case "enemy ahead":
             playerPersuade(persuasionDC);
+            break;
+          case "combat":
+            loadMovementOption(playerRange);
         }
         break;
       case "c":
@@ -1799,6 +1842,9 @@ gameBtns.forEach((btn) => {
             break;
           case "enemy ahead":
             playerSneakUp(goblin.passivePerception);
+            break;
+          case "combat":
+            handleHealthPotion(player.equipment.potions.healingPotionStandard);
         }
         break;
       case "d":
@@ -1898,8 +1944,8 @@ gamePopupBtn.addEventListener("click", () => {
     case "persuasion success":
       // load combat success
       break;
-    case "player first":
-      loadPlayerTurn();
+    case "player turn":
+    // load enemy turn
   }
 });
 
