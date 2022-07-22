@@ -100,9 +100,9 @@ const player = {
   assignAbilities() {
     for (let i = 0; i < abilityList.length; i++) {
       if (
-        (abilityList[i] === "wisdom" && this.species === "Human") ||
+        (abilityList[i] === "dexterity" && this.species === "Human") ||
         (abilityList[i] === "strength" && this.species === "Dwarf") ||
-        (abilityList[i] === "dexterity" && this.species === "Elf")
+        (abilityList[i] === "wisdom" && this.species === "Elf")
       ) {
         this.abilities[abilityList[i]] = abilityScoreListOrdered[i] + 2;
       } else {
@@ -437,12 +437,9 @@ class HealingPotion {
   }
   calculateHealing(consumer) {
     let healing;
-    healing = dice(4, healingDieAmount) + healingBonus;
-    console.log(healing);
+    healing = dice(4, this.healingDieAmount) + this.healingBonus;
     consumer.hitPointsCurrent = consumer.hitPointsCurrent + healing;
-    if (consumer.hitPointsCurrent > consumer.hitPointsMax) {
-      consumer.hitPointsCurrent = consumer.hitPointsMax;
-    }
+    return healing;
   }
   getItemHTML(user) {
     return `
@@ -503,7 +500,7 @@ const thievesTools = new Item(
 );
 const brassKey = new Item(
   "Brass key",
-  "An intricate brass key, dulled and lines with dirt.",
+  "An intricate brass key, dulled and lined with dirt.",
   "key"
 );
 
@@ -708,7 +705,9 @@ const loadGame = () => {
   btnRibbon.classList.add("hidden");
   game.classList.remove("hidden");
   footer.classList.remove("hidden");
+  gameTitle.innerText = "Entering the Dungeon";
   gameBtns[0].innerText = "Enter the crypt";
+  gameBtns[1].classList.add("hidden");
   goblin.assignAbilities();
   goblin.getMaxHP();
   goblin.assignAbilityModifiers(goblin.abilities);
@@ -716,6 +715,7 @@ const loadGame = () => {
   goblin.calculateAttack();
   console.log(goblin);
   currentCreationStage = "game start";
+  currentGameStage = "game start";
 };
 
 //Handles the character creation menu buttons
@@ -831,26 +831,26 @@ speciesSelector.addEventListener("change", (event) => {
       player.species = "Dwarf";
       break;
     case "elf":
-      creationMessage.innerHTML = `Elves are a magical people of otherworldly grace, living in the world but not entirely part of it<br/><br/>Species Trait:<br/>+2 Dexterity
+      creationMessage.innerHTML = `Elves are a magical people of otherworldly grace, living in the world but not entirely part of it<br/><br/>Species Trait:<br/>+2 Wisdom
       `;
       player.species = "Elf";
       break;
     case "human":
-      creationMessage.innerHTML = `Whatever drives them, humans are the innovators, the achievers, and the pioneers of the worlds<br/><br/>Species Trait:<br/>+2 Wisdom
+      creationMessage.innerHTML = `Whatever drives them, humans are the innovators, the achievers, and the pioneers of the worlds<br/><br/>Species Trait:<br/>+2 Dexterity
       `;
       player.species = "Human";
   }
   // Reminds the player of their class choice
   switch (player.class) {
-    case "cleric":
+    case "Cleric":
       creationMessage.innerHTML +=
         "<br/><br/>Your Class: Cleric (Primary Ability: Wisdom, Saves: Wisdom & Charisma)";
       break;
-    case "fighter":
+    case "Fighter":
       creationMessage.innerHTML +=
         "<br/><br/>Your Class: Fighter (Primary Ability: Strength, Saves: Strength & Constitution)";
       break;
-    case "rogue":
+    case "Rogue":
       creationMessage.innerHTML +=
         "<br/><br/>Your Class: Rogue (Primary Ability: Dexterity, Saves: Dexterity & Intelligence)";
   }
@@ -1023,9 +1023,10 @@ const door = new Object("Door", 12, 2);
 
 // GAME MECHANICS
 
-let currentGameStage = "game start";
+let currentGameStage;
 let currentPopup = "";
-let enemyStatus = "unaware";
+let enemyAware = false;
+let enemyPresent = true;
 
 // Ability check (to be called when player or monster attempts an action)
 const abilityCheck = (character, ability) => {
@@ -1126,7 +1127,7 @@ const handleStrawInspect = (DC1, DC2) => {
   if (investigationCheck >= DC1 && investigationCheck < DC2) {
     gamePopupTitle.innerText = "Success!";
     gamePopupMessage.innerText =
-      "You look over the straw. It's clear that a creature has been sleeping here recently, and you estimate that they were last hear about an hour ago.";
+      "You look over the straw. It's clear that a creature has been sleeping here recently, and you estimate that they were last here about an hour ago.";
   } else if (investigationCheck >= DC2) {
     gamePopupTitle.innerText = "Success!";
     gamePopupMessage.innerText =
@@ -1175,7 +1176,7 @@ const handleDoorForce = (DC) => {
     gamePopupTitle.innerText = "Success!";
     gamePopupMessage.innerText =
       "You lean back and put all of your strength into a shoulder charge. The door's hinges splinter away from the wall and it falls to the ground with a large crash.";
-    enemyStatus = "aware";
+    enemyAware = true;
     currentPopup = "door force success";
   } else {
     gamePopupTitle.innerText = "Failure";
@@ -1242,7 +1243,7 @@ const handleDoorUnlock = (DC) => {
     if (player.class === "Cleric") {
       gamePopupMessage.innerText =
         "The spell finds its target. There is a loud knocking sound, before the latch undoes itself and the door creaks open.";
-      enemyStatus = "aware";
+      enemyAware = true;
     } else {
       gamePopupMessage.innerText =
         "You have to work the lock with a lockpick, but before long you find the final tumbler and the door swings open.";
@@ -1257,7 +1258,7 @@ const handleDoorUnlock = (DC) => {
 
 // Handles the door attack machanic
 const handleObjectAttack = (object) => {
-  enemyStatus = "aware";
+  enemyAware = true;
   gamePopup.classList.remove("hidden");
   let doorAttack =
     player.equipment.weapons.meleeWeapon.calculateWeaponDamage(player);
@@ -1326,12 +1327,19 @@ const handleTrapTrigger = (DC) => {
     gamePopupMessage.innerHTML += `The poison fills your throat and burns your lungs. You suffer ${poisonDamage} points of poison damage.`;
   } else {
     poisonDamage = Math.floor(poisonDamage / 2);
-    gamePopupMessage.innerHTML += `You manage to hold your breath and cover your face just in time. You only suffer ${poisonDamage} points of poison damage.`;
+    let plural = "";
+    if (poisonDamage > 1) {
+      plural = "s";
+    }
+    gamePopupMessage.innerHTML += `You manage to hold your breath and cover your face just in time. You only suffer ${poisonDamage} point${plural} of poison damage.`;
   }
   player.hitPointsCurrent = player.hitPointsCurrent - poisonDamage;
   gamePopup.classList.remove("hidden");
   trapStatus = "disabled";
   currentPopup = "trap trigger";
+  if (player.hitPointsCurrent <= 0) {
+    currentPopup = "player death";
+  }
 };
 
 //Handles the hallway trap test
@@ -1407,7 +1415,7 @@ const loadMainChamber = () => {
 
 // const handles enemy hide mechanic
 let perceptionCheckDC;
-if (enemyStatus === "aware") {
+if (enemyAware === true) {
   perceptionCheckDC = abilityCheck(goblin, "dexterity");
   console.log("Enemy hide = " + perceptionCheckDC);
 } else {
@@ -1424,7 +1432,7 @@ const handleMainChamberLook = (DC) => {
     player.modifiers.wisdom
   );
   if (perceptionCheck >= DC) {
-    if (enemyStatus === "aware") {
+    if (enemyAware === true) {
       currentPopup = "chamber perception success aware";
       gamePopupTitle.innerText = "Success!";
       gamePopupMessage.innerText =
@@ -1433,7 +1441,7 @@ const handleMainChamberLook = (DC) => {
       currentPopup = "chamber perception success unaware";
       gamePopupTitle.innerText = "Success!";
       gamePopupMessage.innerText =
-        "You glance around the room, eagle-eyed. You notice a figure holding a torch in front of a chest in the far corner. You'll need to enter the chamber to take a closer look.";
+        "You glance around the room, eagle-eyed. You notice a figure holding a torch in the far corner. You'll need to enter the chamber to take a closer look.";
     }
   } else {
     currentPopup = "chamber perception failure";
@@ -1446,38 +1454,17 @@ const handleMainChamberLook = (DC) => {
 
 // Handles the player entering the main chamber
 const mainChamberEnter = () => {
-  if (enemyStatus === "aware") {
+  if (enemyAware === true) {
     currentPopup = "enemy surprise";
     gamePopupTitle.innerText = "Arrow Incoming!";
     gamePopupMessage.innerText =
       "Out of nowhere, an arrow flies out of the dark.";
-    let surpriseAttack = goblin.rangedWeapon.calculateWeaponHit(goblin);
-    console.log(surpriseAttack);
-    console.log(player.armourClass);
-    displayAttackHit(
-      "Surpise attack",
-      surpriseAttack,
-      rolledDice,
-      player.armourClass,
-      `+${parseInt(goblin.modifiers.dexterity) + parseInt(goblin.proficiency)}`
-    );
-    if (surpriseAttack >= player.armourClass) {
-      let surpriseDamage = goblin.rangedWeapon.calculateWeaponDamage(goblin);
-      displayDamage(
-        "Ranged",
-        surpriseDamage,
-        goblin.rangedWeapon.damageDie,
-        rolledDice,
-        goblin.modifiers[goblin.rangedWeapon.modifier]
-      );
-      player.hitPointsCurrent = player.hitPointsCurrent - surpriseDamage;
-      gamePopupMessage.innerText += ` It pierces your shoulder. You take ${surpriseDamage} points of damage.`;
-    } else {
-      gamePopupMessage.innerText += ` Out of instinct, you duck. It whistles past your head, clattering against the wall.`;
-    }
-    gamePopup.classList.remove("hidden");
+    handleEnemyRangedAttack(goblin, player.armourClass);
   } else {
     loadEnemyAhead();
+  }
+  if (player.hitPointsCurrent <= 0) {
+    currentPopup = "player death";
   }
 };
 
@@ -1516,7 +1503,6 @@ const handlePlayerSurpriseMeleeAttack = () => {
 
 // Player ranged attack
 const handlePlayerRangedAttack = (DC) => {
-  currentPopup = "player ranged";
   gamePopupTitle.innerText = "Ranged Attack";
   gamePopupMessage.innerText = "You attack the enemy from range.";
   let rangedAttack;
@@ -1553,22 +1539,22 @@ const handlePlayerRangedAttack = (DC) => {
       DC,
       `+${parseInt(player.modifiers.dexterity) + parseInt(player.proficiency)}`
     );
+    let projectile;
+    if (player.class === "Rogue") {
+      projectile = "crossbow bolt";
+    } else {
+      projectile = "throwing axe";
+    }
     if (rangedAttack >= DC) {
       let rangeDamage =
         player.equipment.weapons.rangedWeapon.calculateWeaponDamage(player);
       displayDamage(
         "Ranged",
         rangeDamage,
-        player.equipment.weapons.meleeWeapon.damageDie,
+        player.equipment.weapons.rangedWeapon.damageDie,
         rolledDice,
         player.modifiers[player.equipment.weapons.rangedWeapon.modifier]
       );
-      let projectile;
-      if (player.class === "Rogue") {
-        projectile = "crossbow bolt";
-      } else {
-        projectile = "throwing axe";
-      }
       gamePopupMessage.innerText += ` Your ${projectile} pierces its armour. It takes ${rangeDamage} points of damage.`;
     } else {
       gamePopupMessage.innerText += ` But the low light distracts you and the ${projectile} sails wide.`;
@@ -1579,7 +1565,6 @@ const handlePlayerRangedAttack = (DC) => {
 
 //  Handle player melee attack
 const handlePlayerMeleeAttack = (DC) => {
-  currentPopup = "player melee";
   gamePopupTitle.innerText = "Melee Attack";
   gamePopupMessage.innerText = `You attack the enemy with your ${player.equipment.weapons.meleeWeapon.name.toLowerCase()}.`;
   let meleeAttack =
@@ -1622,7 +1607,7 @@ const playerStealth = (testText) => {
 };
 
 // Player distance from enemy
-let playerRange = "range";
+let playerRange = "ranged";
 
 // handles the player sneak test against the monster's passive perception
 const playerSneakUp = (DC) => {
@@ -1642,7 +1627,7 @@ const playerSneakUp = (DC) => {
   gamePopup.classList.remove("hidden");
 };
 
-// handles the player pickpocket test against the monster's passive perception
+// Handles the player pickpocket test against the monster's passive perception
 const playerPickpocket = (DC) => {
   playerStealth("Dexterity (slight-of-hand)");
   if (stealthCheck >= DC) {
@@ -1663,7 +1648,7 @@ const playerPickpocket = (DC) => {
   gamePopup.classList.remove("hidden");
 };
 
-// Handles Palyer pursuasion attempt
+// Handles Player pursuasion attempt
 let persuasionDC = 19;
 const playerPersuade = (DC) => {
   const persuasionCheck = abilityCheck(player, "charisma");
@@ -1678,6 +1663,7 @@ const playerPersuade = (DC) => {
     gamePopupTitle.innerText = "Success!";
     gamePopupMessage.innerHTML =
       "The goblin is alarmed by your attempt to reason with it, and its wits are no match for yours. You convince it to leave the crypt and never come back.";
+    enemyPresent = false;
   } else {
     currentPopup = "persuasion failure";
     gamePopupTitle.innerText = "Failure";
@@ -1685,6 +1671,17 @@ const playerPersuade = (DC) => {
       "The goblin is alarmed by your attempt to reason with it, but it isn't convinced by your measly words. It readies itself for an attack.";
   }
   gamePopup.classList.remove("hidden");
+};
+
+// Loads combat
+const loadCombat = () => {
+  gameBtns[1].classList.add("hidden");
+  gameBtns[2].classList.add("hidden");
+  gameBtns[3].classList.add("hidden");
+  gameTitle.innerText = "You are Entering Combat";
+  gameBtns[0].classList.remove("hidden");
+  gameBtns[0].innerText = "Roll Intiiative";
+  currentGameStage = "initiative";
 };
 
 // Handles the roll for intiative (i.e., begins combat)
@@ -1698,6 +1695,7 @@ const rollInitiative = () => {
     rolledDice,
     player.modifiers.dexterity
   );
+  gamePopupResult.innerHTML += `<br><br>The enemy rolled ${enemyInitiative}.`;
   if (playerInitiative > enemyInitiative) {
     orderOfCombat = "player";
   } else if (playerInitiative < enemyInitiative) {
@@ -1714,6 +1712,7 @@ const rollInitiative = () => {
     gamePopupMessage.innerText = "The enemy goes first.";
     currentPopup = "enemy first";
   }
+  gamePopup.classList.remove("hidden");
 };
 
 // handles dexterity comparison between player and enemy (on same intiative roll)
@@ -1725,8 +1724,10 @@ const handleHigherDexterity = () => {
   }
 };
 
+// Loads the player's options during combat (one option per turn)
 const loadplayerTurn = () => {
   gameTitle.innerText = "Combat: Your Turn";
+  gamePopupResult.classList.remove("hidden");
   gameBtns[0].classList.remove("hidden");
   gameBtns[1].classList.remove("hidden");
   if (player.equipment.potions.healingPotionStandard) {
@@ -1735,7 +1736,11 @@ const loadplayerTurn = () => {
     gameBtns[2].classList.add("hidden");
   }
   gameBtns[0].innerText = "Attack";
-  gameBtns[1].innerText = "Move";
+  if (playerRange === "ranged") {
+    gameBtns[1].innerText = "Move Closer";
+  } else {
+    gameBtns[1].innerText = "Move Away";
+  }
   gameBtns[2].innerText = "Drink health potion";
   gameBtns[3].classList.add("hidden");
   currentGameStage = "combat";
@@ -1749,6 +1754,9 @@ const handlePlayerAttack = (range, enemy) => {
   } else {
     handlePlayerRangedAttack(enemy.armourClass);
   }
+  if (enemy.hitPointsCurrent <= 0) {
+    currentPopup = "enemy death";
+  }
 };
 
 // Loads the movement options during combat
@@ -1757,13 +1765,14 @@ const loadMovementOption = (range) => {
     gamePopupTitle.innerText = "You Move Back";
     gamePopupMessage.innerHTML =
       "You dodge an incoming blow, and take some backwards steps, readying yourself to attack from range.";
-    playerRange = "range";
+    playerRange = "ranged";
   } else {
     gamePopupTitle.innerText = "You Move Forward";
     gamePopupMessage.innerHTML = `You draw and raise your ${player.equipment.weapons.meleeWeapon.name.toLowerCase()}, charging up to the Goblin`;
     playerRange = "melee";
   }
   gamePopupResult.classList.add("hidden");
+  gamePopup.classList.remove("hidden");
 };
 
 // Handles health potion use
@@ -1772,6 +1781,236 @@ const handleHealthPotion = (potion) => {
   gamePopupTitle.innerText = "Time to Heal";
   gamePopupResult.innerHTML += `${potion.name} (${potion.healingDieAmount}d4+${potion.healingBonus})`;
   gamePopupMessage.innerHTML = `Avoiding any incoming attacks, you reach into your pocket and quickly unstopper a healing potion. Your health is restored by ${potionHealing} hit points.`;
+  delete player.equipment.potions.healingPotionStandard;
+  if (player.hitPointsCurrent > player.hitPointsMax) {
+    player.hitPointsCurrent = player.hitPointsMax;
+  }
+  gamePopup.classList.remove("hidden");
+};
+
+// Handles enemy turn in combat
+const handleEnemyTurn = (enemy) => {
+  gamePopupTitle.innerText = "The Enemy's Turn";
+  if (player.hitPointsCurrent < 7 && playerRange === "ranged") {
+    gamePopupTitle.innerText = "The Enemy Charges You";
+    gamePopupMessage.innerHTML = `The ${enemy.name} draws its shortsword, raises it above it's head and rushes towards you.`;
+    gamePopupResult.classList.add("hidden");
+    gamePopup.classList.remove("hidden");
+    playerRange = "melee";
+  } else if (playerRange === "ranged") {
+    enemyTurnRanged(goblin);
+  } else {
+    enemyTurnMelee(goblin);
+  }
+  currentPopup = "enemy turn";
+  if (player.hitPointsCurrent <= 0) {
+    currentPopup = "player death";
+  }
+};
+
+// Handles the enemy ranged attack
+const enemyTurnRanged = (enemy) => {
+  gamePopupMessage.innerText = `The ${enemy.name} attacks you from range.`;
+  handleEnemyRangedAttack(goblin, player.armourClass);
+};
+
+// Handles enemy melee turn
+const enemyTurnMelee = (enemy) => {
+  gamePopupMessage.innerText = `The ${
+    enemy.name
+  } attacks with their ${enemy.meleeWeapon.name.toLowerCase()}.`;
+  handleEnemyMeleeAttack(goblin, player.armourClass);
+};
+
+// Handles enemy ranged attack
+const handleEnemyRangedAttack = (enemy, DC) => {
+  let rangedAttack;
+  rangedAttack = enemy.rangedWeapon.calculateWeaponHit(enemy);
+  console.log(rangedAttack);
+  displayAttackHit(
+    "Ranged weapon",
+    rangedAttack,
+    rolledDice,
+    DC,
+    `+${parseInt(enemy.modifiers.dexterity) + parseInt(enemy.proficiency)}`
+  );
+  if (rangedAttack >= DC) {
+    let rangeDamage = enemy.rangedWeapon.calculateWeaponDamage(enemy);
+    displayDamage(
+      "Ranged",
+      rangeDamage,
+      enemy.rangedWeapon.damageDie,
+      rolledDice,
+      enemy.modifiers[enemy.rangedWeapon.modifier]
+    );
+    gamePopupMessage.innerText += ` The arrow pierces your skin. You take ${rangeDamage} points of damage.`;
+    player.hitPointsCurrent = player.hitPointsCurrent - rangeDamage;
+  } else {
+    gamePopupMessage.innerText += ` But the arrow sails wide.`;
+  }
+  gamePopup.classList.remove("hidden");
+};
+
+// Handles enemy melee attack
+const handleEnemyMeleeAttack = (enemy, DC) => {
+  let meleeAttack = enemy.meleeWeapon.calculateWeaponHit(enemy);
+  displayAttackHit(
+    "Melee weapon",
+    meleeAttack,
+    rolledDice,
+    DC,
+    `+${parseInt(enemy.modifiers.dexterity) + parseInt(enemy.proficiency)}`
+  );
+  if (meleeAttack >= DC) {
+    let meleeDamage = enemy.meleeWeapon.calculateWeaponDamage(enemy);
+    displayDamage(
+      "Melee",
+      meleeDamage,
+      enemy.meleeWeapon.damageDie,
+      rolledDice,
+      enemy.modifiers[enemy.meleeWeapon.modifier]
+    );
+    gamePopupMessage.innerText += ` The blade slashes across your body. You take ${meleeDamage} points of damage.`;
+    player.hitPointsCurrent = player.hitPointsCurrent - meleeDamage;
+  } else {
+    gamePopupMessage.innerText += ` But you manage to parry the blow.`;
+  }
+  gamePopup.classList.remove("hidden");
+};
+
+// Loads the player death screen
+const loadGameOver = () => {
+  gameTitle.innerText = "You Died!";
+  gameBtns[2].classList.add("hidden");
+  gameBtns[0].innerText = "Try again";
+  gameBtns[1].innerText = "Create a new character";
+  currentGameStage = "player death";
+};
+
+const loadGameEnd = () => {
+  gameTitle.innerText = "Adventure Complete!";
+  gameBtns[2].classList.add("hidden");
+  gameBtns[2].classList.add("hidden");
+  gameBtns[1].innerText = "Create a new character and try again";
+  currentGameStage = "game end";
+};
+
+// Loads combat success screen
+const loadEnemyDeath = () => {
+  gameTitle.innerText = "Enemy Defeated!";
+  gameBtns[2].classList.remove("hidden");
+  gameBtns[0].innerText = "Look around";
+  if (enemyPresent === true) {
+    gameBtns[1].innerText = "Search the body";
+  }
+  gameBtns[2].innerText = "Exit the crypt";
+  currentGameStage = "combat success";
+  perceptionCheckDC = 12;
+};
+
+// Handles post-combat perception check
+const handlePostCombatLook = (DC) => {
+  let perceptionCheck = abilityCheck(player, "wisdom");
+  displayAbilityCheck(
+    "Wisdom (perception)",
+    perceptionCheck,
+    rolledDice,
+    player.modifiers.wisdom
+  );
+  if (perceptionCheck >= DC) {
+    currentPopup = "final look success";
+    gamePopupTitle.innerText = "Success!";
+    gamePopupMessage.innerText =
+      "With your enemy vanquished, you look around. You notice a chest in the far corner.";
+  } else {
+    currentPopup = "final look failure";
+    gamePopupTitle.innerText = "Failure";
+    gamePopupMessage.innerText =
+      "Without the enemy's torchlight, it's even darker in this main chamber. You see nothing beyond what you can already make out.";
+  }
+  gamePopup.classList.remove("hidden");
+  currentGameStage = "chest";
+};
+
+// Handles the body search investigation check
+let bodyInspectDC = 12;
+const handleBodyInspect = (DC) => {
+  currentPopup = "body inspect";
+  let investigationCheck = abilityCheck(player, "intelligence");
+  displayAbilityCheck(
+    "Intelligence",
+    investigationCheck,
+    rolledDice,
+    player.modifiers.intelligence
+  );
+  gamePopup.classList.remove("hidden");
+  if (investigationCheck < DC || player.equipment.items.key) {
+    gamePopupTitle.innerText = "Failure";
+    gamePopupMessage.innerText =
+      "You search the creature's pockets, but find nothing of interest.";
+  } else {
+    gamePopupTitle.innerText = "Success!";
+    gamePopupMessage.innerText =
+      "You search the creature's pockets and pull out a small brass key, which you take for yourself";
+    player.equipment.items.key = brassKey;
+  }
+};
+
+// Load chest investigation check
+
+// Handles the try again button
+const handleRestartGame = () => {
+  gameBtns[1].classList.add("hidden");
+  gameBtns[2].classList.add("hidden");
+  loadCharacterStats();
+  loadGame();
+  trapStatus = "enabled";
+  playerRange = "ranged";
+};
+
+// Handles the create new character button
+const handleCreateNewCharacter = () => {
+  game.classList.add("hidden");
+  abilitiesAll.classList.add("hidden");
+  menu.classList.remove("hidden");
+  createContainer.classList.remove("hidden");
+  creationMessage.classList.remove("hidden");
+  creationMessage.innerText = "";
+  creationMessage.classList.add("justified");
+  creationMessage.style.marginTop = "0";
+  btnRibbon.classList.remove("hidden");
+  loadCreationMessage();
+  nameForm.reset();
+  document.querySelectorAll("select").forEach((selector) => {
+    selector.selectedIndex = 0;
+  });
+  abilityBtn.forEach((btn) => {
+    btn.classList.remove("hidden");
+  });
+  abilitiesSelector.forEach((selector) => {
+    selector.classList.add("hidden");
+  });
+  abilityScore.forEach((score) => {
+    score.innerText = "--";
+  });
+  abilityResetBtn.classList.add("hidden");
+  delete player.name;
+  delete player.class;
+  delete player.species;
+  player.abilities = {};
+  abilityScoreList = [];
+  ability.forEach((ability) => {
+    ability.classList.add("hidden");
+  });
+  ability[0].classList.remove("hidden");
+  abilityOptions.forEach((option) => {
+    option.disabled = false;
+  });
+  abilitiesSelector.forEach((selector) => {
+    selector[0].selected = true;
+    selector[0].disabled = true;
+    selector.disabled = false;
+  });
 };
 
 // Game switchboard
@@ -1801,8 +2040,20 @@ gameBtns.forEach((btn) => {
           case "enemy ahead":
             handlePlayerSurpriseAttack();
             break;
+          case "initiative":
+            rollInitiative();
+            break;
           case "combat":
             handlePlayerAttack(playerRange, goblin);
+            break;
+          case "player death":
+            handleRestartGame();
+            break;
+          case "combat success":
+            handlePostCombatLook(perceptionCheckDC);
+            break;
+          case "chest":
+          //
         }
         break;
       case "b":
@@ -1824,6 +2075,14 @@ gameBtns.forEach((btn) => {
             break;
           case "combat":
             loadMovementOption(playerRange);
+            break;
+          case "player death":
+          case "game end":
+            handleCreateNewCharacter();
+            break;
+          case "combat success":
+          case "chest":
+          //
         }
         break;
       case "c":
@@ -1845,6 +2104,10 @@ gameBtns.forEach((btn) => {
             break;
           case "combat":
             handleHealthPotion(player.equipment.potions.healingPotionStandard);
+            break;
+          case "combat success":
+          case "chest":
+          //
         }
         break;
       case "d":
@@ -1877,6 +2140,7 @@ gamePopupBtn.addEventListener("click", () => {
       break;
     case "straw inspect":
     case "trap check failure":
+    case "body inspect":
       gameBtns[1].classList.add("hidden");
       break;
     case "door try":
@@ -1934,7 +2198,7 @@ gamePopupBtn.addEventListener("click", () => {
     case "stealth failure":
     case "pickpocket failure":
     case "persuasion failure":
-      // load combat
+      loadCombat();
       break;
     case "stealth success":
       gameBtns[2].classList.add("hidden");
@@ -1942,10 +2206,28 @@ gamePopupBtn.addEventListener("click", () => {
       gameBtns[3].classList.remove("hidden");
       break;
     case "persuasion success":
-      // load combat success
+    case "enemy death":
+      loadEnemyDeath();
       break;
     case "player turn":
-    // load enemy turn
+    case "enemy first":
+      console.log(playerRange);
+      gamePopupResult.classList.remove("hidden");
+      handleEnemyTurn(goblin);
+      break;
+    case "player first":
+    case "enemy turn":
+      console.log(playerRange);
+      loadplayerTurn();
+      break;
+    case "player death":
+      loadGameOver();
+      break;
+    case "final look failure":
+      gameBtns[0].classList.add("hidden");
+      break;
+    case "final look success":
+      gameBtns[0].innerText = "Approach the chest";
   }
 });
 
