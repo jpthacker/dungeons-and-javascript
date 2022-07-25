@@ -36,6 +36,7 @@ const abilityBtn = document.querySelectorAll(".ability__btn");
 const abilityResetBtn = document.querySelector(".btn--reset");
 const backBtn = document.querySelector(".btn--back");
 const gameTitle = document.querySelector(".game__title");
+const gameMessage = document.querySelector(".game__message");
 const gameBtns = document.querySelectorAll("[class*='game__btn']");
 const gamePopup = document.querySelector(".game__popup");
 const gamePopupTitle = document.querySelector(".game__popup-title");
@@ -709,7 +710,7 @@ const loadGame = () => {
   gameBtns[0].innerText = "Enter the crypt";
   gameBtns[1].classList.add("hidden");
   goblin.assignAbilities();
-  goblin.getMaxHP();
+  goblin.getCurrentHP();
   goblin.assignAbilityModifiers(goblin.abilities);
   goblin.calculateSenses();
   goblin.calculateAttack();
@@ -974,8 +975,8 @@ class Monster {
       (this.abilitiesArray = abilitiesArray);
     (this.abilities = {}), (this.modifiers = {});
   }
-  getMaxHP() {
-    this.maxHP = dice(this.hitDie, 2);
+  getCurrentHP() {
+    this.hitPointsCurrent = dice(this.hitDie, 2);
   }
   assignAbilities() {
     for (let i = 0; i < abilityList.length; i++) {
@@ -1285,8 +1286,8 @@ const handleObjectAttack = (object) => {
 };
 
 // Loads the hallway stage
-let trapStatus = "enabled";
-let trapNoticed = false;
+let trapStatusHallway = "enabled";
+let trapNoticedHallway = false;
 const loadHallway = () => {
   gameTitle.innerText = "Through the Hallway";
   gameBtns[0].classList.remove("hidden");
@@ -1304,16 +1305,16 @@ const loadHallway = () => {
 
 // Handles the triggering of the hallway trap
 let trapTriggerDC = 15;
-const handleTrapTrigger = (DC) => {
-  let constitutionSave = savingThrow(player, "constitution");
+const handleHallwayTrapTrigger = (DC) => {
+  let dexteritySave = savingThrow(player, "dexterity");
   displaySavingThrow(
-    "Constitution",
-    constitutionSave,
+    "Dexterity",
+    dexteritySave,
     rolledDice,
-    player.savingThrows.constitution
+    player.savingThrows.dexterity
   );
   gamePopupTitle.innerText = "Trap Triggered!";
-  if (trapNoticed === true) {
+  if (trapNoticedHallway === true) {
     gamePopupMessage.innerHTML =
       "You fumble with your tools and the trap is triggered.";
   } else {
@@ -1321,21 +1322,21 @@ const handleTrapTrigger = (DC) => {
       "You hear a snap. You look down and see that your foot has triggered a wire.";
   }
   gamePopupMessage.innerHTML +=
-    " A cloud of poisionous gas fills the passageway.";
-  let poisonDamage = dice(4) + 1;
-  if (constitutionSave < DC) {
-    gamePopupMessage.innerHTML += `The poison fills your throat and burns your lungs. You suffer ${poisonDamage} points of poison damage.`;
+    " A crossbow bolt flies out of a machanism in the wall.";
+  let trapDamage = dice(4) + 1;
+  if (dexteritySave < DC) {
+    gamePopupMessage.innerHTML += `The bolt pierces your torso. You suffer ${trapDamage} points of damage.`;
   } else {
-    poisonDamage = Math.floor(poisonDamage / 2);
+    trapDamage = Math.floor(trapDamage / 2);
     let plural = "";
-    if (poisonDamage > 1) {
+    if (trapDamage > 1) {
       plural = "s";
     }
-    gamePopupMessage.innerHTML += `You manage to hold your breath and cover your face just in time. You only suffer ${poisonDamage} point${plural} of poison damage.`;
+    gamePopupMessage.innerHTML += `You manage to dodge a direct hit. The bolt grazes your shoulder. You only suffer ${trapDamage} point${plural} of damage.`;
   }
-  player.hitPointsCurrent = player.hitPointsCurrent - poisonDamage;
+  player.hitPointsCurrent = player.hitPointsCurrent - trapDamage;
   gamePopup.classList.remove("hidden");
-  trapStatus = "disabled";
+  trapStatusHallway = "disabled";
   currentPopup = "trap trigger";
   if (player.hitPointsCurrent <= 0) {
     currentPopup = "player death";
@@ -1345,16 +1346,16 @@ const handleTrapTrigger = (DC) => {
 //Handles the hallway trap test
 const handleHallwayCheck = () => {
   currentPopup = "hallway proceed";
-  if (trapStatus === "enabled") {
-    handleTrapTrigger(trapTriggerDC);
+  if (trapStatusHallway === "enabled") {
+    handleHallwayTrapTrigger(trapTriggerDC);
   } else {
     loadMainChamber();
   }
 };
 
-// Handles the check for finding the trap
+// Handles the check for finding the hallway trap
 let trapCheckDC = 14;
-const handleTrapCheck = (DC) => {
+const handleTrapCheckHallway = (DC) => {
   let trapCheck = abilityCheck(player, "intelligence");
   console.log(trapCheck);
   displayAbilityCheck(
@@ -1365,7 +1366,7 @@ const handleTrapCheck = (DC) => {
   );
   if (trapCheck > DC) {
     currentPopup = "trap check success";
-    trapNoticed = true;
+    trapNoticedHallway = true;
     gamePopupTitle.innerText = "Success!";
     gamePopupMessage.innerText =
       "You take a first step into the passageway, when you notice something touching your ankle. You look down and see that one more step would have triggered a trip wire.";
@@ -1378,9 +1379,9 @@ const handleTrapCheck = (DC) => {
   gamePopup.classList.remove("hidden");
 };
 
-// Handles the trap disable attempt
+// Handles the hallway trap disable attempt
 let trapDisableDC = 12;
-const handleTrapDisable = (DC) => {
+const handleTrapDisableHallway = (DC) => {
   currentPopup = "trap disable";
   let dexterityCheck =
     abilityCheck(player, "dexterity") + parseInt(player.proficiency);
@@ -1395,9 +1396,9 @@ const handleTrapDisable = (DC) => {
     gamePopupTitle.innerText = "Success!";
     gamePopupMessage.innerText =
       "You find a mechanism on the wall. You bend down and get to work wih your thieves' tools. The mechanism clicks and the wire slackens - the trap is disabled.";
-    trapStatus = "disabled";
+    trapStatusHallway = "disabled";
   } else {
-    handleTrapTrigger(trapTriggerDC);
+    handleHallwayTrapTrigger(trapTriggerDC);
   }
 };
 
@@ -1490,9 +1491,9 @@ const loadEnemyAhead = () => {
 // Handles the player suprise range and melee attacks on the enemy
 const handlePlayerSurpriseAttack = () => {
   if (playerRange === "ranged") {
-    handlePlayerRangedAttack(goblin.armourClass);
+    handlePlayerRangedAttack(goblin.armourClass, goblin);
   } else {
-    handlePlayerMeleeAttack(goblin.armourClass);
+    handlePlayerMeleeAttack(goblin.armourClass, goblin);
   }
   currentPopup = "player surprise";
 };
@@ -1502,7 +1503,7 @@ const handlePlayerSurpriseMeleeAttack = () => {
 };
 
 // Player ranged attack
-const handlePlayerRangedAttack = (DC) => {
+const handlePlayerRangedAttack = (DC, enemy) => {
   gamePopupTitle.innerText = "Ranged Attack";
   gamePopupMessage.innerText = "You attack the enemy from range.";
   let rangedAttack;
@@ -1556,6 +1557,7 @@ const handlePlayerRangedAttack = (DC) => {
         player.modifiers[player.equipment.weapons.rangedWeapon.modifier]
       );
       gamePopupMessage.innerText += ` Your ${projectile} pierces its armour. It takes ${rangeDamage} points of damage.`;
+      enemy.hitPointsCurrent = enemy.hitPointsCurrent - rangeDamage;
     } else {
       gamePopupMessage.innerText += ` But the low light distracts you and the ${projectile} sails wide.`;
     }
@@ -1564,7 +1566,7 @@ const handlePlayerRangedAttack = (DC) => {
 };
 
 //  Handle player melee attack
-const handlePlayerMeleeAttack = (DC) => {
+const handlePlayerMeleeAttack = (DC, enemy) => {
   gamePopupTitle.innerText = "Melee Attack";
   gamePopupMessage.innerText = `You attack the enemy with your ${player.equipment.weapons.meleeWeapon.name.toLowerCase()}.`;
   let meleeAttack =
@@ -1588,6 +1590,7 @@ const handlePlayerMeleeAttack = (DC) => {
       player.modifiers[player.equipment.weapons.meleeWeapon.modifier]
     );
     gamePopupMessage.innerText += ` Your ${player.equipment.weapons.meleeWeapon.name.toLowerCase()} pierces its armour. It takes ${meleeDamage} points of damage.`;
+    enemy.hitPointsCurrent = enemy.hitPointsCurrent - meleeDamage;
   } else {
     gamePopupMessage.innerText += ` But the low light distracts you and the blow misses.`;
   }
@@ -1650,6 +1653,7 @@ const playerPickpocket = (DC) => {
 
 // Handles Player pursuasion attempt
 let persuasionDC = 19;
+let enemyHostile = true;
 const playerPersuade = (DC) => {
   const persuasionCheck = abilityCheck(player, "charisma");
   displayAbilityCheck(
@@ -1664,6 +1668,7 @@ const playerPersuade = (DC) => {
     gamePopupMessage.innerHTML =
       "The goblin is alarmed by your attempt to reason with it, and its wits are no match for yours. You convince it to leave the crypt and never come back.";
     enemyPresent = false;
+    enemyHostile = false;
   } else {
     currentPopup = "persuasion failure";
     gamePopupTitle.innerText = "Failure";
@@ -1725,7 +1730,7 @@ const handleHigherDexterity = () => {
 };
 
 // Loads the player's options during combat (one option per turn)
-const loadplayerTurn = () => {
+const loadPlayerTurn = () => {
   gameTitle.innerText = "Combat: Your Turn";
   gamePopupResult.classList.remove("hidden");
   gameBtns[0].classList.remove("hidden");
@@ -1750,13 +1755,14 @@ const loadplayerTurn = () => {
 // Handles player attach options
 const handlePlayerAttack = (range, enemy) => {
   if (range === "melee") {
-    handlePlayerMeleeAttack(enemy.armourClass);
+    handlePlayerMeleeAttack(enemy.armourClass, enemy);
   } else {
-    handlePlayerRangedAttack(enemy.armourClass);
+    handlePlayerRangedAttack(enemy.armourClass, enemy);
   }
-  if (enemy.hitPointsCurrent <= 0) {
+  if (enemy.hitPointsCurrent < 1) {
     currentPopup = "enemy death";
   }
+  console.log(enemy.hitPointsCurrent);
 };
 
 // Loads the movement options during combat
@@ -1883,24 +1889,29 @@ const loadGameOver = () => {
   gameTitle.innerText = "You Died!";
   gameBtns[2].classList.add("hidden");
   gameBtns[0].innerText = "Try again";
+  gameBtns[1].classList.remove("hidden");
   gameBtns[1].innerText = "Create a new character";
   currentGameStage = "player death";
 };
 
+// Load the final game options
 const loadGameEnd = () => {
   gameTitle.innerText = "Adventure Complete!";
   gameBtns[2].classList.add("hidden");
-  gameBtns[2].classList.add("hidden");
-  gameBtns[1].innerText = "Create a new character and try again";
+  gameBtns[0].classList.add("hidden");
+  gameBtns[1].classList.remove("hidden");
+  gameBtns[1].innerText = "Create a new character";
   currentGameStage = "game end";
 };
 
 // Loads combat success screen
 const loadEnemyDeath = () => {
+  gameBtns[1].classList.add("hidden");
   gameTitle.innerText = "Enemy Defeated!";
   gameBtns[2].classList.remove("hidden");
   gameBtns[0].innerText = "Look around";
-  if (enemyPresent === true) {
+  if (enemyPresent === true || enemyHostile === true) {
+    gameBtns[1].classList.remove("hidden");
     gameBtns[1].innerText = "Search the body";
   }
   gameBtns[2].innerText = "Exit the crypt";
@@ -1909,6 +1920,7 @@ const loadEnemyDeath = () => {
 };
 
 // Handles post-combat perception check
+let chestPerceptionDC = 8;
 const handlePostCombatLook = (DC) => {
   let perceptionCheck = abilityCheck(player, "wisdom");
   displayAbilityCheck(
@@ -1922,14 +1934,164 @@ const handlePostCombatLook = (DC) => {
     gamePopupTitle.innerText = "Success!";
     gamePopupMessage.innerText =
       "With your enemy vanquished, you look around. You notice a chest in the far corner.";
+    currentGameStage = "chest spotted";
   } else {
     currentPopup = "final look failure";
     gamePopupTitle.innerText = "Failure";
     gamePopupMessage.innerText =
       "Without the enemy's torchlight, it's even darker in this main chamber. You see nothing beyond what you can already make out.";
+    gameBtns[0].classList.add("hidden");
   }
   gamePopup.classList.remove("hidden");
-  currentGameStage = "chest";
+};
+
+// Loads the chest approach options
+let trapStatusChest = "enabled";
+let trapNoticedChest = false;
+let chestThievesTools = true;
+const loadChestApproach = () => {
+  gameTitle.innerText = "You Approach the Chest";
+  gameBtns[1].classList.add("hidden");
+  gameBtns[2].classList.add("hidden");
+  gameBtns[0].innerText = "Try to open it";
+  if (player.class === "Rogue" && trapNoticedChest === false) {
+    gameBtns[1].classList.remove("hidden");
+    gameBtns[1].innerText = "Check for traps";
+  }
+  currentGameStage = "chest approach";
+};
+
+// Loads chest open attempt
+const handleChestLocked = () => {
+  gamePopupTitle.innerText = "The chest is locked";
+  game;
+  if (player.equipment.items.key) {
+    gamePopupMessage.innerText =
+      "The chest is firmly locked, but the brass key you found looks like it might fit the keyhole.";
+    currentPopup = "chest key";
+  } else {
+    gamePopupMessage.innerText =
+      "The chest is firmly locked. It looks like it requires a key.";
+    currentPopup = "chest no key";
+  }
+  gamePopup.classList.remove("hidden");
+};
+
+// Loads successful chest open
+const handleChestOpen = () => {
+  gamePopupTitle.innerText = "A Treasure Map";
+  gamePopupMessage.innerText =
+    "The chest springs open. All you find inside is a map. It details an area you don't recognise but features a spot marked with an X. Time for another adventure!";
+  currentPopup = "map retrieved";
+  gamePopup.classList.remove("hidden");
+};
+
+// Handle chesk lockpick attempt
+let chestLockDC = 15;
+const handleChestUnlock = (DC) => {
+  let unlockCheck =
+    abilityCheck(player, "dexterity") + parseInt(player.proficiency);
+  displayAbilityCheck(
+    "Dexterity",
+    unlockCheck,
+    rolledDice,
+    `+${parseInt(player.modifiers.dexterity) + parseInt(player.proficiency)}`
+  );
+  gamePopup.classList.remove("hidden");
+  if (unlockCheck >= DC) {
+    gamePopupTitle.innerText = "Success!";
+    gamePopupMessage.innerText =
+      "You have to work the lock with a lockpick, but before long you find the final tumbler and the chest clicks open.";
+    currentPopup = "chest unlocked";
+  } else {
+    gamePopupTitle.innerText = "Failure";
+    gamePopupMessage.innerText =
+      "The lock is to complex for your skills and tools.";
+    chestThievesTools = false;
+  }
+};
+
+// Handles the chest trap check
+const handleTrapCheckChest = (DC) => {
+  let trapCheck = abilityCheck(player, "intelligence");
+  console.log(trapCheck);
+  displayAbilityCheck(
+    "Investigation (intelligence)",
+    trapCheck,
+    rolledDice,
+    `+${parseInt(player.modifiers.intelligence) + parseInt(player.proficiency)}`
+  );
+  if (trapCheck > 1) {
+    gamePopupTitle.innerText = "Success!";
+    gamePopupMessage.innerText =
+      "You inspect the chest. You notice a tiny thread running between the lock mechanism and the base. It is indeed trapped.";
+    trapNoticedChest = true;
+  } else {
+    gamePopupTitle.innerText = "Failure";
+    gamePopupMessage.innerText =
+      "There is almost no light in this corner, but you see nothing of concern.";
+  }
+  currentPopup = "chest check";
+  gamePopup.classList.remove("hidden");
+};
+
+// Handle chest trap disable attempt
+const handleTrapDisableChest = (DC) => {
+  let dexterityCheck =
+    abilityCheck(player, "dexterity") + parseInt(player.proficiency);
+  displayAbilityCheck(
+    "Dexterity",
+    dexterityCheck,
+    rolledDice,
+    `+${parseInt(player.modifiers.dexterity) + parseInt(player.proficiency)}`
+  );
+  gamePopup.classList.remove("hidden");
+  if (dexterityCheck >= DC) {
+    gamePopupTitle.innerText = "Success!";
+    gamePopupMessage.innerText =
+      "You find a mechanism on the back of the chest. You bend down and get to work wih your thieves' tools. The mechanism clicks and the thread slackens - the trap is disabled.";
+    trapStatusChest = "disabled";
+  } else {
+    handleChestTrapTrigger(trapTriggerDC);
+  }
+};
+
+// Load chest trap trigger effect
+const handleChestTrapTrigger = (DC) => {
+  let constitutionSave = savingThrow(player, "constitution");
+  displaySavingThrow(
+    "Constitution",
+    constitutionSave,
+    rolledDice,
+    player.savingThrows.constitution
+  );
+  gamePopupTitle.innerText = "Trap Triggered!";
+  if (trapNoticedChest === true) {
+    gamePopupMessage.innerHTML =
+      "You fumble with your tools and the trap is triggered.";
+  } else {
+    gamePopupMessage.innerHTML = "The lock mechanism turns. You hear a snap.";
+  }
+  gamePopupMessage.innerHTML +=
+    " A cloud of poisonous gas emerges from underneath the chest.";
+  let trapDamage = dice(4) + 1;
+  if (constitutionSave < DC) {
+    gamePopupMessage.innerHTML += `The poison fills your throat and burns your lungs. You suffer ${trapDamage} points of damage.`;
+  } else {
+    trapDamage = Math.floor(trapDamage / 2);
+    let plural = "";
+    if (trapDamage > 1) {
+      plural = "s";
+    }
+    gamePopupMessage.innerHTML += `You manage to hold your breath and cover your face just in time. You only suffer ${trapDamage} point${plural} of damage.`;
+  }
+  player.hitPointsCurrent = player.hitPointsCurrent - trapDamage;
+  gamePopup.classList.remove("hidden");
+  trapStatusChest = "disabled";
+  currentPopup = "chest trap trigger";
+  if (player.hitPointsCurrent < 1) {
+    currentPopup = "player death";
+  }
 };
 
 // Handles the body search investigation check
@@ -1954,9 +2116,8 @@ const handleBodyInspect = (DC) => {
       "You search the creature's pockets and pull out a small brass key, which you take for yourself";
     player.equipment.items.key = brassKey;
   }
+  gamePopup.classList.remove("hidden");
 };
-
-// Load chest investigation check
 
 // Handles the try again button
 const handleRestartGame = () => {
@@ -1964,8 +2125,20 @@ const handleRestartGame = () => {
   gameBtns[2].classList.add("hidden");
   loadCharacterStats();
   loadGame();
-  trapStatus = "enabled";
+  reloadDefaultGameSettings();
+};
+
+// Reloads the game traps
+const reloadDefaultGameSettings = () => {
+  trapStatusHallway = "enabled";
+  trapNoticedHallway = false;
+  trapStatusChest = "enabled";
+  trapNoticedChest = false;
+  chestThievesTools = true;
   playerRange = "ranged";
+  enemyAware = false;
+  enemyHostile = true;
+  enemyPresent = true;
 };
 
 // Handles the create new character button
@@ -2011,6 +2184,8 @@ const handleCreateNewCharacter = () => {
     selector[0].disabled = true;
     selector.disabled = false;
   });
+  gameBtns[0].classList.remove("hidden");
+  reloadDefaultGameSettings();
 };
 
 // Game switchboard
@@ -2050,10 +2225,16 @@ gameBtns.forEach((btn) => {
             handleRestartGame();
             break;
           case "combat success":
-            handlePostCombatLook(perceptionCheckDC);
+            handlePostCombatLook(chestPerceptionDC);
             break;
-          case "chest":
-          //
+          case "chest spotted":
+            loadChestApproach();
+            break;
+          case "chest approach":
+            handleChestLocked();
+            break;
+          case "chest lockpick":
+            handleChestUnlock(chestLockDC);
         }
         break;
       case "b":
@@ -2065,7 +2246,7 @@ gameBtns.forEach((btn) => {
             handleDoorInspect(doorInspectDC);
             break;
           case "hallway":
-            handleTrapCheck(trapCheckDC);
+            handleTrapCheckHallway(trapCheckDC);
             break;
           case "main chamber":
             mainChamberEnter();
@@ -2081,8 +2262,12 @@ gameBtns.forEach((btn) => {
             handleCreateNewCharacter();
             break;
           case "combat success":
-          case "chest":
-          //
+          case "chest spotted":
+            handleBodyInspect(bodyInspectDC);
+            break;
+          case "chest approach":
+          case "chest lockpick":
+            handleTrapCheckChest(trapCheckDC);
         }
         break;
       case "c":
@@ -2097,7 +2282,7 @@ gameBtns.forEach((btn) => {
             handleDoorForce(doorForceDC);
             break;
           case "hallway":
-            handleTrapDisable(trapDisableDC);
+            handleTrapDisableHallway(trapDisableDC);
             break;
           case "enemy ahead":
             playerSneakUp(goblin.passivePerception);
@@ -2106,8 +2291,11 @@ gameBtns.forEach((btn) => {
             handleHealthPotion(player.equipment.potions.healingPotionStandard);
             break;
           case "combat success":
-          case "chest":
-          //
+          case "chest spotted":
+            loadGameEnd();
+            break;
+          case "chest approach":
+            handleTrapDisableChest(trapDisableDC);
         }
         break;
       case "d":
@@ -2141,6 +2329,7 @@ gamePopupBtn.addEventListener("click", () => {
     case "straw inspect":
     case "trap check failure":
     case "body inspect":
+    case "chest trap check":
       gameBtns[1].classList.add("hidden");
       break;
     case "door try":
@@ -2218,7 +2407,7 @@ gamePopupBtn.addEventListener("click", () => {
     case "player first":
     case "enemy turn":
       console.log(playerRange);
-      loadplayerTurn();
+      loadPlayerTurn();
       break;
     case "player death":
       loadGameOver();
@@ -2228,7 +2417,46 @@ gamePopupBtn.addEventListener("click", () => {
       break;
     case "final look success":
       gameBtns[0].innerText = "Approach the chest";
+      break;
+    case "chest key":
+    case "chest unlocked":
+      if (trapStatusChest === "enabled") {
+        handleChestTrapTrigger(trapTriggerDC);
+      } else {
+        handleChestOpen();
+      }
+      break;
+    case "chest trap trigger":
+      handleChestOpen();
+      break;
+    case "chest no key":
+      if (player.class === "Rogue" && chestThievesTools === true) {
+        gameBtns[0].innerText = "Pick the lock";
+        currentGameStage = "chest lockpick";
+      } else {
+        loadEnemyDeath();
+        gameBtns[0].innerText = "Approach the chest";
+        currentGameStage = "chest spotted";
+      }
+      break;
+    case "chest check":
+      if (trapNoticedChest === true) {
+        gameBtns[2].classList.remove("hidden");
+        gameBtns[2].innerText = "Disable the trap";
+        gameBtns[1].classList.add("hidden");
+      } else {
+        gameBtns[1].classList.add("hidden");
+      }
+      console.log(trapNoticedChest);
+      break;
+    case "chest disabled":
+      gameBtns[2].classList.add("hidden");
+      currentPopup = "chest approach";
+      break;
+    case "map retrieved":
+      loadGameEnd();
   }
+  console.log(currentGameStage);
 });
 
 // POLYFILLS
