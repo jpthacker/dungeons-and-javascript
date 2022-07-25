@@ -2139,6 +2139,7 @@ const reloadDefaultGameSettings = () => {
   enemyAware = false;
   enemyHostile = true;
   enemyPresent = true;
+  statsBtn.classList.add("hidden");
 };
 
 // Handles the create new character button
