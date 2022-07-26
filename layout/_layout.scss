@@ -148,6 +148,7 @@
 [class*="saving-throws-mod"] {
   padding: 5px;
   min-width: 32px;
+  justify-content: center;
 }
 
 [class*="senses-mod"] {
@@ -417,11 +418,15 @@
 
   [class*="equipment-desc"] {
     min-width: 82%;
-    text-align: center;
   }
 }
 
 @media screen and (min-width: 1200px) {
+  .menu {
+    min-height: 76vh;
+    margin-top: 24vh;
+  }
+
   .stats {
     max-width: 1100px;
 
@@ -436,6 +441,5 @@
 
   [class*="equipment-desc"] {
     min-width: 86%;
-    text-align: center;
   }
 }

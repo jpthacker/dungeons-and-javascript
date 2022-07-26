@@ -242,6 +242,7 @@ h5 {
 [class*=saving-throws-mod] {
   padding: 5px;
   min-width: 32px;
+  justify-content: center;
 }
 
 [class*=senses-mod] {
@@ -488,10 +489,14 @@ h5 {
 
   [class*=equipment-desc] {
     min-width: 82%;
-    text-align: center;
   }
 }
 @media screen and (min-width: 1200px) {
+  .menu {
+    min-height: 76vh;
+    margin-top: 24vh;
+  }
+
   .stats {
     max-width: 1100px;
   }
@@ -504,7 +509,6 @@ h5 {
 
   [class*=equipment-desc] {
     min-width: 86%;
-    text-align: center;
   }
 }
 .ability__container {
@@ -723,6 +727,11 @@ button {
   margin-bottom: 8vh;
 }
 
+@media screen and (min-width: 1200px) {
+  .btn--reset {
+    margin: 12vh auto 0 auto;
+  }
+}
 input[type=text] {
   padding: 10px;
   border: 0;
