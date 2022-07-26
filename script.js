@@ -72,8 +72,7 @@ const dice = (diceType, diceNumber) => {
   }
 };
 
-// ability list
-
+// Abilities list
 const abilityList = [
   "strength",
   "dexterity",
@@ -96,8 +95,6 @@ const player = {
     items: {},
   },
   spells: {},
-  attack: 0,
-  damage: 0,
   assignAbilities() {
     for (let i = 0; i < abilityList.length; i++) {
       if (
@@ -186,13 +183,6 @@ const player = {
     if (!this.equipment.armour.plateArmour) {
       player.armourClass += parseInt(this.modifiers.dexterity);
     }
-  },
-  calculateAttack() {
-    let attackRoll = dice(20);
-    this.attack =
-      attackRoll +
-      parseInt(this.modifiers.strength) +
-      parseInt(this.proficiency);
   },
   getNameHTML(nameContainer) {
     nameContainer.innerHTML = `
@@ -336,6 +326,7 @@ const player = {
   },
 };
 
+// Fills in the HTML for all player equipment
 const getAllItemsHTML = (object, container) => {
   Object.keys(object).forEach((key) => {
     container.innerHTML += object[key].getItemHTML(player);
@@ -500,7 +491,7 @@ const thievesTools = new Item(
   "tools"
 );
 const brassKey = new Item(
-  "Brass key",
+  "Brass Key",
   "An intricate brass key, dulled and lined with dirt.",
   "key"
 );
@@ -560,6 +551,7 @@ document.body.addEventListener("keydown", (event) => {
   }
 });
 
+// This variable determines the function of the creation 'continue' button (see switch case below)
 let currentCreationStage = "start";
 
 // Loads the character creation message
@@ -700,6 +692,7 @@ const loadCharacterStats = () => {
   }
 };
 
+// Loads the game starting page
 const loadGame = () => {
   menu.classList.add("hidden");
   statsContainer.classList.add("hidden");
@@ -719,7 +712,7 @@ const loadGame = () => {
   currentGameStage = "game start";
 };
 
-//Handles the character creation menu buttons
+// Handles the character creation menu buttons
 continueBtn.addEventListener("click", (event) => {
   event.preventDefault();
   window.scrollTo(0, 0);
@@ -747,7 +740,7 @@ continueBtn.addEventListener("click", (event) => {
   }
 });
 
-//Handles the back button
+// Handles the back button during character creation
 backBtn.addEventListener("click", (event) => {
   event.preventDefault();
   window.scrollTo(0, 0);
@@ -1024,8 +1017,11 @@ const door = new Object("Door", 12, 2);
 
 // GAME MECHANICS
 
+// These variables determine the functions executed by the switch cases below
 let currentGameStage;
 let currentPopup = "";
+
+// These variables determine the behaviour of the enemy and the post-combat options
 let enemyAware = false;
 let enemyPresent = true;
 
@@ -1034,27 +1030,27 @@ const abilityCheck = (character, ability) => {
   return dice(20) + parseInt(character.modifiers[ability]);
 };
 
-// Camculates a character saving throw (to be called when something negative affects a character or monster)
+// Calculates a character saving throw (to be called when something negative affects a character or monster)
 const savingThrow = (character, ability) => {
   return dice(20) + parseInt(character.savingThrows[ability]);
 };
 
-// Displays the result of the ability on popup
+// Displays the result of the ability on the popup
 const displayAbilityCheck = (text, check, dice, modifier) => {
   gamePopupResult.innerHTML = `${text} check (d20+modifier)<br><strong>${check} (${dice}${modifier})</strong>`;
 };
 
-// Displays the result of a saving throw on game popup
+// Displays the result of a saving throw on the popup
 const displaySavingThrow = (text, check, dice, modifier) => {
   gamePopupResult.innerHTML = `${text} saving throw (d20+modifier)<br><strong>${check} (${dice}${modifier})</strong>`;
 };
 
-// Displays the attach hit attempt
+// Displays the attack hit attempt on the popup
 const displayAttackHit = (text, check, dice, ac, modifier) => {
   gamePopupResult.innerHTML = `${text}: to hit (d20+modifier)<br><strong>Target AC = ${ac}<br>${check} (${dice}${modifier})</strong><br>`;
 };
 
-// Displays the result of attack damage
+// Displays the result of attack damage on the popup
 const displayDamage = (text, attack, diceType, dice, modifier) => {
   gamePopupResult.innerHTML += `${text} attack (d${diceType}+modifier)<br><strong>${attack} (${dice}${modifier})</strong>`;
 };
@@ -1152,7 +1148,7 @@ const loadDoorApproach = () => {
   currentGameStage = "door approach";
 };
 
-// Handles the door attempt
+// Handles the door open attempt
 const loadDoorAttempt = () => {
   currentPopup = "door try";
   gamePopupResult.classList.add("hidden");
@@ -1257,7 +1253,7 @@ const handleDoorUnlock = (DC) => {
   }
 };
 
-// Handles the door attack machanic
+// Handles the door attack mechanic
 const handleObjectAttack = (object) => {
   enemyAware = true;
   gamePopup.classList.remove("hidden");
@@ -1402,7 +1398,8 @@ const handleTrapDisableHallway = (DC) => {
   }
 };
 
-// Loads the main chamber
+// Loads the main chamber and handles enemy hide mechanic
+let perceptionCheckDC;
 const loadMainChamber = () => {
   gameTitle.innerText = "In the Main Chamber";
   gameBtns[0].classList.remove("hidden");
@@ -1412,16 +1409,13 @@ const loadMainChamber = () => {
   gameBtns[2].classList.add("hidden");
   gameBtns[3].classList.add("hidden");
   currentGameStage = "main chamber";
+  if (enemyAware === true) {
+    perceptionCheckDC = abilityCheck(goblin, "dexterity");
+    console.log("Enemy hide = " + perceptionCheckDC);
+  } else {
+    perceptionCheckDC = 6;
+  }
 };
-
-// const handles enemy hide mechanic
-let perceptionCheckDC;
-if (enemyAware === true) {
-  perceptionCheckDC = abilityCheck(goblin, "dexterity");
-  console.log("Enemy hide = " + perceptionCheckDC);
-} else {
-  perceptionCheckDC = 6;
-}
 
 // Handles the main chamber perception check
 const handleMainChamberLook = (DC) => {
@@ -1475,7 +1469,7 @@ const loadEnemyReady = () => {
   gameBtns[2].classList.add("hidden");
 };
 
-// Surpise opportunity on the enemy
+// Loads the options for a surpise round on the enemy
 const loadEnemyAhead = () => {
   gameTitle.innerText = "Enemy Ahead";
   gameBtns[0].classList.remove("hidden");
@@ -1502,7 +1496,7 @@ const handlePlayerSurpriseMeleeAttack = () => {
   currentPopup = "player surprise";
 };
 
-// Player ranged attack
+// Calculates and diplays player ranged attack
 const handlePlayerRangedAttack = (DC, enemy) => {
   gamePopupTitle.innerText = "Ranged Attack";
   gamePopupMessage.innerText = "You attack the enemy from range.";
@@ -1565,7 +1559,7 @@ const handlePlayerRangedAttack = (DC, enemy) => {
   gamePopup.classList.remove("hidden");
 };
 
-//  Handle player melee attack
+//  Calculates and diplays player melee attack
 const handlePlayerMeleeAttack = (DC, enemy) => {
   gamePopupTitle.innerText = "Melee Attack";
   gamePopupMessage.innerText = `You attack the enemy with your ${player.equipment.weapons.meleeWeapon.name.toLowerCase()}.`;
@@ -1609,10 +1603,10 @@ const playerStealth = (testText) => {
   );
 };
 
-// Player distance from enemy
+// Variable to determine the player distance from enemy
 let playerRange = "ranged";
 
-// handles the player sneak test against the monster's passive perception
+// Handles the player sneak test against the enemy's passive perception
 const playerSneakUp = (DC) => {
   playerStealth("Dexterity (stealth)");
   if (stealthCheck >= DC) {
@@ -1630,7 +1624,7 @@ const playerSneakUp = (DC) => {
   gamePopup.classList.remove("hidden");
 };
 
-// Handles the player pickpocket test against the monster's passive perception
+// Handles the player pickpocket test against the enemy's passive perception
 const playerPickpocket = (DC) => {
   playerStealth("Dexterity (slight-of-hand)");
   if (stealthCheck >= DC) {
@@ -1651,7 +1645,7 @@ const playerPickpocket = (DC) => {
   gamePopup.classList.remove("hidden");
 };
 
-// Handles Player pursuasion attempt
+// Handles player pursuasion attempt
 let persuasionDC = 19;
 let enemyHostile = true;
 const playerPersuade = (DC) => {
@@ -1720,7 +1714,7 @@ const rollInitiative = () => {
   gamePopup.classList.remove("hidden");
 };
 
-// handles dexterity comparison between player and enemy (on same intiative roll)
+// Handles dexterity comparison between player and enemy (if intiative rolls are equal)
 const handleHigherDexterity = () => {
   if (player.abilities.dexterity >= goblin.abilities.dexterity) {
     orderOfCombat = "player";
@@ -1752,7 +1746,7 @@ const loadPlayerTurn = () => {
   currentPopup = "player turn";
 };
 
-// Handles player attach options
+// Handles player attack options
 const handlePlayerAttack = (range, enemy) => {
   if (range === "melee") {
     handlePlayerMeleeAttack(enemy.armourClass, enemy);
@@ -1814,7 +1808,7 @@ const handleEnemyTurn = (enemy) => {
   }
 };
 
-// Handles the enemy ranged attack
+// Handles the enemy ranged turn
 const enemyTurnRanged = (enemy) => {
   gamePopupMessage.innerText = `The ${enemy.name} attacks you from range.`;
   handleEnemyRangedAttack(goblin, player.armourClass);
