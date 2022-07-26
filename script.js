@@ -2144,6 +2144,8 @@ const handleCreateNewCharacter = () => {
   game.classList.add("hidden");
   abilitiesAll.classList.add("hidden");
   menu.classList.remove("hidden");
+  menu.classList.remove("flex-start");
+  btnRibbon.classList.remove("margin-top-auto");
   createContainer.classList.remove("hidden");
   creationMessage.classList.remove("hidden");
   creationMessage.innerText = "";
