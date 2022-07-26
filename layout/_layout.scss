@@ -63,6 +63,12 @@
   margin-top: 0;
 }
 
+.name,
+.class__selector,
+.species__selector {
+  margin-top: 10vh;
+}
+
 .ability {
   display: flex;
   flex-direction: column;
@@ -189,6 +195,7 @@
 
 .stats {
   padding: 0 20px;
+  margin-top: 5vh;
 
   &__name-race-class {
     border: 0;
@@ -335,4 +342,27 @@
 .hidden {
   display: none;
   position: fixed;
+}
+
+.flex-start {
+  justify-content: flex-start;
+}
+
+.margin-top-auto {
+  margin-top: auto;
+}
+
+.menu--row-gap {
+  row-gap: 5vh;
+}
+
+@media screen and (min-width: 576px) {
+  .ability__container {
+    margin: 5vh 0vw;
+    min-width: 100%;
+  }
+
+  .ability {
+    margin: 3vh 5vw;
+  }
 }

@@ -187,3 +187,20 @@
   display: none;
   position: fixed;
 }
+
+@media screen and (min-width: 576px) {
+  .ability__container {
+    grid-template:
+      "ability1 ability2"
+      "ability3 ability4"
+      "ability5 ability6";
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .ability__container {
+    grid-template:
+      "ability1 ability2 ability3"
+      "ability4 ability5 ability6";
+  }
+}

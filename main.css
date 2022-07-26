@@ -164,6 +164,12 @@ h5 {
   margin-top: 0;
 }
 
+.name,
+.class__selector,
+.species__selector {
+  margin-top: 10vh;
+}
+
 .ability {
   display: flex;
   flex-direction: column;
@@ -290,6 +296,7 @@ h5 {
 
 .stats {
   padding: 0 20px;
+  margin-top: 5vh;
 }
 .stats__name-race-class {
   border: 0;
@@ -410,6 +417,28 @@ h5 {
   position: fixed;
 }
 
+.flex-start {
+  justify-content: flex-start;
+}
+
+.margin-top-auto {
+  margin-top: auto;
+}
+
+.menu--row-gap {
+  row-gap: 5vh;
+}
+
+@media screen and (min-width: 576px) {
+  .ability__container {
+    margin: 5vh 0vw;
+    min-width: 100%;
+  }
+
+  .ability {
+    margin: 3vh 5vw;
+  }
+}
 .ability__container {
   display: grid;
   grid-auto-columns: 1fr;
@@ -549,6 +578,16 @@ h5 {
   position: fixed;
 }
 
+@media screen and (min-width: 576px) {
+  .ability__container {
+    grid-template: "ability1 ability2" "ability3 ability4" "ability5 ability6";
+  }
+}
+@media screen and (min-width: 992px) {
+  .ability__container {
+    grid-template: "ability1 ability2 ability3" "ability4 ability5 ability6";
+  }
+}
 button {
   min-height: 40px;
   max-height: 40px;

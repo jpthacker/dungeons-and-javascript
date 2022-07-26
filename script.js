@@ -577,6 +577,8 @@ possimus.
 
 //Loads the name entry form
 const loadNameForm = () => {
+  menu.classList.add("flex-start");
+  btnRibbon.classList.add("margin-top-auto");
   nameForm.classList.remove("hidden");
   creationMessage.innerHTML = "";
   creationMessage.classList.add("hidden");
@@ -688,7 +690,6 @@ const loadCharacterStats = () => {
     player.getEquipmentHTML(statsEquipment);
     player.getSpellsHTML(statsSpells);
     currentCreationStage = "stats";
-    menu.style.rowGap = "5vh";
   }
 };
 
@@ -746,6 +747,8 @@ backBtn.addEventListener("click", (event) => {
   window.scrollTo(0, 0);
   switch (currentCreationStage) {
     case "name":
+      menu.classList.remove("flex-start");
+      btnRibbon.classList.remove("margin-top-auto");
       nameForm.classList.add("hidden");
       errorMessage.classList.add("hidden");
       creationMessage.classList.remove("hidden");
@@ -2306,7 +2309,7 @@ gameBtns.forEach((btn) => {
   });
 });
 
-// Handles popup button
+// Handles the popup continue button
 gamePopupBtn.addEventListener("click", () => {
   gamePopup.classList.add("hidden");
   gamePopupResult.innerHTML = "";
