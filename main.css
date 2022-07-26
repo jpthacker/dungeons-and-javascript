@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=IM+Fell+English+SC&family=Libre+Baskerville&family=Roboto:ital,wght@0,300;1,300&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=IM+Fell+English+SC&family=Libre+Baskerville&family=Roboto:ital,wght@0,300;0,500;1,300&display=swap");
 * {
   font-family: "Roboto", helvetica, sans-serif;
   color: #dadada;
@@ -41,8 +41,8 @@ h3 {
 }
 
 button {
-  font-weight: 600;
   font-size: large;
+  font-weight: 300;
 }
 
 .title__main--top {
@@ -54,8 +54,11 @@ h4 {
   font-size: 1.5em;
 }
 
-h5 {
-  font-weight: 600;
+h5,
+p,
+input[type=text],
+select {
+  font-weight: 300;
 }
 
 [class*=ability-no],
@@ -92,10 +95,6 @@ h5 {
 [class*=__equipment-mod],
 [class*=__spell-mod] {
   font-size: 1em;
-}
-
-.game__btn--stats {
-  font-weight: bold;
 }
 
 .justified {
@@ -690,6 +689,19 @@ button {
   margin: 0 auto;
   cursor: pointer;
   border: #dadada 2px solid;
+  border-radius: 10px;
+}
+
+button:hover {
+  cursor: pointer;
+  background-color: #dadada;
+  color: #1b1b1b;
+  font-weight: 500;
+}
+
+.btn--back,
+.btn--continue {
+  border: 0;
 }
 
 .btn--reset {
@@ -705,6 +717,16 @@ button {
   min-height: 10vh;
 }
 
+.ability__btn:hover,
+.btn--reset:hover,
+#a:hover,
+#b:hover,
+#c:hover,
+#d:hover {
+  background-color: rgba(211, 147, 253, 0.25);
+  color: #dadada;
+}
+
 .stats__btn--game,
 .game__btn--stats,
 .game__btn--popup {
@@ -716,14 +738,15 @@ button {
 
 .game__btn--stats,
 .stats__btn--game {
-  background-color: #d293fd;
-  color: #1b1b1b;
-  border: #d293fd;
+  background-color: #1b1b1b;
+  color: #dadada;
+  border: 2px solid #dadada;
   border-radius: 10px;
 }
 
 .stats__btn--game {
   align-items: center;
+  justify-content: center;
   margin-bottom: 8vh;
 }
 

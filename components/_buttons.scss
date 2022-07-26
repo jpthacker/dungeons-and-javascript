@@ -9,6 +9,19 @@ button {
   margin: 0 auto;
   cursor: pointer;
   border: $color-black 2px solid;
+  border-radius: 10px;
+}
+
+button:hover {
+  cursor: pointer;
+  background-color: $color-black;
+  color: $color-grey;
+  font-weight: 500;
+}
+
+.btn--back,
+.btn--continue {
+  border: 0;
 }
 
 .btn--reset {
@@ -24,6 +37,16 @@ button {
   min-height: 10vh;
 }
 
+.ability__btn:hover,
+.btn--reset:hover,
+#a:hover,
+#b:hover,
+#c:hover,
+#d:hover {
+  background-color: rgba(211, 147, 253, 0.25);
+  color: $color-black;
+}
+
 .stats__btn--game,
 .game__btn--stats,
 .game__btn--popup {
@@ -35,14 +58,15 @@ button {
 
 .game__btn--stats,
 .stats__btn--game {
-  background-color: $color-red;
-  color: $color-grey;
-  border: $color-red;
+  background-color: $color-grey;
+  color: $color-black;
+  border: 2px solid $color-black;
   border-radius: 10px;
 }
 
 .stats__btn--game {
   align-items: center;
+  justify-content: center;
   margin-bottom: 8vh;
 }
 
