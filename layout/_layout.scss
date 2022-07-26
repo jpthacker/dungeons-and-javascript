@@ -363,6 +363,10 @@
     margin-top: 18vh;
   }
 
+  .character-creation__message {
+    margin: 0 20vw;
+  }
+
   .name,
   .class__selector,
   .species__selector {
@@ -375,7 +379,7 @@
   }
 
   .ability {
-    margin: 3vh 5vw;
+    margin: 2vh 5vw;
   }
 
   .game__menu {
