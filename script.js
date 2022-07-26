@@ -1064,7 +1064,7 @@ gameStatsBtn.addEventListener("click", () => {
   player.getHitPointsHTML(statsHitPoints);
   player.getEquipmentHTML(statsEquipment);
   menu.classList.remove("hidden");
-  gameMenu.classList.add("hidden");
+  game.classList.add("hidden");
   statsContainer.classList.remove("hidden");
   statsBtn.classList.remove("hidden");
 });
@@ -1074,7 +1074,7 @@ statsBtn.addEventListener("click", () => {
   window.scrollTo(0, 0);
   menu.classList.add("hidden");
   statsContainer.classList.add("hidden");
-  gameMenu.classList.remove("hidden");
+  game.classList.remove("hidden");
 });
 
 // Loads the crypt enter game stage

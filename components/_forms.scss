@@ -1,1 +1,9 @@
 @use "../abstracts" as *;
+
+input[type="text"] {
+  padding: 10px;
+  border: 0;
+  box-shadow: 0 0 15px 4px rgba(255, 255, 255, 0.455);
+  border-radius: 10px;
+  width: 220px;
+}
