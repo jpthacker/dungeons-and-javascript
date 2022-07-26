@@ -1638,7 +1638,8 @@ const playerPickpocket = (DC) => {
         "You silently check the goblin's pockets, but find nothing.";
     }
     gamePopupMessage.innerHTML =
-      "You silently check the goblin's pockets, and pull out a small brass key, which you take for yourself.";
+      "You silently check the goblin's pockets. You pull out a small brass key, which you take for yourself.";
+    player.equipment.items.key = brassKey;
   } else {
     currentPopup = "pickpocket failure";
     gamePopupTitle.innerText = "Failure";
