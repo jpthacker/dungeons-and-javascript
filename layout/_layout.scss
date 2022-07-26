@@ -106,7 +106,7 @@
 [class*="ability-no"] {
   border: solid $color-red 1px;
   border-radius: 50px;
-  min-width: 12vw;
+  padding: 1px 20px;
 }
 
 [class*="ability-mod"] {
@@ -286,6 +286,10 @@
       }
     }
   }
+
+  &__equipment--items {
+    max-width: 48vw;
+  }
 }
 
 .game {
@@ -364,5 +368,49 @@
 
   .ability {
     margin: 3vh 5vw;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .stats__abilities {
+    padding: 0;
+    margin-right: 2vw;
+    margin-bottom: 16px;
+  }
+
+  [class*="ability-no"] {
+    padding: 5px 25px;
+  }
+
+  [class*="__ability--"] {
+    align-items: center;
+    padding-bottom: 0;
+    row-gap: 1vh;
+    min-width: 33%;
+    max-height: 180px;
+  }
+
+  [class*="equipment-desc"] {
+    min-width: 82%;
+    text-align: center;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .stats {
+    max-width: 1100px;
+
+    &__abilities {
+      margin: 0;
+    }
+
+    &__saving-throws {
+      margin: 0;
+    }
+  }
+
+  [class*="equipment-desc"] {
+    min-width: 86%;
+    text-align: center;
   }
 }

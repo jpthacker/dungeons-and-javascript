@@ -8,7 +8,7 @@
   font-family: "Cinzel", serif;
   font-weight: 600;
   font-size: 2.5em;
-  color: #b73131;
+  color: #d293fd;
   text-align: center;
 }
 
@@ -79,7 +79,7 @@ h5 {
 }
 
 [class*=-table] > h5 {
-  color: #b73131;
+  color: #d293fd;
 }
 
 [class*=equipment-desc],
@@ -160,7 +160,7 @@ h5 {
   justify-content: space-evenly;
   align-items: center;
   background-color: rgba(1, 1, 1, 0);
-  background-image: linear-gradient(rgba(1, 1, 1, 0), #b73131);
+  background-image: linear-gradient(rgba(1, 1, 1, 0), #d293fd);
   margin-top: 0;
 }
 
@@ -186,7 +186,7 @@ h5 {
   flex-direction: column;
   justify-content: space-between;
   row-gap: 1vh;
-  border: solid #b73131 1px;
+  border: solid #d293fd 1px;
   border-radius: 10px;
   padding: 10px;
 }
@@ -205,9 +205,9 @@ h5 {
 }
 
 [class*=ability-no] {
-  border: solid #b73131 1px;
+  border: solid #d293fd 1px;
   border-radius: 50px;
-  min-width: 12vw;
+  padding: 1px 20px;
 }
 
 [class*=ability-mod] {
@@ -319,7 +319,7 @@ h5 {
   padding-top: 0;
 }
 .stats__initiative-no {
-  border: solid #b73131 1px;
+  border: solid #d293fd 1px;
   border-radius: 10px;
   padding: 15px;
 }
@@ -347,7 +347,7 @@ h5 {
   padding: 16px 0 16px 0;
 }
 .stats__equipment, .stats__spells {
-  border: solid #b73131 1px;
+  border: solid #d293fd 1px;
 }
 .stats__equipment h5, .stats__spells h5 {
   border: 0;
@@ -360,12 +360,15 @@ h5 {
 .stats__equipment [class*=__spell-table], .stats__spells [class*=__equipment-table],
 .stats__spells [class*=__spell-table] {
   border-radius: 0;
-  border-bottom: solid #b73131 1px;
+  border-bottom: solid #d293fd 1px;
 }
 .stats__equipment [class*=__equipment-table] h5,
 .stats__equipment [class*=__spell-table] h5, .stats__spells [class*=__equipment-table] h5,
 .stats__spells [class*=__spell-table] h5 {
   border: 0;
+}
+.stats__equipment--items {
+  max-width: 48vw;
 }
 
 .game {
@@ -378,7 +381,7 @@ h5 {
   display: flex;
   flex-direction: column;
   row-gap: 4vh;
-  border: solid 1px #b73131;
+  border: solid 1px #d293fd;
   border-radius: 10px;
   padding: 30px 20px 40px 20px;
   text-align: center;
@@ -396,7 +399,7 @@ h5 {
   left: 50%;
   transform: translateX(-50%);
   padding: 15px;
-  border: solid 1px #b73131;
+  border: solid 1px #d293fd;
   border-radius: 10px;
   min-width: 80vw;
   min-height: 20vh;
@@ -404,7 +407,7 @@ h5 {
   flex-direction: column;
   align-items: center;
   row-gap: 4vh;
-  background-color: #b73131;
+  background-color: #d293fd;
   color: #1b1b1b;
 }
 
@@ -437,6 +440,46 @@ h5 {
 
   .ability {
     margin: 3vh 5vw;
+  }
+}
+@media screen and (min-width: 768px) {
+  .stats__abilities {
+    padding: 0;
+    margin-right: 2vw;
+    margin-bottom: 16px;
+  }
+
+  [class*=ability-no] {
+    padding: 5px 25px;
+  }
+
+  [class*=__ability--] {
+    align-items: center;
+    padding-bottom: 0;
+    row-gap: 1vh;
+    min-width: 33%;
+    max-height: 180px;
+  }
+
+  [class*=equipment-desc] {
+    min-width: 82%;
+    text-align: center;
+  }
+}
+@media screen and (min-width: 1200px) {
+  .stats {
+    max-width: 1100px;
+  }
+  .stats__abilities {
+    margin: 0;
+  }
+  .stats__saving-throws {
+    margin: 0;
+  }
+
+  [class*=equipment-desc] {
+    min-width: 86%;
+    text-align: center;
   }
 }
 .ability__container {
@@ -583,9 +626,30 @@ h5 {
     grid-template: "ability1 ability2" "ability3 ability4" "ability5 ability6";
   }
 }
-@media screen and (min-width: 992px) {
+@media screen and (min-width: 768px) {
+  .stats {
+    row-gap: 2vh;
+    grid-template: "name-race-class name-race-class name-race-class name-race-class" "abilities hit-points hit-points armour" "abilities proficiency initiative movement" "abilities saving-throws saving-throws saving-throws" "abilities senses senses senses" "abilities equipment equipment equipment" "1fr spells spells spells" "game-btn game-btn game-btn game-btn";
+  }
+
+  .stats__abilities {
+    row-gap: 3vh;
+    grid-template: "strength" "dexterity" "constitution" "intelligence" "wisdom" "charisma";
+  }
+}
+@media screen and (min-width: 1200px) {
   .ability__container {
     grid-template: "ability1 ability2 ability3" "ability4 ability5 ability6";
+  }
+
+  .stats {
+    row-gap: 2vh;
+    grid-template: "name-race-class name-race-class name-race-class name-race-class name-race-class name-race-class name-race-class name-race-class" "name-race-class name-race-class name-race-class name-race-class name-race-class name-race-class name-race-class name-race-class" "abilities abilities abilities abilities abilities abilities hit-points hit-points" "abilities abilities abilities abilities abilities abilities hit-points hit-points" "proficiency movement initiative armour equipment equipment equipment equipment" "saving-throws saving-throws saving-throws saving-throws equipment equipment equipment equipment" "senses senses senses senses equipment equipment equipment equipment" ". . . . spells spells spells spells" "game-btn game-btn game-btn game-btn game-btn game-btn game-btn game-btn";
+  }
+
+  .stats__abilities {
+    row-gap: 3vh;
+    grid-template: "strength dexterity constitution intelligence wisdom charisma";
   }
 }
 button {
@@ -623,9 +687,9 @@ button {
 
 .game__btn--stats,
 .stats__btn--game {
-  background-color: #b73131;
+  background-color: #d293fd;
   color: #1b1b1b;
-  border: #b73131;
+  border: #d293fd;
   border-radius: 10px;
 }
 

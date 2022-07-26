@@ -197,10 +197,55 @@
   }
 }
 
-@media screen and (min-width: 992px) {
+@media screen and (min-width: 768px) {
+  .stats {
+    row-gap: 2vh;
+    grid-template:
+      "name-race-class name-race-class name-race-class name-race-class"
+      "abilities hit-points hit-points armour"
+      "abilities proficiency initiative movement"
+      "abilities saving-throws saving-throws saving-throws"
+      "abilities senses senses senses"
+      "abilities equipment equipment equipment"
+      "1fr spells spells spells"
+      "game-btn game-btn game-btn game-btn";
+  }
+
+  .stats__abilities {
+    row-gap: 3vh;
+    grid-template:
+      "strength"
+      "dexterity"
+      "constitution"
+      "intelligence"
+      "wisdom"
+      "charisma";
+  }
+}
+
+@media screen and (min-width: 1200px) {
   .ability__container {
     grid-template:
       "ability1 ability2 ability3"
       "ability4 ability5 ability6";
+  }
+
+  .stats {
+    row-gap: 2vh;
+    grid-template:
+      "name-race-class name-race-class name-race-class name-race-class name-race-class name-race-class name-race-class name-race-class"
+      "name-race-class name-race-class name-race-class name-race-class name-race-class name-race-class name-race-class name-race-class"
+      "abilities abilities abilities abilities abilities abilities hit-points hit-points"
+      "abilities abilities abilities abilities abilities abilities hit-points hit-points"
+      "proficiency movement initiative armour equipment equipment equipment equipment"
+      "saving-throws saving-throws saving-throws saving-throws equipment equipment equipment equipment"
+      "senses senses senses senses equipment equipment equipment equipment"
+      ". . . . spells spells spells spells"
+      "game-btn game-btn game-btn game-btn game-btn game-btn game-btn game-btn";
+  }
+
+  .stats__abilities {
+    row-gap: 3vh;
+    grid-template: "strength dexterity constitution intelligence wisdom charisma";
   }
 }
