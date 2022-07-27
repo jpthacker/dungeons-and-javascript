@@ -589,43 +589,43 @@ const loadNameForm = () => {
   currentCreationStage = "name";
 };
 
-// Loads the class selector
-const loadClassSelector = () => {
-  console.log(player.name);
+// Loads the species selector
+const loadSpeciesSelector = () => {
   if (player.name) {
+    console.log(player.class);
     nameForm.classList.add("hidden");
-    classSelector.classList.remove("hidden");
-    document.querySelector(".menu__title").innerText = "Choose Your Class";
-    errorMessage.innerHTML = "";
-    errorMessage.classList.add("hidden");
-    currentCreationStage = "class";
+    speciesSelector.classList.remove("hidden");
+    document.querySelector(".menu__title").innerText = "Choose Your Species";
+    creationMessage.innerHTML = "";
+    creationMessage.classList.add("hidden");
+    currentCreationStage = "species";
   } else {
     errorMessage.innerHTML = "Please enter a name";
     errorMessage.classList.remove("hidden");
   }
 };
 
-// Loads the species selector
-const loadSpeciesSelector = () => {
-  if (player.class) {
-    console.log(player.class);
-    classSelector.classList.add("hidden");
-    speciesSelector.classList.remove("hidden");
+// Loads the class selector
+const loadClassSelector = () => {
+  console.log(player.name);
+  if (player.species) {
+    speciesSelector.classList.add("hidden");
+    classSelector.classList.remove("hidden");
+    document.querySelector(".menu__title").innerText = "Choose Your Class";
     creationMessage.innerHTML = "";
     creationMessage.classList.add("hidden");
-    document.querySelector(".menu__title").innerText = "Choose Your Species";
-    currentCreationStage = "species";
+    currentCreationStage = "class";
   } else {
-    errorMessage.innerHTML = "Please select a class";
+    errorMessage.innerHTML = "Please select a species";
     errorMessage.classList.remove("hidden");
   }
 };
 
 // Loads the abilities generator
 const loadAbilitiesGenerator = () => {
-  if (player.species) {
+  if (player.class) {
     console.log(player.species);
-    speciesSelector.classList.add("hidden");
+    classSelector.classList.add("hidden");
     creationMessage.innerHTML = "";
     creationMessage.classList.add("hidden");
     document.querySelector(".menu__title").innerText =
@@ -635,7 +635,7 @@ const loadAbilitiesGenerator = () => {
     errorMessage.classList.add("hidden");
     currentCreationStage = "abilities";
   } else {
-    errorMessage.innerHTML = "Please select a species";
+    errorMessage.innerHTML = "Please select a class";
     errorMessage.classList.remove("hidden");
   }
   if (abilityScoreList.length > 0) {
@@ -725,13 +725,13 @@ continueBtn.addEventListener("click", (event) => {
       loadNameForm();
       break;
     case "name":
-      loadClassSelector();
-      break;
-    case "class":
       loadSpeciesSelector();
       break;
-    case "species":
+    case "class":
       loadAbilitiesGenerator();
+      break;
+    case "species":
+      loadClassSelector();
       break;
     case "abilities":
       loadCharacterStats();
@@ -757,61 +757,33 @@ backBtn.addEventListener("click", (event) => {
       continueBtn.innerHTML = "Start";
       loadCreationMessage();
       break;
-    case "class":
-      loadNameForm();
-      classSelector.classList.add("hidden");
-      errorMessage.classList.add("hidden");
-      break;
     case "species":
       speciesSelector.classList.add("hidden");
       errorMessage.classList.add("hidden");
-      loadClassSelector();
+      loadNameForm();
+      break;
+    case "class":
+      classSelector.classList.add("hidden");
+      errorMessage.classList.add("hidden");
+      loadSpeciesSelector();
       break;
     case "abilities":
-      loadSpeciesSelector();
       abilitiesAll.classList.add("hidden");
       abilityResetBtn.classList.add("hidden");
+      loadClassSelector();
       break;
     case "stats":
-      loadAbilitiesGenerator();
       statsContainer.classList.add("hidden");
       createContainer.classList.remove("hidden");
       abilityResetBtn.classList.remove("hidden");
       errorMessage.classList.remove("hidden");
+      loadAbilitiesGenerator();
   }
 });
 
 // Handles the name entry form
 nameForm.addEventListener("input", (event) => {
   player.name = event.target.value;
-  errorMessage.innerHTML = "";
-  errorMessage.classList.add("hidden");
-});
-
-// Handles the class selector
-classSelector.addEventListener("change", (event) => {
-  event.preventDefault();
-  creationMessage.classList.remove("hidden");
-  creationMessage.style.marginTop = "10vh";
-  switch (event.target.value) {
-    case "cleric":
-      creationMessage.innerHTML = `A priestly champion who wields divine magic in service of a higher power<br/><br/>Primary Ability: Wisdom<br/>Saves: Wisdom & Charisma
-      `;
-      player.class = "Cleric";
-      player.hitDie = 8;
-      break;
-    case "fighter":
-      creationMessage.innerHTML = `A master of martial combat, skilled with a variety of weapons and armour<br/><br/>Primary Ability: Strength or Dexterity<br/>Saves: Strength & Constitution
-      `;
-      player.class = "Fighter";
-      player.hitDie = 12;
-      break;
-    case "rogue":
-      creationMessage.innerHTML = `A scoundrel who uses stealth and trickery to overcome obstacles and enemies<br/><br/>Primary Ability: Dexterity<br/>Saves: Dexterity & Intelligence
-      `;
-      player.class = "Rogue";
-      player.hitDie = 10;
-  }
   errorMessage.innerHTML = "";
   errorMessage.classList.add("hidden");
 });
@@ -837,19 +809,47 @@ speciesSelector.addEventListener("change", (event) => {
       `;
       player.species = "Human";
   }
-  // Reminds the player of their class choice
-  switch (player.class) {
-    case "Cleric":
-      creationMessage.innerHTML +=
-        "<br/><br/>Your Class: Cleric (Primary Ability: Wisdom, Saves: Wisdom & Charisma)";
+  errorMessage.innerHTML = "";
+  errorMessage.classList.add("hidden");
+});
+
+// Handles the class selector
+classSelector.addEventListener("change", (event) => {
+  event.preventDefault();
+  creationMessage.classList.remove("hidden");
+  creationMessage.style.marginTop = "10vh";
+  switch (event.target.value) {
+    case "cleric":
+      creationMessage.innerHTML = `A priestly champion who wields divine magic in service of a higher power<br/><br/>Primary Ability: Wisdom<br/>Saves: Wisdom & Charisma
+      `;
+      player.class = "Cleric";
+      player.hitDie = 8;
       break;
-    case "Fighter":
-      creationMessage.innerHTML +=
-        "<br/><br/>Your Class: Fighter (Primary Ability: Strength, Saves: Strength & Constitution)";
+    case "fighter":
+      creationMessage.innerHTML = `A master of martial combat, skilled with a variety of weapons and armour<br/><br/>Primary Ability: Strength<br/>Saves: Strength & Constitution
+      `;
+      player.class = "Fighter";
+      player.hitDie = 12;
       break;
-    case "Rogue":
+    case "rogue":
+      creationMessage.innerHTML = `A scoundrel who uses stealth and trickery to overcome obstacles and enemies<br/><br/>Primary Ability: Dexterity<br/>Saves: Dexterity & Intelligence
+      `;
+      player.class = "Rogue";
+      player.hitDie = 10;
+  }
+  // Reminds the player of their species choice
+  switch (player.species) {
+    case "Dwarf":
       creationMessage.innerHTML +=
-        "<br/><br/>Your Class: Rogue (Primary Ability: Dexterity, Saves: Dexterity & Intelligence)";
+        "<br/><br/>Selected species: Dwarf (species trait: +2 Strength)";
+      break;
+    case "Elf":
+      creationMessage.innerHTML +=
+        "<br/><br/>Selected species: Elf (species trait: +2 Wisdom)";
+      break;
+    case "Human":
+      creationMessage.innerHTML +=
+        "<br/><br/>Selected species: Human (species trait: +2 Dexterity)";
   }
   errorMessage.innerHTML = "";
   errorMessage.classList.add("hidden");
