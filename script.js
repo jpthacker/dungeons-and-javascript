@@ -1969,7 +1969,7 @@ const loadChestApproach = () => {
 // Loads chest open attempt
 const handleChestLocked = () => {
   gamePopupTitle.innerText = "The chest is locked";
-  game;
+  gamePopupResult.classList.add("hidden");
   if (player.equipment.items.key) {
     gamePopupMessage.innerText =
       "The chest is firmly locked, but the brass key you found looks like it might fit the keyhole.";
@@ -1984,6 +1984,7 @@ const handleChestLocked = () => {
 
 // Loads successful chest open
 const handleChestOpen = () => {
+  gamePopupResult.classList.add("hidden");
   gamePopupTitle.innerText = "A Treasure Map";
   gamePopupMessage.innerText =
     "The chest springs open. All you find inside is a map. It details an area you don't recognise but features a spot marked with an X. Time for another adventure!";
@@ -2324,6 +2325,7 @@ gameBtns.forEach((btn) => {
 // Handles the popup continue button
 gamePopupBtn.addEventListener("click", () => {
   gamePopup.classList.add("hidden");
+  gamePopupResult.classList.remove("hidden");
   gamePopupResult.innerHTML = "";
   switch (currentPopup) {
     case "crypt look success":
