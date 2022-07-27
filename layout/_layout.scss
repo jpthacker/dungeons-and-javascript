@@ -301,6 +301,10 @@
         border: 0;
       }
     }
+
+    &__equipment--items {
+      min-width: 100%;
+    }
   }
 
   &__spells-title {
@@ -436,6 +440,7 @@
 
     &--items {
       max-width: 48vw;
+      min-width: 100%;
     }
   }
 
@@ -485,6 +490,11 @@
 
   .game {
     margin: 20vh 5vw 0 5vw;
+  }
+
+  .game__popup {
+    min-width: 40vw;
+    max-width: 40vw;
   }
 
   .desktop-margin {
