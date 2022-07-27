@@ -42,9 +42,8 @@
 }
 
 .character-creation__error {
-  position: sticky;
-  position: -webkit-sticky;
-  bottom: 20vh;
+  position: fixed;
+  bottom: 24vh;
   text-align: center;
   margin: 0 auto;
   background-color: $color-red;
@@ -337,9 +336,9 @@
 
 .game__popup {
   position: fixed;
-  top: 20%;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   padding: 15px;
   border: solid 1px $color-red;
   border-radius: 10px;

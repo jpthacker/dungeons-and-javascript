@@ -1341,7 +1341,8 @@ const handleHallwayTrapTrigger = (DC) => {
   gamePopup.classList.remove("hidden");
   trapStatusHallway = "disabled";
   currentPopup = "trap trigger";
-  if (player.hitPointsCurrent <= 0) {
+  if (player.hitPointsCurrent < 1) {
+    player.hitPointsCurrent = 0;
     currentPopup = "player death";
   }
 };
@@ -1465,7 +1466,8 @@ const mainChamberEnter = () => {
   } else {
     loadEnemyAhead();
   }
-  if (player.hitPointsCurrent <= 0) {
+  if (player.hitPointsCurrent < 1) {
+    player.hitPointsCurrent = 0;
     currentPopup = "player death";
   }
 };
@@ -1811,7 +1813,8 @@ const handleEnemyTurn = (enemy) => {
     enemyTurnMelee(goblin);
   }
   currentPopup = "enemy turn";
-  if (player.hitPointsCurrent <= 0) {
+  if (player.hitPointsCurrent < 1) {
+    player.hitPointsCurrent = 0;
     currentPopup = "player death";
   }
 };
@@ -2092,6 +2095,7 @@ const handleChestTrapTrigger = (DC) => {
   trapStatusChest = "disabled";
   currentPopup = "chest trap trigger";
   if (player.hitPointsCurrent < 1) {
+    player.hitPointsCurrent = 0;
     currentPopup = "player death";
   }
 };
