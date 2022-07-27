@@ -669,7 +669,7 @@ select {
 @media screen and (min-width: 768px) {
   .stats {
     row-gap: 2vh;
-    grid-template: "name-race-class name-race-class name-race-class name-race-class" "abilities hit-points hit-points armour" "abilities proficiency initiative movement" "abilities saving-throws saving-throws saving-throws" "abilities senses senses senses" "abilities equipment equipment equipment" "1fr spells spells spells" "game-btn game-btn game-btn game-btn";
+    grid-template: "name-race-class name-race-class name-race-class name-race-class" "abilities movement hit-points hit-points" "abilities proficiency initiative armour" "abilities saving-throws saving-throws saving-throws" "abilities senses senses senses" "abilities equipment equipment equipment" "1fr spells spells spells" "game-btn game-btn game-btn game-btn";
   }
 
   .stats__abilities {
