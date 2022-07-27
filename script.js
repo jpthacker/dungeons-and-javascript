@@ -25,7 +25,6 @@ const statsAbilities = document.querySelector(".stats__abilities");
 const statsSavingThrows = document.querySelector(".stats__saving-throws");
 const statsSenses = document.querySelector(".stats__senses");
 const statsEquipment = document.querySelector(".stats__equipment");
-const statsSpells = document.querySelector(".stats__spells");
 const statsBtn = document.querySelector(".stats__btn--game");
 const game = document.querySelector(".game");
 const gameMenu = document.querySelector(".game__menu");
@@ -305,21 +304,24 @@ const player = {
     getAllItemsHTML(this.equipment.potions, potionsContainer);
     getAllItemsHTML(this.equipment.items, itemsContainer);
   },
-  getSpellsHTML(spellsContainer) {
-    spellsContainer.innerHTML = `
-    <h4 class="stats__spells-title">Spells</h4>
-    <div class="stats__spells--list">
-      <div class="stats__spell-table--four-items">
-        <h5 class="stats__spell-text">spell</h5>
-        <h5 class="stats__spell-text">range (ft.)</h5>
-        <h5 class="stats__spell-text">hit/dc</h5>
-        <h5 class="stats__spell-text">effect</h5>
+  getSpellsHTML(equipmentContainer) {
+    equipmentContainer.innerHTML += `
+    <div class="stats__spells">
+      <h4 class="stats__spells-title">Spells</h4>
+      <div class="stats__spells--list">
+        <div class="stats__spell-table--four-items">
+          <h5 class="stats__spell-text">spell</h5>
+          <h5 class="stats__spell-text">range (ft.)</h5>
+          <h5 class="stats__spell-text">hit/dc</h5>
+          <h5 class="stats__spell-text">effect</h5>
+        </div>
       </div>
     </div>
     `;
     const spellsListContainer = document.querySelector(".stats__spells--list");
-    statsSpells.classList.add("hidden");
     getAllItemsHTML(this.spells, spellsListContainer);
+    const statsSpells = document.querySelector(".stats__spells");
+    statsSpells.classList.add("hidden");
     if (this.class === "Cleric") {
       statsSpells.classList.remove("hidden");
     }
@@ -688,7 +690,7 @@ const loadCharacterStats = () => {
     player.getSavingThrowsHTML(statsSavingThrows);
     player.getSensesHTML(statsSenses);
     player.getEquipmentHTML(statsEquipment);
-    player.getSpellsHTML(statsSpells);
+    player.getSpellsHTML(statsEquipment);
     currentCreationStage = "stats";
   }
 };
@@ -1063,6 +1065,7 @@ gameStatsBtn.addEventListener("click", () => {
   window.scrollTo(0, 0);
   player.getHitPointsHTML(statsHitPoints);
   player.getEquipmentHTML(statsEquipment);
+  player.getSpellsHTML(statsEquipment);
   menu.classList.remove("hidden");
   game.classList.add("hidden");
   statsContainer.classList.remove("hidden");

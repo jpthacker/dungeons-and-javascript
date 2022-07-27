@@ -294,6 +294,10 @@
       }
     }
   }
+
+  &__spells-title {
+    margin-top: 10px;
+  }
 }
 
 .game {
@@ -400,8 +404,13 @@
     padding: 0 15%;
   }
 
-  .stats__equipment--items {
-    max-width: 48vw;
+  .stats__equipment {
+    max-height: 500px;
+    overflow-y: scroll;
+
+    &--items {
+      max-width: 48vw;
+    }
   }
 
   [class*="ability-no"] {
@@ -441,5 +450,10 @@
 
   [class*="equipment-desc"] {
     min-width: 86%;
+  }
+
+  .desktop-margin {
+    min-height: 82vh;
+    margin-top: 18vh;
   }
 }

@@ -367,6 +367,9 @@ select {
 .stats__spells [class*=__spell-table] h5 {
   border: 0;
 }
+.stats__spells-title {
+  margin-top: 10px;
+}
 
 .game {
   margin: 26vh 5vw 0 5vw;
@@ -470,6 +473,10 @@ select {
     padding: 0 15%;
   }
 
+  .stats__equipment {
+    max-height: 500px;
+    overflow-y: scroll;
+  }
   .stats__equipment--items {
     max-width: 48vw;
   }
@@ -508,6 +515,11 @@ select {
 
   [class*=equipment-desc] {
     min-width: 86%;
+  }
+
+  .desktop-margin {
+    min-height: 82vh;
+    margin-top: 18vh;
   }
 }
 .ability__container {
