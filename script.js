@@ -659,6 +659,7 @@ const loadCharacterStats = () => {
     errorMessage.innerHTML = "Please assign your ability rolls";
     errorMessage.classList.remove("hidden");
   } else {
+    menu.classList.add("desktop-margin");
     createContainer.classList.add("hidden");
     abilityResetBtn.classList.add("hidden");
     statsContainer.classList.remove("hidden");
@@ -2149,6 +2150,7 @@ const handleCreateNewCharacter = () => {
   abilitiesAll.classList.add("hidden");
   menu.classList.remove("hidden");
   menu.classList.remove("flex-start");
+  menu.classList.remove("desktop-margin");
   btnRibbon.classList.remove("margin-top-auto");
   createContainer.classList.remove("hidden");
   creationMessage.classList.remove("hidden");
