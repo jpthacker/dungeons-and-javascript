@@ -8,14 +8,14 @@ button {
   display: block;
   margin: 0 auto;
   cursor: pointer;
-  border: $color-black 2px solid;
+  border: $color-white 2px solid;
   border-radius: 10px;
 }
 
 button:hover {
   cursor: pointer;
-  background-color: $color-black;
-  color: $color-grey;
+  background-color: $color-white;
+  color: $color-black;
   font-weight: 500;
 }
 
@@ -43,8 +43,8 @@ button:hover {
 #b:hover,
 #c:hover,
 #d:hover {
-  background-color: rgb(86, 68, 98);
-  color: $color-black;
+  background-color: $color-purple-faded;
+  color: $color-white;
 }
 
 .stats__btn--game,
@@ -58,9 +58,9 @@ button:hover {
 
 .game__btn--stats,
 .stats__btn--game {
-  background-color: $color-grey;
-  color: $color-black;
-  border: 2px solid $color-black;
+  background-color: $color-black;
+  color: $color-white;
+  border: 2px solid $color-white;
   border-radius: 10px;
 }
 

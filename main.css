@@ -37,7 +37,6 @@ h3 {
 .character-creation__error {
   text-align: center;
   font-size: 1em;
-  color: #bc0f0f;
 }
 
 button {
@@ -482,6 +481,10 @@ select {
   }
 }
 @media screen and (min-width: 768px) {
+  .character-creation__message {
+    margin: 0 30vw;
+  }
+
   .character-creation__error {
     position: fixed;
     bottom: 18vh;

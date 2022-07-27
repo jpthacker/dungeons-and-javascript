@@ -4,7 +4,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  background-color: $color-grey;
+  background-color: $color-black;
 }
 
 .title {
@@ -46,8 +46,8 @@
   bottom: 24vh;
   text-align: center;
   margin: 0 auto;
-  background-color: $color-red;
-  color: $color-grey;
+  background-color: $color-purple-full;
+  color: $color-black;
   padding: 4px 12px;
   border-radius: 20px;
 }
@@ -99,7 +99,7 @@
   flex-direction: column;
   justify-content: space-between;
   row-gap: 1vh;
-  border: solid $color-red 1px;
+  border: solid $color-purple-full 1px;
   border-radius: 10px;
   padding: 10px;
 }
@@ -118,7 +118,7 @@
 }
 
 [class*="ability-no"] {
-  border: solid $color-red 1px;
+  border: solid $color-purple-full 1px;
   border-radius: 50px;
   padding: 1px 20px;
 }
@@ -240,7 +240,7 @@
   }
 
   &__initiative-no {
-    border: solid $color-red 1px;
+    border: solid $color-purple-full 1px;
     border-radius: 10px;
     padding: 15px;
   }
@@ -280,7 +280,7 @@
 
   &__equipment,
   &__spells {
-    border: solid $color-red 1px;
+    border: solid $color-purple-full 1px;
 
     h5 {
       border: 0;
@@ -294,7 +294,7 @@
     [class*="__equipment-table"],
     [class*="__spell-table"] {
       border-radius: 0;
-      border-bottom: solid $color-red 1px;
+      border-bottom: solid $color-purple-full 1px;
 
       h5 {
         border: 0;
@@ -321,7 +321,7 @@
     display: flex;
     flex-direction: column;
     row-gap: 4vh;
-    border: solid 1px $color-red;
+    border: solid 1px $color-purple-full;
     border-radius: 10px;
     padding: 30px 20px 40px 20px;
     text-align: center;
@@ -340,7 +340,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 15px;
-  border: solid 1px $color-red;
+  border: solid 1px $color-purple-full;
   border-radius: 10px;
   min-width: 80vw;
   min-height: 20vh;
@@ -348,8 +348,8 @@
   flex-direction: column;
   align-items: center;
   row-gap: 4vh;
-  background-color: rgb(86, 68, 98);
-  color: $color-grey;
+  background-color: $color-purple-faded;
+  color: $color-black;
 
   &-title,
   &-result,
@@ -418,6 +418,10 @@
 }
 
 @media screen and (min-width: 768px) {
+  .character-creation__message {
+    margin: 0 30vw;
+  }
+
   .character-creation__error {
     position: fixed;
     bottom: 18vh;
