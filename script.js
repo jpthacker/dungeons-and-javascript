@@ -647,15 +647,17 @@ const loadAbilitiesGenerator = () => {
 
 // Loads the player character's stats
 const loadCharacterStats = () => {
-  let abilitiesReady;
-  abilitiesSelector.forEach((selector) => {
-    if (selector.disabled === true) {
-      abilitiesReady = true;
-    } else {
-      abilitiesReady = false;
-    }
-  });
-  if (abilitiesReady === false) {
+  let selectorsValidated = true;
+  const validateSelectors = () => {
+    abilitiesSelector.forEach((selector) => {
+      const selectorTest = selector[0].selected === true;
+      if (selectorTest) {
+        selectorsValidated = false;
+      }
+    });
+  };
+  validateSelectors();
+  if (selectorsValidated === false) {
     errorMessage.innerHTML = "Please assign your ability rolls";
     errorMessage.classList.remove("hidden");
   } else {
