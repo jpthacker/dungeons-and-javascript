@@ -8,12 +8,12 @@
 
 The game is heavily inspired by the popular table-top role-playing game Dungeons & Dragons. For more information on the basic rules behind D&D, go to: https://dnd.wizards.com/what-is-dnd/basic-rules.
 
-To emulate the dice rolls that are a fundamental part of D&D, I sources and adapted code written by BryanBansbach (https://github.com/BryanBansbach/DiceRoller). The rest of the game is made up of original code and is a work in progress.
+To emulate the dice rolls that are a fundamental part of D&D, I sourced and adapted code written by BryanBansbach (https://github.com/BryanBansbach/DiceRoller). The rest of the game is made up of original code and is a work in progress.
 
-Ongoing/Further Developments
+## Ongoing/Further Developments
 
 - Refactor code for simplicity and to ensure pure classes/functions
-- Seperate classes and function code into seperate files
+- Seperate classes, functions and DOM interactions into seperate files
 - Redesign and implement updated styles
 - Add user instructions at the start of the game
 - Add story elements to the text-based content of the game
