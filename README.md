@@ -1,4 +1,4 @@
-### Dungeons & Javascript
+# Dungeons & Javascript
 
 > _An ongoing project which takes the form of a web-based Dungeons & Dragons-inspired text adventure built using vanailla JavaScript and OOP principles. The user decides upon a name, species and class for their character, which generates their character's stats, skills and equipment. They then engage in a text-based series of challenges, with their success depending on their character's stats and virtual dice rolls._<br>
 
