@@ -1,7 +1,19 @@
-Dungeons & Javascript - A Web-based Dungeons & Dragons-inspired text adventure!
+### Dungeons & Javascript 
 
-Nology coursework: the task was to put what I knew about javascript so far to the test by making a fully functioning browser-based game. I chose to make a text-based adventure inspired by the game mechnanics behind the tabletop role-playing game Dungeons & Dragons.
+> _AN ongoing project which takes the form of a web-based Dungeons & Dragons-inspired text adventure built using vanailla JavaScript and OOP principles. The user decides upon a name, species and class for their character, which generates their character's stats, skills and obejcts. They then engage in a text-based series of challenges based on virtual dice rolls._<br>
+
+<p align="center">
+  <img src="./morse-code-gif.gif" alt="morse code gif">
+</p>
+
+The game is heavily inspired by the popular table-top role-playing game Dungeons & Dragons. For more information on the basic rules behind D&D, go to: https://dnd.wizards.com/what-is-dnd/basic-rules.
 
 To emulate the dice rolls that are a fundamental part of D&D, I sources and adapted code written by BryanBansbach (https://github.com/BryanBansbach/DiceRoller). The rest of the game is made up of original code and is a work in progress.
 
-For more information on the basic rules behiond D&D, go to: https://dnd.wizards.com/what-is-dnd/basic-rules.
+Ongoing/Further Developments
+
+- Refactor code for simplicity and to ensure pure classes/functions
+- Seperate classes and function code into seperate files
+- Redesign and implement updated styles
+- Add user instructions at the start of the game
+- Add story elements to the text-based content of the game
